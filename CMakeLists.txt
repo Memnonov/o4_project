@@ -8,11 +8,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCES
     src/main.cpp
     src/container.cpp
+    src/container_model.cpp
 )
 
 set(HEADERS
     include/o4_project/item.h
     include/o4_project/container.h
+    include/o4_project/container_model.h
 )
 
 set(TEST_SOURCES
@@ -22,6 +24,7 @@ set(TEST_SOURCES
 
 set(TEST_HEADERS
     test/container_tests.h
+    include/o4_project/container_model.h
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test)
