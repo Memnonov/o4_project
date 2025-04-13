@@ -13,6 +13,7 @@ set(SOURCES
 
 set(HEADERS
     include/o4_project/item.h
+    include/o4_project/container.h
 )
 
 # Find package
