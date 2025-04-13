@@ -1,5 +1,8 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
+#ifndef CONTAINER_TESTS
+#define CONTAINER_TESTS
+
 #include "../include/o4_project/container.h"
 #include "../include/o4_project/item.h"
 #include <QObject>
@@ -52,3 +55,5 @@ inline void ContainerTests::testMoveItem() {
   QCOMPARE(origin.items.size(), 0);
   QCOMPARE(target.items.size(), 2);
 }
+
+#endif  // !CONTAINER_TESTS
