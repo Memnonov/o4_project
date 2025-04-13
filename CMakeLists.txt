@@ -8,11 +8,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SOURCES
     src/main.cpp
+    src/container.cpp
 )
 
-# set(HEADERS
-#     include/myIncludes
-# )
+set(HEADERS
+    include/o4_project/item.h
+)
 
 # Find package
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)

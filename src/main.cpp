@@ -1,6 +1,7 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
 #include "../include/o4_project/item.h"
+#include "../include/o4_project/container.h"
 #include <QApplication>
 #include <QMainWindow>
 #include <cstdlib>
@@ -14,9 +15,14 @@ int main(int argc, char *argv[]) {
 
   Item testItem{
       "Tavara", 666, "Tällästä tavarantynkää tällä kertaa.", {"tagi", "tägi"}};
-
   qInfo() << testItem.name << " | " << testItem.quantity << " | "
           << testItem.description << "\n";
+
+  Container testContainer{"Kontsa"};
+
+  qInfo() << "Container name: " << testContainer.name << "\n";
+  testContainer.addItem();
+
 
   mainWindow.show();
 
