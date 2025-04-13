@@ -4,29 +4,32 @@
 #define CONTAINER_H
 
 #include <QVector>
-#include <item.h>
-#include <memory>
+#include "./item.h"
 #include <utility>
 
+class Container;
+
 class Container {
+  friend class ContainerTests;
+
  public:
   QString name{"Unnamed Container"};
 
   explicit Container(const QString& name) : name{name} {}
 
-  Container(const QString& name, const QVector<std::unique_ptr<Item>> items)
+  Container(const QString& name, const QVector<Item> items)
       : name{name}, items{std::move(items)} {}
 
   Container() = default;
   Container(const Container& other) = delete;
   Container& operator=(const Container& other) = delete;
 
-  void addItem(std::unique_ptr<Item> item);
+  void addItem(Item item);
   void removeItem(unsigned int index);
   void moveItem(unsigned int index, Container& other);
 
  private:
-  QVector<std::unique_ptr<Item>> items{};
+  QVector<Item> items{};
 };
 
 #endif  // !CONTAINER_H

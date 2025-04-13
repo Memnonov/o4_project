@@ -13,17 +13,6 @@ int main(int argc, char *argv[]) {
   mainWindow.setWindowTitle("o4_project");
   mainWindow.resize(666, 666);
 
-  Item testItem{
-      "Tavara", 666, "Tällästä tavarantynkää tällä kertaa.", {"tagi", "tägi"}};
-  qInfo() << testItem.name << " | " << testItem.quantity << " | "
-          << testItem.description << "\n";
-
-  Container testContainer{"Kontsa"};
-
-  qInfo() << "Container name: " << testContainer.name << "\n";
-  testContainer.addItem();
-
-
   mainWindow.show();
 
   return app.exec();

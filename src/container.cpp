@@ -3,14 +3,11 @@
 #include "../include/o4_project/container.h"
 #include "../include/o4_project/item.h"
 #include <QtLogging>
-#include <memory>
 #include <qdebug.h>
 #include <utility>
 
-void Container::addItem(std::unique_ptr<Item> item) {
-  if (item) {
-    items.push_back(std::move(item));
-  }
+void Container::addItem(Item item) {
+  items.push_back(std::move(item));
 }
 
 void Container::removeItem(unsigned int index) {
