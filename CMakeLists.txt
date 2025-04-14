@@ -9,12 +9,16 @@ set(SOURCES
     src/main.cpp
     src/container.cpp
     src/container_model.cpp
+    src/main_window.cpp
+    src/navigation_window.cpp
 )
 
 set(HEADERS
     include/o4_project/item.h
     include/o4_project/container.h
     include/o4_project/container_model.h
+    include/o4_project/main_window.h
+    include/o4_project/navigation_window.h
 )
 
 set(TEST_SOURCES
