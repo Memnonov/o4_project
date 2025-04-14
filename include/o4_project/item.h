@@ -5,10 +5,11 @@
 
 #include <QString>
 #include <QStringList>
-#include <algorithm>
 #include <utility>
 
 class Item {
+  friend class ContainerModelTests;
+
  public:
   QString name{"No name"};
   unsigned int quantity{1};
@@ -19,6 +20,8 @@ class Item {
        const QStringList tags)
       : name{std::move(name)}, quantity{quantity},
         description{std::move(description)}, tags{std::move(tags)} {}
+
+  explicit Item(const QString name) : Item(name, 1, "", {}) {}
 
   Item() = default;
 };

@@ -20,10 +20,12 @@ set(HEADERS
 set(TEST_SOURCES
     test/test_main.cpp
     src/container.cpp
+    src/container_model.cpp
 )
 
 set(TEST_HEADERS
     test/container_tests.h
+    test/container_model_tests.h
     include/o4_project/container_model.h
 )
 

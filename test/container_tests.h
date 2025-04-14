@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QTest>
 #include <QtLogging>
+#include <memory>
 #include <qtestcase.h>
 
 class ContainerTests : public QObject {
@@ -22,38 +23,38 @@ class ContainerTests : public QObject {
 
 inline void ContainerTests::testAddItem() {
   Container container;
-  container.addItem(
-      Item("Testing Item A", 1, "Test description...", QStringList{}));
-  container.addItem(
-      Item("Testing Item B", 1, "Test description...", QStringList{}));
+  container.addItem(std::make_shared<Item>(
+      Item("Testing Item A", 1, "Test description...", QStringList{})));
+  container.addItem(std::make_shared<Item>(
+      Item("Testing Item B", 1, "Test description...", QStringList{})));
   QCOMPARE(container.items.size(), 2);
 }
 
 inline void ContainerTests::testRemoveItem() {
   Container container;
-  container.addItem(
-      Item("Testing Item A", 1, "Test description...", QStringList{}));
-  container.addItem(
-      Item("Testing Item B", 1, "Test description...", QStringList{}));
+  container.addItem(std::make_shared<Item>(
+      Item("Testing Item A", 1, "Test description...", QStringList{})));
+  container.addItem(std::make_shared<Item>(
+      Item("Testing Item B", 1, "Test description...", QStringList{})));
   container.removeItem(1);
   container.removeItem(0);
-  container.addItem(
-    Item("Testing Item C", 1, "Test description...", QStringList{}));
+  container.addItem(std::make_shared<Item>(
+      Item("Testing Item C", 1, "Test description...", QStringList{})));
   container.removeItem(666);
   QCOMPARE(container.items.size(), 1);
 }
 
 inline void ContainerTests::testMoveItem() {
-  Container origin;
-  Container target;
-  origin.addItem(
-      Item("Testing Item A", 1, "Test description...", QStringList{}));
-  origin.addItem(
-      Item("Testing Item B", 1, "Test description...", QStringList{}));
-  origin.moveItem(0, target);
-  origin.moveItem(0, target);
-  QCOMPARE(origin.items.size(), 0);
-  QCOMPARE(target.items.size(), 2);
+  auto from = std::make_shared<Container>();
+  auto to = std::make_shared<Container>();
+  from->addItem(std::make_shared<Item>(
+      Item("Testing Item A", 1, "Test description...", QStringList{})));
+  to->addItem(std::make_shared<Item>(
+      Item("Testing Item B", 1, "Test description...", QStringList{})));
+  from->moveItem(0, to);
+  from->moveItem(0, to);
+  QCOMPARE(from->items.size(), 0);
+  QCOMPARE(to->items.size(), 2);
 }
 
 #endif  // !CONTAINER_TESTS
