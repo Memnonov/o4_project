@@ -1,7 +1,9 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
 #include "../include/o4_project/navigation_window.h"
+#include <QSize>
 #include <QSizePolicy>
+#include <qboxlayout.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlogging.h>
@@ -20,17 +22,19 @@ const QMap<NavigationWindow::NavAction, QString>
         {NavigationWindow::NavAction::Quit, "Quit"}};
 
 NavigationWindow::NavigationWindow(QWidget *parent)
-    : QFrame(parent), layout(new QVBoxLayout(this)) {
+    : QFrame{parent}, layout{new QVBoxLayout{this}},
+      logoLabel(new QLabel) {
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
   setObjectName("NavigationWindow");
-  layout->setSpacing(24);  // TODO(mikko): separate styling to qss
-  layout->addStretch();
+  layout->setSpacing(24); // TODO(mikko): separate styling to qss
 
-  logoLabel = new QLabel(this);
+  logoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   QPixmap logoPixMap{"assets/ai_logo.png"};
   if (logoPixMap.isNull()) {
     qDebug() << "couldn't load image!\n";
   }
-  logoLabel->setPixmap(logoPixMap.scaledToHeight(height() / 3));
+  logoLabel->setPixmap(logoPixMap.scaled(200, 200, Qt::KeepAspectRatio));
+  // logoLabel->setScaledContents(true);
   logoLabel->setAlignment(Qt::AlignCenter);
   layout->addWidget(logoLabel);
 
@@ -38,11 +42,6 @@ NavigationWindow::NavigationWindow(QWidget *parent)
     addButton(action);
   }
   layout->addStretch();
-
-  // TODO(mikko): Use a qss file.
-  setStyleSheet("QWidget#NavigationWindow { border: 1px solid #000000; "
-                "border-radius: 8px; "
-                "padding: 10px; }");
 }
 
 QString NavigationWindow::navActionToString(NavAction action) {
@@ -51,7 +50,7 @@ QString NavigationWindow::navActionToString(NavAction action) {
 
 void NavigationWindow::addButton(NavAction action) {
   QPushButton *button = new QPushButton(navActionToString(action));
-  button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+  button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(button, &QPushButton::clicked, this,
           [this, action]() { emit buttonPressed(action); });
   layout->addWidget(button);

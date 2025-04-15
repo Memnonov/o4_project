@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+#include <qboxlayout.h>
 #include <qcontainerfwd.h>
 #include <QMap>
 #include <QFrame>

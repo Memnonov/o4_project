@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <qwidget.h>
 #include "../o4_project/navigation_window.h"
+#include "../o4_project/container_window.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT;
@@ -18,7 +19,8 @@ class MainWindow : public QMainWindow {
   ~MainWindow() = default;
 
  private:
-  NavigationWindow navigationWindow;
+  NavigationWindow *navigationWindow;
+  ContainerWindow *containerWindow;
 
  private slots:
   void handleNavigation(NavigationWindow::NavAction action);

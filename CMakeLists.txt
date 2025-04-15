@@ -11,6 +11,7 @@ set(SOURCES
     src/container_model.cpp
     src/main_window.cpp
     src/navigation_window.cpp
+    src/container_window.cpp
 )
 
 set(HEADERS
@@ -19,6 +20,7 @@ set(HEADERS
     include/o4_project/container_model.h
     include/o4_project/main_window.h
     include/o4_project/navigation_window.h
+    include/o4_project/container_window.h
 )
 
 set(TEST_SOURCES
