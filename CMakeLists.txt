@@ -35,7 +35,7 @@ set(TEST_HEADERS
     include/o4_project/container_model.h
 )
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test Svg)
 
 add_executable( ${PROJECT_NAME}
   ${SOURCES}
@@ -61,6 +61,7 @@ target_link_libraries(run_tests
     Qt6::Core
     Qt6::Gui
     Qt6::Test
+    Qt6::Svg
 )
 
 target_include_directories(${PROJECT_NAME}

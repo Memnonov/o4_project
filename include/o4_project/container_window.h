@@ -19,6 +19,8 @@ class ContainerWindow : public QFrame {
  private:
   QVBoxLayout* layout;
   QScrollArea* scrollArea;
+  
+  void createDummyRows(QVBoxLayout *rows);
 };
 
 #endif // !CONTAINERS_WINDOW_H
