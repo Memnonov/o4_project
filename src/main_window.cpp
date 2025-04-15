@@ -3,6 +3,7 @@
 #include "../include/o4_project/main_window.h"
 #include "../include/o4_project/navigation_window.h"
 #include <QHBoxLayout>
+#include <QtLogging>
 #include <qboxlayout.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -10,7 +11,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   QHBoxLayout *layout = new QHBoxLayout(central);
   setCentralWidget(central);
 
-  layout->addWidget(new NavigationWindow(this));
+  connect(&navigationWindow, &NavigationWindow::buttonPressed, this,
+          &MainWindow::handleNavigation);
+
+  layout->addWidget(&navigationWindow);
   layout->addWidget(new QLabel("PLACEHOLDER 2", central));
   layout->addWidget(new QLabel("PLACEHOLDER 3", central));
+}
+
+void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
+  qDebug() << "Pressed navigation button: "
+           << NavigationWindow::navActionToString(action);
 }

@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <qwidget.h>
+#include "../o4_project/navigation_window.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT;
@@ -16,8 +17,11 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() = default;
 
- public slots:
  private:
+  NavigationWindow navigationWindow;
+
+ private slots:
+  void handleNavigation(NavigationWindow::NavAction action);
 };
 
 #endif  // !MAIN_WINDOW_H
