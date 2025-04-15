@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout->addWidget(new QLabel("PLACEHOLDER 3", central));
 }
 
+// A placeholder for actual behaviour.
 void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
   qDebug() << "Pressed navigation button: "
            << NavigationWindow::navActionToString(action);

@@ -11,10 +11,12 @@
 #include <QWidget>
 #include <qcontainerfwd.h>
 #include <QMap>
+#include <QFrame>
+#include <qlabel.h>
 #include <qmap.h>
 #include <qpushbutton.h>
 
-class NavigationWindow : public QWidget {
+class NavigationWindow : public QFrame {
   Q_OBJECT;
 
  public:
@@ -37,9 +39,9 @@ class NavigationWindow : public QWidget {
 
  private:
   QVBoxLayout *layout;
-  QVector<QString> buttons = {"APP LOGO",     "stretch",    "Browse items",
-                              "Search items", "Move items", "stretch",
-                              "Tutorial",     "About",      "Quit"};
+
+  QLabel *logoLabel;
+
   void addButton(NavAction action);
 
  signals:
