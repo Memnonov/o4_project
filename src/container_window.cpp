@@ -25,7 +25,6 @@ ContainerWindow::ContainerWindow(QWidget *parent)
   QWidget *rowsWidget = new QWidget;
   QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
   createDummyRows(rows);
-  
   // New container button.
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{"./assets/icons/plus.svg"};
@@ -54,6 +53,8 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
 
     QPushButton *button = new QPushButton{"Junk Button"};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(button, &QPushButton::clicked, this,
+            [this]() { emit containerSelected(); });
 
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);
