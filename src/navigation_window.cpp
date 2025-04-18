@@ -4,6 +4,7 @@
 #include <QSize>
 #include <QSizePolicy>
 #include <qboxlayout.h>
+#include <qbuttongroup.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlogging.h>
@@ -23,7 +24,7 @@ const QMap<NavigationWindow::NavAction, QString>
 
 NavigationWindow::NavigationWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      logoLabel(new QLabel) {
+      logoLabel(new QLabel), buttons{new QButtonGroup} {
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
   setObjectName("NavigationWindow");
   layout->setSpacing(24); // TODO(mikko): separate styling to qss
@@ -38,8 +39,9 @@ NavigationWindow::NavigationWindow(QWidget *parent)
   logoLabel->setAlignment(Qt::AlignCenter);
   layout->addWidget(logoLabel);
 
+  buttons->setExclusive(true);
   for (const auto &action : NavigationWindow::navActionMap.keys()) {
-    addButton(action);
+    createButton(action);
   }
   layout->addStretch();
 }
@@ -48,9 +50,14 @@ QString NavigationWindow::navActionToString(NavAction action) {
   return NavigationWindow::navActionMap.value(action, "");
 }
 
-void NavigationWindow::addButton(NavAction action) {
+void NavigationWindow::createButton(NavAction action) {
   QPushButton *button = new QPushButton(navActionToString(action));
+  buttons->addButton(button);
   button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  button->setCheckable(true);
+  if (action == NavigationWindow::NavAction::BrowseItems) {
+    button->setChecked(true);
+  }
   connect(button, &QPushButton::clicked, this,
           [this, action]() { emit buttonPressed(action); });
   layout->addWidget(button);

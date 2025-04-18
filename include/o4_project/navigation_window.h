@@ -10,6 +10,7 @@
 #include <QString>
 #include <QWidget>
 #include <qboxlayout.h>
+#include <qbuttongroup.h>
 #include <qcontainerfwd.h>
 #include <QMap>
 #include <QFrame>
@@ -40,10 +41,10 @@ class NavigationWindow : public QFrame {
 
  private:
   QVBoxLayout *layout;
-
   QLabel *logoLabel;
+  QButtonGroup *buttons;
 
-  void addButton(NavAction action);
+  void createButton(NavAction action);
 
  signals:
   void buttonPressed(NavAction action);
