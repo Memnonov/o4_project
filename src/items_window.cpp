@@ -1,7 +1,8 @@
-
 #include "../include/o4_project/items_window.h"
+#include <QButtonGroup>
 #include <QLabel>
 #include <QPushButton>
+#include <qabstractbutton.h>
 #include <qboxlayout.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
@@ -48,11 +49,29 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
+  
+  auto bottomRow = new QWidget;
+  auto bottomRowLayout = new QHBoxLayout;
+  bottomRow->setLayout(bottomRowLayout);
+  auto bottomAddButton = new QPushButton{"Add"};
+  bottomAddButton->setIcon(plusIcon);
+  bottomRowLayout->addWidget(bottomAddButton);
+  auto bottomDeleteButton = new QPushButton{"Delete"};
+  QIcon deleteIcon{"./assets/icons/trash.svg"};
+  if (deleteIcon.isNull()) {
+    qDebug() << "Couldn't load icon\n";
+  }
+  bottomDeleteButton->setIcon(deleteIcon);
+  bottomRowLayout->addWidget(bottomDeleteButton);
+  newButton->setMinimumHeight(40);
+  layout->addWidget(bottomRow);
 }
 
 void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
+  auto buttonGroup = new QButtonGroup;
+  buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
   QIcon deleteIcon{"./assets/icons/trash.svg"};
   if (deleteIcon.isNull()) {
@@ -60,13 +79,15 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   }
   for (unsigned int i = 0; i < 18; ++i) {
     QWidget *row = new QWidget;
-    row->setMinimumHeight(40); // TODO(mikko): fix magic numbers
+    row->setMinimumHeight(40); // TODO(mikko): fix magic numbers?
     QHBoxLayout *box = new QHBoxLayout;
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
 
     QPushButton *button = new QPushButton{"Junk Button"};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    button->setCheckable(true);
+    buttonGroup->addButton(button);
     connect(button, &QPushButton::clicked, this,
             [this]() { emit itemSelected(); });
 
