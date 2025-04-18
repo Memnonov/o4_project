@@ -1,26 +1,39 @@
-#include "../include/o4_project/container_window.h"
-#include <QIcon>
+
+#include "../include/o4_project/items_window.h"
+#include <QLabel>
 #include <QPushButton>
-#include <qapplication.h>
 #include <qboxlayout.h>
-#include <qicon.h>
-#include <qlabel.h>
-#include <qlayoutitem.h>
 #include <qlogging.h>
+#include <qmainwindow.h>
 #include <qnamespace.h>
 #include <qpushbutton.h>
-#include <qscrollarea.h>
 #include <qsizepolicy.h>
 #include <qwidget.h>
+#include <QToolBar>
 
-ContainerWindow::ContainerWindow(QWidget *parent)
+ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea{this}} {
-
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  QLabel *containersLabel = new QLabel{"<b>Containers</b>"};
-  containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  layout->addWidget(containersLabel);
+  
+  // Setting up the top row
+  auto topRow = new QToolBar;
+  // auto topRowLayout = new QHBoxLayout;
+  closeButton = new QPushButton;
+  auto closeIcon = QIcon{"./assets/icons/xmark.svg"};
+  if (closeIcon.isNull()) {
+    qDebug() << "Couldn't load close button icon";
+  }
+  closeButton->setIcon(closeIcon);
+  closeButton->setFlat(true);
+  connect(closeButton, &QPushButton::clicked, this, &ItemsWindow::closeButtonPushed);
+  QLabel *itemsLabel = new QLabel{"<b>Items</b>"};
+  itemsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  itemsLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+  topRow->addWidget(itemsLabel);
+  topRow->addWidget(closeButton);
+  // topRow->setLayout(topRowLayout);
+  layout->addWidget(topRow);
 
   QWidget *rowsWidget = new QWidget;
   QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
@@ -37,7 +50,7 @@ ContainerWindow::ContainerWindow(QWidget *parent)
   layout->addWidget(scrollArea);
 }
 
-void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
+void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
   // TODO(mikko): Fix asset paths.
@@ -55,7 +68,7 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
     QPushButton *button = new QPushButton{"Junk Button"};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(button, &QPushButton::clicked, this,
-            [this]() { emit containerSelected(); });
+            [this]() { emit itemSelected(); });
 
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);

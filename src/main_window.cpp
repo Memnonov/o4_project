@@ -1,12 +1,16 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
 #include "../include/o4_project/main_window.h"
+#include "../include/o4_project/items_window.h"
 #include "../include/o4_project/navigation_window.h"
 #include "container_window.h"
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QStackedWidget>
 #include <QtLogging>
+#include <qapplication.h>
 #include <qboxlayout.h>
+#include <qframe.h>
 #include <qlabel.h>
 #include <qlogging.h>
 #include <qpushbutton.h>
@@ -16,7 +20,8 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), navigationWindow{new NavigationWindow},
-      containerWindow{new ContainerWindow}, stack{new QStackedWidget} {
+      containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
+      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow} {
   QWidget *central = new QWidget(this);
   QHBoxLayout *layout = new QHBoxLayout(central);
   setCentralWidget(central);
@@ -25,24 +30,40 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::handleNavigation);
   connect(containerWindow, &ContainerWindow::containerSelected, this,
           &MainWindow::handleContainerClicked);
+  connect(itemsWindow, &ItemsWindow::closeButtonPushed, this,
+          &MainWindow::handleBackButton);
+
+  // Wrap inside a frame to pop!
+  leftWindowFrame = new QFrame;
+  rightWindowFrame = new QFrame;
+  for (auto frame : {leftWindowFrame, rightWindowFrame}) {
+    frame->setFrameShape(QFrame::StyledPanel);
+    frame->setFrameShadow(QFrame::Sunken);
+  }
+  auto leftWindowFrameLayout = new QVBoxLayout;
+  leftWindowFrameLayout->addWidget(leftStack);
+  leftWindowFrame->setLayout(leftWindowFrameLayout);
+  auto rightWindowFrameLayout = new QVBoxLayout;
+  rightWindowFrameLayout->addWidget(rightStack);
+  rightWindowFrame->setLayout(rightWindowFrameLayout);
 
   auto dummyA = new ContainerWindow;
   auto dummyB = new ContainerWindow;
   auto dummyC = new ContainerWindow;
-  auto dummyWidget = new QWidget;
-  auto dummyLayout = new QVBoxLayout;
-  dummyLayout->addWidget(new QLabel{"Dummy!"});
-  auto backButton = new QPushButton{"Back"};
-  connect(backButton, &QPushButton::clicked, this, &MainWindow::handleBackButton);
-  dummyLayout->addWidget(backButton);
-  dummyWidget->setLayout(dummyLayout);
-  openContainerWindow = dummyWidget;
+  // auto dummyWidget = new QWidget;
+  // auto dummyLayout = new QVBoxLayout;
+  // dummyLayout->addWidget(new QLabel{"Dummy!"});
+  // auto backButton = new QPushButton{"Back"};
+  // connect(backButton, &QPushButton::clicked, this,
+  // &MainWindow::handleBackButton); dummyLayout->addWidget(backButton);
+  // dummyWidget->setLayout(dummyLayout);
 
-  stack->addWidget(containerWindow);
-  stack->addWidget(dummyWidget);
+  leftStack->addWidget(containerWindow);
+  leftStack->addWidget(itemsWindow);
+  rightStack->addWidget(dummyC);
   layout->addWidget(navigationWindow);
-  layout->addWidget(stack);
-  layout->addWidget(dummyC);
+  layout->addWidget(leftWindowFrame);
+  layout->addWidget(rightWindowFrame);
 
   layout->setStretch(0, 1);
   layout->setStretch(1, 2);
@@ -53,16 +74,22 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
   qDebug() << "Pressed navigation button: "
            << NavigationWindow::navActionToString(action);
+  switch (action) {
+  case NavigationWindow::NavAction::Quit:
+    QApplication::quit();
+  default:
+    break;
+  }
 }
 
 // A placeholder too
 void MainWindow::handleContainerClicked() {
   // TODO: something
   qDebug() << "Clicked a Container!\n";
-  stack->setCurrentWidget(openContainerWindow);
+  leftStack->setCurrentWidget(itemsWindow);
 }
 
 void MainWindow::handleBackButton() {
   qDebug() << "Clicked back form a container\n";
-  stack->setCurrentWidget(containerWindow);
+  leftStack->setCurrentWidget(containerWindow);
 }

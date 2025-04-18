@@ -7,10 +7,13 @@
 #include <QObject>
 #include <QWidget>
 #include <QLabel>
+#include <qframe.h>
 #include <qstackedwidget.h>
 #include <qwidget.h>
 #include "../o4_project/navigation_window.h"
 #include "../o4_project/container_window.h"
+#include "../o4_project/items_window.h"
+#include "items_window.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT;
@@ -22,8 +25,11 @@ class MainWindow : public QMainWindow {
  private:
   NavigationWindow *navigationWindow;
   ContainerWindow *containerWindow;
-  QWidget *openContainerWindow;
-  QStackedWidget *stack;
+  ItemsWindow *itemsWindow;
+  QStackedWidget *leftStack;
+  QStackedWidget *rightStack;
+  QFrame* leftWindowFrame;
+  QFrame* rightWindowFrame;
 
  private slots:
   void handleNavigation(NavigationWindow::NavAction action);
