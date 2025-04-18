@@ -1,22 +1,25 @@
 #include "../include/o4_project/items_window.h"
 #include <QButtonGroup>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QToolBar>
 #include <qabstractbutton.h>
 #include <qboxlayout.h>
+#include <qlineedit.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
 #include <qnamespace.h>
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
+#include <qtoolbar.h>
 #include <qwidget.h>
-#include <QToolBar>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}} {
+      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr}, filterSortPanel{new QToolBar} {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  
+
   // Setting up the top row
   auto topRow = new QToolBar;
   // auto topRowLayout = new QHBoxLayout;
@@ -27,7 +30,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   }
   closeButton->setIcon(closeIcon);
   closeButton->setFlat(true);
-  connect(closeButton, &QPushButton::clicked, this, &ItemsWindow::closeButtonPushed);
+  connect(closeButton, &QPushButton::clicked, this,
+          &ItemsWindow::closeButtonPushed);
   QLabel *itemsLabel = new QLabel{"<b>Items</b>"};
   itemsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   itemsLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -36,6 +40,14 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   // topRow->setLayout(topRowLayout);
   layout->addWidget(topRow);
 
+  // Set up filterSortPanel
+  filterSortPanel->addWidget(new QLabel{"Filter: "});
+  auto filterInput = new QLineEdit;
+  filterSortPanel->addWidget(filterInput);
+  filterSortPanel->addWidget(new QPushButton{"Sort: A-Z"});
+  layout->addWidget(filterSortPanel);
+
+  // Set up item rows.
   QWidget *rowsWidget = new QWidget;
   QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
   createDummyRows(rows);
@@ -49,14 +61,15 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
-  
+
   auto bottomRow = new QWidget;
   auto bottomRowLayout = new QHBoxLayout;
   bottomRow->setLayout(bottomRowLayout);
   auto bottomAddButton = new QPushButton{"Add"};
   bottomAddButton->setIcon(plusIcon);
   bottomRowLayout->addWidget(bottomAddButton);
-  auto bottomDeleteButton = new QPushButton{"Delete"};
+  bottomDeleteButton = new QPushButton{"Delete"};
+  bottomDeleteButton->setEnabled(false);
   QIcon deleteIcon{"./assets/icons/trash.svg"};
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
@@ -88,8 +101,10 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
     buttonGroup->addButton(button);
-    connect(button, &QPushButton::clicked, this,
-            [this]() { emit itemSelected(); });
+    connect(button, &QPushButton::clicked, this, [this]() {
+      emit itemSelected();
+      bottomDeleteButton->setEnabled(true);
+    });
 
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);

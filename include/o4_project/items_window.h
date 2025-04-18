@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
+#include <qtoolbar.h>
 
 class ItemsWindow : public QFrame {
   Q_OBJECT;
@@ -19,8 +20,11 @@ class ItemsWindow : public QFrame {
 
  private:
   QVBoxLayout* layout;
+  QToolBar* filterSortPanel;
   QScrollArea* scrollArea;
   QPushButton* closeButton;
+  QPushButton* selectedItemButton;
+  QPushButton* bottomDeleteButton;
   
   void createDummyRows(QVBoxLayout *rows);
 
