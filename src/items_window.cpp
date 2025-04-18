@@ -17,7 +17,7 @@
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr}, filterSortPanel{new QToolBar} {
+      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr}, filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ} {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   // Setting up the top row
@@ -42,9 +42,15 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 
   // Set up filterSortPanel
   filterSortPanel->addWidget(new QLabel{"Filter: "});
-  auto filterInput = new QLineEdit;
+  auto filterInput = new QLineEdit{};
+  filterInput->setPlaceholderText("Write item name or #tag here");
   filterSortPanel->addWidget(filterInput);
-  filterSortPanel->addWidget(new QPushButton{"Sort: A-Z"});
+  auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
+  connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
+    sortButton->setText(cycleSortMode());
+    qDebug() << "Changed sort mode!";
+  });
+  filterSortPanel->addWidget(sortButton);
   layout->addWidget(filterSortPanel);
 
   // Set up item rows.
@@ -115,4 +121,11 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     box->addWidget(deleteButton);
     rows->addWidget(row);
   }
+}
+
+QString ItemsWindow::cycleSortMode() {
+  unsigned int currentMode = static_cast<unsigned int>(sortMode);
+  currentMode = (++currentMode) % sortModeToString.count();
+  sortMode = static_cast<ItemsWindow::SortMode>(currentMode);
+  return sortModeToString.value(sortMode, "");
 }

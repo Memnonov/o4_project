@@ -5,8 +5,9 @@
 
 #include <QFrame>
 #include <QObject>
-#include <qboxlayout.h>
 #include <QScrollArea>
+#include <qboxlayout.h>
+#include <qhash.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
 #include <qtoolbar.h>
@@ -19,18 +20,26 @@ class ItemsWindow : public QFrame {
   ~ItemsWindow() = default;
 
  private:
-  QVBoxLayout* layout;
-  QToolBar* filterSortPanel;
-  QScrollArea* scrollArea;
-  QPushButton* closeButton;
-  QPushButton* selectedItemButton;
-  QPushButton* bottomDeleteButton;
-  
-  void createDummyRows(QVBoxLayout *rows);
+  QVBoxLayout *layout;
+  QToolBar *filterSortPanel;
+  enum class SortMode { AtoZ, ZtoA, Quantity };
+  QHash<SortMode, QString> sortModeToString{
+      {ItemsWindow::SortMode::AtoZ, "A-Z"},
+      {ItemsWindow::SortMode::ZtoA, "Z-A"},
+      {ItemsWindow::SortMode::Quantity, "#"},
+  };
+  SortMode sortMode;
+  QScrollArea *scrollArea;
+  QPushButton *closeButton;
+  QPushButton *selectedItemButton;
+  QPushButton *bottomDeleteButton;
 
-  signals:
-    void itemSelected();
-    void closeButtonPushed();
+  void createDummyRows(QVBoxLayout *rows);
+  QString cycleSortMode();
+
+signals:
+  void itemSelected();
+  void closeButtonPushed();
 };
 
 #endif // !ITEMS_WINDOW_H
