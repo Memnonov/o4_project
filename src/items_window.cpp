@@ -92,9 +92,10 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   auto buttonGroup = new QButtonGroup;
   buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
-  QIcon deleteIcon{"./assets/icons/trash.svg"};
-  if (deleteIcon.isNull()) {
-    qDebug() << "Couldn't load icon\n";
+  QIcon plusIcon{"./assets/icons/plus-noborder.svg"};
+  QIcon minusIcon{"./assets/icons/minus.svg"};
+  if (plusIcon.isNull() || minusIcon.isNull()) {
+    qDebug() << "Couldn't load icon(s)\n";
   }
   for (unsigned int i = 0; i < 18; ++i) {
     QWidget *row = new QWidget;
@@ -112,13 +113,17 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
       bottomDeleteButton->setEnabled(true);
     });
 
-    QPushButton *deleteButton = new QPushButton;
-    deleteButton->setIcon(deleteIcon);
-    deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    QPushButton *plusButton = new QPushButton;
+    plusButton->setIcon(plusIcon);
+    plusButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    QPushButton *minusButton = new QPushButton;
+    minusButton->setIcon(minusIcon);
+    minusButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     row->setLayout(box);
     box->addWidget(button);
-    box->addWidget(deleteButton);
+    box->addWidget(plusButton);
+    box->addWidget(minusButton);
     rows->addWidget(row);
   }
 }
