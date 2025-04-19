@@ -89,7 +89,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
-  auto buttonGroup = new QButtonGroup;
+  auto buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
   QIcon plusIcon{"./assets/icons/plus-noborder.svg"};

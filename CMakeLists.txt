@@ -3,6 +3,7 @@ project(o4_project)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SOURCES
@@ -37,16 +38,25 @@ set(TEST_HEADERS
     include/o4_project/container_model.h
 )
 
+set (RESOURCE_FILES
+  resources.qrc
+)
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test Svg)
 
-add_executable( ${PROJECT_NAME}
-  ${SOURCES}
-  ${HEADERS}
+qt_add_resources(RESOURCE_RESOURCES 
+  ${RESOURCE_FILES}
 )
 
 add_executable(run_tests
     ${TEST_SOURCES}
     ${TEST_HEADERS}
+)
+
+qt_add_executable( ${PROJECT_NAME}
+  ${SOURCES}
+  ${HEADERS}
+  ${RESOURCE_RESOURCES}
 )
 
 

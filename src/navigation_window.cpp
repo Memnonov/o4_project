@@ -3,15 +3,7 @@
 #include "../include/o4_project/navigation_window.h"
 #include <QSize>
 #include <QSizePolicy>
-#include <qboxlayout.h>
-#include <qbuttongroup.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlogging.h>
-#include <qnamespace.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qtmetamacros.h>
+#include <QtLogging>
 
 const QMap<NavigationWindow::NavAction, QString>
     NavigationWindow::navActionMap = {
@@ -23,35 +15,37 @@ const QMap<NavigationWindow::NavAction, QString>
         {NavigationWindow::NavAction::Quit, "Quit"}};
 
 NavigationWindow::NavigationWindow(QWidget *parent)
-    : QFrame{parent}, layout{new QVBoxLayout{this}},
-      logoLabel(new QLabel), buttons{new QButtonGroup} {
-  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+    : QFrame{parent}, layout{new QVBoxLayout{this}}, logo(new QLabel),
+      buttons{new QButtonGroup{this}} {
   setObjectName("NavigationWindow");
-  layout->setSpacing(24); // TODO(mikko): separate styling to qss
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+  layout->setSpacing(24); // TODO(mikko): separate styling to qss?
 
-  logoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  QPixmap logoPixMap{"assets/ai_logo.png"};
-  if (logoPixMap.isNull()) {
-    qDebug() << "couldn't load image!\n";
-  }
-  logoLabel->setPixmap(logoPixMap.scaled(200, 200, Qt::KeepAspectRatio));
-  // logoLabel->setScaledContents(true);
-  logoLabel->setAlignment(Qt::AlignCenter);
-  layout->addWidget(logoLabel);
-
-  buttons->setExclusive(true);
-  for (const auto &action : NavigationWindow::navActionMap.keys()) {
-    createButton(action);
-  }
+  initLogo();
+  initButtons();
   layout->addStretch();
 }
 
-QString NavigationWindow::navActionToString(NavAction action) {
-  return NavigationWindow::navActionMap.value(action, "");
+void NavigationWindow::initLogo() {
+  logo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  QPixmap logoPixMap{":/logo/assets/ai_logo.png"};
+  if (logoPixMap.isNull()) {
+    qDebug() << "couldn't load image!\n";
+  }
+  logo->setPixmap(logoPixMap.scaled(200, 200, Qt::KeepAspectRatio));
+  logo->setAlignment(Qt::AlignCenter);
+  layout->addWidget(logo);
+}
+
+void NavigationWindow::initButtons() {
+  buttons->setExclusive(true);
+  for (const auto &key : NavigationWindow::navActionMap.keys()) {
+    createButton(key);
+  }
 }
 
 void NavigationWindow::createButton(NavAction action) {
-  QPushButton *button = new QPushButton(navActionToString(action));
+  auto button = new QPushButton(navActionToString(action));
   buttons->addButton(button);
   button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   button->setCheckable(true);
@@ -61,4 +55,9 @@ void NavigationWindow::createButton(NavAction action) {
   connect(button, &QPushButton::clicked, this,
           [this, action]() { emit buttonPressed(action); });
   layout->addWidget(button);
+}
+
+
+QString NavigationWindow::navActionToString(NavAction action) {
+  return NavigationWindow::navActionMap.value(action, "");
 }
