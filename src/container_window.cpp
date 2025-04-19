@@ -15,39 +15,49 @@
 
 ContainerWindow::ContainerWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}} {
+      scrollArea{new QScrollArea{this}}, newContainerButton(new QPushButton{this}) {
 
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  QLabel *containersLabel = new QLabel{"<b>Containers</b>"};
-  containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  layout->addWidget(containersLabel);
-
-  QWidget *rowsWidget = new QWidget;
+  initLabel();
+  
+  QWidget *rowsWidget = new QWidget{this};
   QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
   createDummyRows(rows);
-  // New container button.
-  QPushButton *newButton = new QPushButton{"Add New"};
-  QIcon plusIcon{":/icons/plus.svg"};
-  newButton->setIcon(plusIcon);
-  newButton->setMinimumHeight(40);
-  rows->addWidget(newButton);
-
+  initNewContainerButton(rows);
+  
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
+}
+
+void ContainerWindow::initLabel() {
+  QLabel *containersLabel = new QLabel{"<b>Containers</b>"};
+  containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+  layout->addWidget(containersLabel);
+}
+
+void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {
+  newContainerButton->setText("Add new");
+  QIcon plusIcon{":/icons/plus.svg"};
+  newContainerButton->setIcon(plusIcon);
+  newContainerButton->setMinimumHeight(40);
+  rows->addWidget(newContainerButton);
 }
 
 void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
   // TODO(mikko): Fix asset paths.
-  QIcon deleteIcon{":/icons/trash.svg"};
+  const QIcon deleteIcon{":/icons/trash.svg"};
+  static constexpr unsigned int rowHeight = 40;
+  
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
   }
+
   for (unsigned int i = 0; i < 18; ++i) {
     QWidget *row = new QWidget;
-    row->setMinimumHeight(40); // TODO(mikko): fix magic numbers
+    row->setMinimumHeight(rowHeight); // TODO(mikko): fix magic numbers
     QHBoxLayout *box = new QHBoxLayout;
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);

@@ -7,6 +7,7 @@
 #include <QObject>
 #include <qboxlayout.h>
 #include <QScrollArea>
+#include <qpushbutton.h>
 #include <qscrollarea.h>
 
 class ContainerWindow : public QFrame {
@@ -19,7 +20,10 @@ class ContainerWindow : public QFrame {
  private:
   QVBoxLayout* layout;
   QScrollArea* scrollArea;
+  QPushButton* newContainerButton;
   
+  void initLabel();
+  void initNewContainerButton(QVBoxLayout *rows);
   void createDummyRows(QVBoxLayout *rows);
 
   signals:
