@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="/logo">
+    <file>ai_logo.png</file>
+  </qresource>
+  <qresource prefix="">
+    <file>icons/plus.svg</file>
+    <file>icons/minus.svg</file>
+    <file>icons/trash.svg</file>
+    <file>icons/xmark.svg</file>
+    <file>icons/xmark-square.svg</file>
+    <file>icons/plus-noborder.svg</file>
+  </qresource>
+</RCC>

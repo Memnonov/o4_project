@@ -39,7 +39,7 @@ set(TEST_HEADERS
 )
 
 set (RESOURCE_FILES
-  resources.qrc
+  assets/resources.qrc
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui Test Svg)

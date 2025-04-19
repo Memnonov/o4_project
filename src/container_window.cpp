@@ -27,7 +27,7 @@ ContainerWindow::ContainerWindow(QWidget *parent)
   createDummyRows(rows);
   // New container button.
   QPushButton *newButton = new QPushButton{"Add New"};
-  QIcon plusIcon{"./assets/icons/plus.svg"};
+  QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
   newButton->setMinimumHeight(40);
   rows->addWidget(newButton);
@@ -41,7 +41,7 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
   // TODO(mikko): Fix asset paths.
-  QIcon deleteIcon{"./assets/icons/trash.svg"};
+  QIcon deleteIcon{":/icons/trash.svg"};
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
   }

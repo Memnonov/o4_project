@@ -28,7 +28,7 @@ NavigationWindow::NavigationWindow(QWidget *parent)
 
 void NavigationWindow::initLogo() {
   logo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  QPixmap logoPixMap{":/logo/assets/ai_logo.png"};
+  QPixmap logoPixMap{":/logo/ai_logo.png"};
   if (logoPixMap.isNull()) {
     qDebug() << "couldn't load image!\n";
   }

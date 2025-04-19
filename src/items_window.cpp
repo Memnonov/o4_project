@@ -24,7 +24,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   auto topRow = new QToolBar;
   // auto topRowLayout = new QHBoxLayout;
   closeButton = new QPushButton;
-  auto closeIcon = QIcon{"./assets/icons/xmark.svg"};
+  auto closeIcon = QIcon{":/icons/xmark.svg"};
   if (closeIcon.isNull()) {
     qDebug() << "Couldn't load close button icon";
   }
@@ -59,7 +59,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   createDummyRows(rows);
   // New container button.
   QPushButton *newButton = new QPushButton{"Add New"};
-  QIcon plusIcon{"./assets/icons/plus.svg"};
+  QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
   newButton->setMinimumHeight(40);
   rows->addWidget(newButton);
@@ -76,7 +76,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   bottomRowLayout->addWidget(bottomAddButton);
   bottomDeleteButton = new QPushButton{"Delete"};
   bottomDeleteButton->setEnabled(false);
-  QIcon deleteIcon{"./assets/icons/trash.svg"};
+  QIcon deleteIcon{":/icons/trash.svg"};
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
   }
@@ -92,8 +92,8 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   auto buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
-  QIcon plusIcon{"./assets/icons/plus-noborder.svg"};
-  QIcon minusIcon{"./assets/icons/minus.svg"};
+  QIcon plusIcon{":/icons/plus-noborder.svg"};
+  QIcon minusIcon{":/icons/minus.svg"};
   if (plusIcon.isNull() || minusIcon.isNull()) {
     qDebug() << "Couldn't load icon(s)\n";
   }
