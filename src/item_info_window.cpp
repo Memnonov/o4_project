@@ -17,20 +17,33 @@ void ItemInfoWindow::initViewFields() {
   auto viewFormLayout = new QFormLayout;
 
   
-  auto name = new QLabel{itemName};
-  auto quantity = new QLabel{"itemQuantity"};
-  auto tags = new QLabel{QStringList::fromVector(itemTags).join(", ")};
+  viewNameLabel = new QLabel;
+  viewQuantityLabel = new QLabel;
+  viewTagsLabel = new QLabel;
   auto descriptionScrollArea = new QScrollArea;
-  auto description = new QLabel{itemDescription};
-  description->setWordWrap(true);
-  descriptionScrollArea->setWidget(description);
+  viewDescriptionLabel = new QLabel;
+  viewDescriptionLabel->setWordWrap(true);
+  descriptionScrollArea->setWidget(viewDescriptionLabel);
   descriptionScrollArea->setWidgetResizable(true);
-  viewFormLayout->addRow("Name: ", name);
-  viewFormLayout->addRow("Quantity: ", quantity);
-  viewFormLayout->addRow("Tags:", tags);
+  viewFormLayout->addRow("Name: ", viewNameLabel);
+  viewFormLayout->addRow("Quantity: ", viewQuantityLabel);
+  viewFormLayout->addRow("Tags:", viewTagsLabel);
 
   viewBox->addLayout(viewFormLayout);
   viewBox->addWidget(new QLabel{"Description:"});
   viewBox->addWidget(descriptionScrollArea);
   layout->addWidget(viewFields);
+  updateItem(&dummyItem);  // TODO: Don't use the dummy!
+}
+
+void ItemInfoWindow::updateItem(Item *selectedItem) {
+  this->item = selectedItem;
+  if (!item) {
+    // TODO: Handle nullptr
+    return;
+  }
+  viewNameLabel->setText(item->name);
+  viewQuantityLabel->setText(QString::number(item->quantity));
+  viewTagsLabel->setText(QStringList::fromVector(item->tags).join(", "));
+  viewDescriptionLabel->setText(item->description);
 }

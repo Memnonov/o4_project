@@ -11,6 +11,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QString>
+#include "item.h"
+
 class ItemInfoWindow : public QFrame {
   Q_OBJECT;
 
@@ -27,13 +29,24 @@ class ItemInfoWindow : public QFrame {
     Coolness +666, Rad +420, Other stuff + a lot too!
   )"};
   
+  // TODO: Clean this up when actually connecting to the data model?
+  Item dummyItem{"Dummy item", 666, "Item description", {"tag", "tag", "tag"}};
+
+  Item *item = nullptr;
   QVBoxLayout *layout;
   QWidget *viewFields;
   QWidget *editFields;
   QLabel *title;
   QPushButton *editButton;
+  QLabel *viewNameLabel;
+  QLabel *viewQuantityLabel;
+  QLabel *viewTagsLabel;
+  QLabel *viewDescriptionLabel;
 
   void initViewFields();
+
+ public slots:
+  void updateItem(Item *item);
 
  signals:
 };
