@@ -106,7 +106,7 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
 
-    QPushButton *button = new QPushButton{"Junk Button"};
+    QPushButton *button = new QPushButton{"Junk Item"};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
     buttonGroup->addButton(button);

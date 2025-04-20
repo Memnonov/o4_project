@@ -63,7 +63,7 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
 
-    QPushButton *button = new QPushButton{"Junk Button"};
+    QPushButton *button = new QPushButton{"Junk Container"};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(button, &QPushButton::clicked, this,
             [this]() { emit containerSelected(); });
