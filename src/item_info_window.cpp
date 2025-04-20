@@ -7,13 +7,25 @@
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
     : title{new QLabel}, layout{new QVBoxLayout{this}},
-      tip{new QLabel{"Select a container from the left to browse items."}} {
+      tip{new QLabel{"Select a container from the left to browse items."}},
+      topPanel{new QWidget}, editButton{new QPushButton} {
   layout->setAlignment(Qt::AlignTop);
+  
   title->setText(QString("<b>%1</b>").arg(itemName));
-  layout->addWidget(title);
-  layout->addWidget(tip);
+  topPanel->setLayout(new QHBoxLayout);
+  title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  editButton->setFlat(true);
+  editButton->setCheckable(true);
+  editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
+  
+  topPanel->layout()->addWidget(title);
+  topPanel->layout()->addWidget(editButton);
+  
+  layout->addWidget(topPanel);
+  
   tip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   initViewFields();
+  layout->addWidget(tip);
 }
 
 void ItemInfoWindow::initViewFields() {
@@ -57,6 +69,7 @@ void ItemInfoWindow::updateItem(Item *selectedItem) {
     viewDescriptionLabel->setText(item->description);
     viewFields->setVisible(true);
     tip->setVisible(false);
+    editButton->setVisible(true);
     return;
   }
   title->setText("<b>Item info</b>");
@@ -67,4 +80,5 @@ void ItemInfoWindow::updateItem(Item *selectedItem) {
   viewDescriptionLabel->setText("null");
   viewFields->setVisible(false);
   tip->setVisible(true);
+  editButton->setVisible(false);
 }

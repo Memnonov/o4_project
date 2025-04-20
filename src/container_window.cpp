@@ -35,6 +35,7 @@ void ContainerWindow::initLabel() {
   QLabel *containersLabel = new QLabel{"<b>Containers</b>"};
   containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   layout->addWidget(containersLabel);
+  layout->addSpacing(20);
 }
 
 void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {

@@ -9,5 +9,6 @@
     <file>icons/xmark.svg</file>
     <file>icons/xmark-square.svg</file>
     <file>icons/plus-noborder.svg</file>
+    <file>icons/edit-pencil.svg</file>
   </qresource>
 </RCC>
