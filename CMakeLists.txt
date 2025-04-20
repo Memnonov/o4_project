@@ -14,6 +14,7 @@ set(SOURCES
     src/navigation_window.cpp
     src/container_window.cpp
     src/items_window.cpp
+    src/item_info_window.cpp
 )
 
 set(HEADERS
@@ -24,6 +25,7 @@ set(HEADERS
     include/o4_project/navigation_window.h
     include/o4_project/container_window.h
     include/o4_project/items_window.h
+    include/o4_project/item_info_window.h
 )
 
 set(TEST_SOURCES

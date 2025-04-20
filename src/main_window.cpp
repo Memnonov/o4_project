@@ -4,6 +4,7 @@
 #include "../include/o4_project/items_window.h"
 #include "../include/o4_project/navigation_window.h"
 #include "container_window.h"
+#include "item_info_window.h"
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QStackedWidget>
@@ -21,7 +22,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), navigationWindow{new NavigationWindow},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
-      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow} {
+      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow} {
   QWidget *central = new QWidget(this);
   QHBoxLayout *layout = new QHBoxLayout(central);
   setCentralWidget(central);
@@ -60,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   leftStack->addWidget(containerWindow);
   leftStack->addWidget(itemsWindow);
-  rightStack->addWidget(dummyC);
+  rightStack->addWidget(infoWindow);
   layout->addWidget(navigationWindow);
   layout->addWidget(leftWindowFrame);
   layout->addWidget(rightWindowFrame);

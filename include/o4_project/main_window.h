@@ -13,6 +13,7 @@
 #include "../o4_project/navigation_window.h"
 #include "../o4_project/container_window.h"
 #include "../o4_project/items_window.h"
+#include "../o4_project/item_info_window.h"
 #include "items_window.h"
 
 class MainWindow : public QMainWindow {
@@ -26,6 +27,7 @@ class MainWindow : public QMainWindow {
   NavigationWindow *navigationWindow;
   ContainerWindow *containerWindow;
   ItemsWindow *itemsWindow;
+  ItemInfoWindow *infoWindow;
   QStackedWidget *leftStack;
   QStackedWidget *rightStack;
   QFrame* leftWindowFrame;

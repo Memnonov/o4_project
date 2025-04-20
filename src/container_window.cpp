@@ -15,16 +15,17 @@
 
 ContainerWindow::ContainerWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}}, newContainerButton(new QPushButton{this}) {
+      scrollArea{new QScrollArea{this}},
+      newContainerButton(new QPushButton{this}) {
 
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initLabel();
-  
+
   QWidget *rowsWidget = new QWidget{this};
   QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
   createDummyRows(rows);
   initNewContainerButton(rows);
-  
+
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
@@ -50,7 +51,7 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
   // TODO(mikko): Fix asset paths.
   const QIcon deleteIcon{":/icons/trash.svg"};
   static constexpr unsigned int rowHeight = 40;
-  
+
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
   }
