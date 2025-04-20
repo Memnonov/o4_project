@@ -21,7 +21,7 @@ class ItemInfoWindow : public QFrame {
  private:
   QString itemName = "Dummy Item";
   unsigned int itemQuantity = 666;
-  QVector<QString> itemTags = {"cool", "beans"};
+  QVector<QString> itemTags = {"cool", "beans", "my man"};
   QString itemDescription = {"This here is my item. Consider it superior to your item."};
   
   QVBoxLayout *layout;
@@ -29,6 +29,8 @@ class ItemInfoWindow : public QFrame {
   QWidget *editFields;
   QLabel *title;
   QPushButton *editButton;
+
+  void initViewFields();
 
  signals:
 };
