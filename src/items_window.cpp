@@ -12,6 +12,7 @@
 #include <qnamespace.h>
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
+#include <qtmetamacros.h>
 #include <qtoolbar.h>
 #include <qwidget.h>
 
@@ -90,7 +91,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
-  auto buttonGroup = new QButtonGroup{this};
+  buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
   QIcon plusIcon{":/icons/plus-noborder.svg"};
@@ -127,6 +128,18 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     box->addWidget(minusButton);
     rows->addWidget(row);
   }
+}
+
+// Kinda hacky!?
+void ItemsWindow::closeButtonPushed() {
+  buttonGroup->setExclusive(false);
+  auto checked = buttonGroup->checkedButton();
+  if (checked) {
+    qDebug() << "Should have unchecked a button?";
+    checked->setChecked(false);
+  }
+  buttonGroup->setExclusive(true);
+  emit itemsWindowClosed();
 }
 
 QString ItemsWindow::cycleSortMode() {

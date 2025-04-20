@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::handleNavigation);
   connect(containerWindow, &ContainerWindow::containerSelected, this,
           &MainWindow::handleContainerClicked);
-  connect(itemsWindow, &ItemsWindow::closeButtonPushed, this,
+  connect(itemsWindow, &ItemsWindow::itemsWindowClosed, this,
           &MainWindow::handleBackButton);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::updateItem);
@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
   leftStack->addWidget(containerWindow);
   leftStack->addWidget(itemsWindow);
   rightStack->addWidget(infoWindow);
+
   layout->addWidget(navigationWindow);
   layout->addWidget(leftWindowFrame);
   layout->addWidget(rightWindowFrame);
@@ -96,4 +97,5 @@ void MainWindow::handleContainerClicked() {
 void MainWindow::handleBackButton() {
   qDebug() << "Clicked back form a container\n";
   leftStack->setCurrentWidget(containerWindow);
+  infoWindow->updateItem();
 }

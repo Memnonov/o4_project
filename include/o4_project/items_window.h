@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QScrollArea>
 #include <qboxlayout.h>
+#include <qbuttongroup.h>
 #include <qhash.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
@@ -16,13 +17,23 @@
 class ItemsWindow : public QFrame {
   Q_OBJECT;
 
- public:
+public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
 
- private:
+private:
   // TODO: Get rid of dummy.
-  Item dummyItem{"Dummy item", 666, "Item description", {"tag", "tag", "tag"}};
+  Item dummyItem{
+      "Dummy item",
+      666,
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+      "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
+      "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
+      "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
+      "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
+      "occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
+      "mollit anim id est laborum.",
+      {"tag", "tag", "tag"}};
 
   QVBoxLayout *layout;
   QToolBar *filterSortPanel;
@@ -32,6 +43,7 @@ class ItemsWindow : public QFrame {
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
+  QButtonGroup *buttonGroup;
   SortMode sortMode;
   QScrollArea *scrollArea;
   QPushButton *closeButton;
@@ -41,9 +53,11 @@ class ItemsWindow : public QFrame {
   void createDummyRows(QVBoxLayout *rows);
   QString cycleSortMode();
 
+  void closeButtonPushed();
+
 signals:
   void itemSelected(Item *item);
-  void closeButtonPushed();
+  void itemsWindowClosed();
 };
 
 #endif // !ITEMS_WINDOW_H

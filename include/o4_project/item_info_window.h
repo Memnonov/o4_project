@@ -3,6 +3,7 @@
 #ifndef ITEM_INFO_WINDOW_H
 #define ITEM_INFO_WINDOW_H
 
+#include <QStackedWidget>
 #include <QFormLayout>
 #include <QFrame>
 #include <QObject>
@@ -31,6 +32,7 @@ class ItemInfoWindow : public QFrame {
   
   // TODO: Clean this up when actually connecting to the data model?
   Item *item = nullptr;
+  QLabel *tip;
   QVBoxLayout *layout;
   QWidget *viewFields;
   QWidget *editFields;
