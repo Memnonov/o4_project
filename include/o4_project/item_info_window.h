@@ -30,8 +30,6 @@ class ItemInfoWindow : public QFrame {
   )"};
   
   // TODO: Clean this up when actually connecting to the data model?
-  Item dummyItem{"Dummy item", 666, "Item description", {"tag", "tag", "tag"}};
-
   Item *item = nullptr;
   QVBoxLayout *layout;
   QWidget *viewFields;
@@ -46,7 +44,7 @@ class ItemInfoWindow : public QFrame {
   void initViewFields();
 
  public slots:
-  void updateItem(Item *item);
+  void updateItem(Item *item = nullptr);
 
  signals:
 };

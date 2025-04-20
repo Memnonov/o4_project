@@ -16,7 +16,6 @@ void ItemInfoWindow::initViewFields() {
   auto viewBox = new QVBoxLayout{viewFields};
   auto viewFormLayout = new QFormLayout;
 
-  
   viewNameLabel = new QLabel;
   viewQuantityLabel = new QLabel;
   viewTagsLabel = new QLabel;
@@ -33,17 +32,20 @@ void ItemInfoWindow::initViewFields() {
   viewBox->addWidget(new QLabel{"Description:"});
   viewBox->addWidget(descriptionScrollArea);
   layout->addWidget(viewFields);
-  updateItem(&dummyItem);  // TODO: Don't use the dummy!
+  updateItem(); // TODO: Don't use the dummy!
 }
 
 void ItemInfoWindow::updateItem(Item *selectedItem) {
   this->item = selectedItem;
-  if (!item) {
-    // TODO: Handle nullptr
+  if (item) {
+    viewNameLabel->setText(item->name);
+    viewQuantityLabel->setText(QString::number(item->quantity));
+    viewTagsLabel->setText(QStringList::fromVector(item->tags).join(", "));
+    viewDescriptionLabel->setText(item->description);
     return;
   }
-  viewNameLabel->setText(item->name);
-  viewQuantityLabel->setText(QString::number(item->quantity));
-  viewTagsLabel->setText(QStringList::fromVector(item->tags).join(", "));
-  viewDescriptionLabel->setText(item->description);
+  viewNameLabel->setText("null");
+  viewQuantityLabel->setText("null");
+  viewTagsLabel->setText("null");
+  viewDescriptionLabel->setText("null");
 }

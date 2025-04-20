@@ -22,7 +22,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), navigationWindow{new NavigationWindow},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
-      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow} {
+      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
+      infoWindow{new ItemInfoWindow} {
   QWidget *central = new QWidget(this);
   QHBoxLayout *layout = new QHBoxLayout(central);
   setCentralWidget(central);
@@ -33,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::handleContainerClicked);
   connect(itemsWindow, &ItemsWindow::closeButtonPushed, this,
           &MainWindow::handleBackButton);
+  connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
+          &ItemInfoWindow::updateItem);
 
   // Wrap inside a frame to pop!
   leftWindowFrame = new QFrame;

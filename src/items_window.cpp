@@ -17,7 +17,8 @@
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr}, filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ} {
+      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr},
+      filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ} {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   // Setting up the top row
@@ -109,7 +110,7 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     button->setCheckable(true);
     buttonGroup->addButton(button);
     connect(button, &QPushButton::clicked, this, [this]() {
-      emit itemSelected();
+      emit itemSelected(&dummyItem);
       bottomDeleteButton->setEnabled(true);
     });
 

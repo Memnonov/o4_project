@@ -3,6 +3,7 @@
 #ifndef ITEMS_WINDOW_H
 #define ITEMS_WINDOW_H
 
+#include "item.h"
 #include <QFrame>
 #include <QObject>
 #include <QScrollArea>
@@ -20,6 +21,9 @@ class ItemsWindow : public QFrame {
   ~ItemsWindow() = default;
 
  private:
+  // TODO: Get rid of dummy.
+  Item dummyItem{"Dummy item", 666, "Item description", {"tag", "tag", "tag"}};
+
   QVBoxLayout *layout;
   QToolBar *filterSortPanel;
   enum class SortMode { AtoZ, ZtoA, Quantity };
@@ -38,7 +42,7 @@ class ItemsWindow : public QFrame {
   QString cycleSortMode();
 
 signals:
-  void itemSelected();
+  void itemSelected(Item *item);
   void closeButtonPushed();
 };
 
