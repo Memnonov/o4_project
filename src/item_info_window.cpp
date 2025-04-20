@@ -25,7 +25,6 @@ void ItemInfoWindow::initViewFields() {
   description->setWordWrap(true);
   descriptionScrollArea->setWidget(description);
   descriptionScrollArea->setWidgetResizable(true);
-  // descriptionScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
   viewFormLayout->addRow("Name: ", name);
   viewFormLayout->addRow("Quantity: ", quantity);
   viewFormLayout->addRow("Tags:", tags);

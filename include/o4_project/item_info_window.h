@@ -22,7 +22,10 @@ class ItemInfoWindow : public QFrame {
   QString itemName = "Dummy Item";
   unsigned int itemQuantity = 666;
   QVector<QString> itemTags = {"cool", "beans", "my man"};
-  QString itemDescription = {"This here is my item. Consider it superior to your item."};
+  QString itemDescription = {R"(
+    This here is my item. Consider it superior to your item.
+    Coolness +666, Rad +420, Other stuff + a lot too!
+  )"};
   
   QVBoxLayout *layout;
   QWidget *viewFields;
