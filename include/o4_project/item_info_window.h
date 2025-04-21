@@ -12,6 +12,9 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QTextEdit>
+#include <QLineEdit>
+#include <QSpinBox>
 #include <QString>
 #include "item.h"
 
@@ -32,6 +35,7 @@ class ItemInfoWindow : public QFrame {
   )"};
   
   // TODO: Clean this up when actually connecting to the data model?
+  bool editing = false;
   Item *item = nullptr;
   QLabel *tip;
   QWidget *topPanel;
@@ -41,11 +45,18 @@ class ItemInfoWindow : public QFrame {
   QLabel *title;
   QPushButton *editButton;
   QLabel *viewNameLabel;
+  QLineEdit *editNameLabel;
   QLabel *viewQuantityLabel;
+  QSpinBox *editQuantityBox;
   QLabel *viewTagsLabel;
+  QLineEdit *editTagsLabel;
   QLabel *viewDescriptionLabel;
+  QTextEdit *editDescriptionLabel;
 
   void initViewFields();
+  void initEditFields();
+  void initEditButton();
+  void toggleEditing();
 
  public slots:
   void updateItem(Item *item = nullptr);
