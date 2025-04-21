@@ -24,12 +24,12 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
   topPanel->layout()->addWidget(editButton);
 
   layout->addWidget(topPanel);
-
   tip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  layout->addWidget(tip);
+  
   initViewFields();
   initEditFields();
   updateItem();
-  layout->addWidget(tip);
 }
 
 void ItemInfoWindow::initViewFields() {
@@ -108,13 +108,13 @@ void ItemInfoWindow::initEditButton() {
 }
 
 void ItemInfoWindow::toggleEditing() {
-  // TODO: Implement?
   qDebug() << "Toggled editing";
   editing = !editing;
   editFields->setVisible(editing);
   viewFields->setVisible(!editing);
 }
 
+// TODO: chop this up.
 void ItemInfoWindow::updateItem(Item *selectedItem) {
   this->item = selectedItem;
   if (item) {
@@ -143,9 +143,10 @@ void ItemInfoWindow::updateItem(Item *selectedItem) {
     
     return;
   }
+  
   title->setText("<b>Item info</b>");
   title->setAlignment(Qt::AlignVCenter);
-  
+  // These below are mostly for debugging use. You shouldn't see nulls in the app.
   for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel, viewDescriptionLabel}) {
     label->setText("null");
   }
@@ -154,7 +155,6 @@ void ItemInfoWindow::updateItem(Item *selectedItem) {
   }
   editDescriptionLabel->setText("null");
   editQuantityBox->setValue(0);
-  
   viewNameLabel->setText("null");
   viewQuantityLabel->setText("null");
   viewTagsLabel->setText("null");
