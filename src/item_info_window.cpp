@@ -2,24 +2,29 @@
 
 #include "../include/o4_project/item_info_window.h"
 #include <QLineEdit>
-#include <QStringList>
 #include <QSpinBox>
+#include <QStringList>
 #include <QTextEdit>
 #include <qlogging.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
 #include <qtextedit.h>
+#include <qwidget.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
-    : title{new QLabel}, layout{new QVBoxLayout{this}},
-      tip{new QLabel{"Select a container from the left to browse items."}},
-      topPanel{new QWidget}, editButton{new QPushButton} {
+    : title{new QLabel}, layout{new QVBoxLayout{this}}, tip{new QLabel{}},
+      topPanel{new QWidget}, editButton{new QPushButton},
+      viewFields{new QWidget}, viewNameLabel{new QLabel},
+      viewQuantityLabel{new QLabel}, viewTagsLabel{new QLabel},
+      viewDescriptionLabel{new QLabel}, editFields{new QWidget},
+      editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
+      editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
   layout->setAlignment(Qt::AlignTop);
-  
+
   tip->setAlignment(Qt::AlignCenter);
+  tip->setText("Select a container from the left to browse items.");
   tip->setWordWrap(true);
 
-  title->setText(QString("<b>%1</b>").arg(itemName));
   topPanel->setLayout(new QHBoxLayout);
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initEditButton();
@@ -29,22 +34,17 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
   layout->addWidget(topPanel);
   tip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   layout->addWidget(tip);
-  
+
   initViewFields();
   initEditFields();
   updateItem();
 }
 
 void ItemInfoWindow::initViewFields() {
-  viewFields = new QWidget;
   auto viewBox = new QVBoxLayout{viewFields};
   auto viewFormLayout = new QFormLayout;
+  auto descriptionScrollArea = makeDescriptionScrollArea();
 
-  viewNameLabel = new QLabel;
-  viewQuantityLabel = new QLabel;
-  viewTagsLabel = new QLabel;
-  auto descriptionScrollArea = new QScrollArea;
-  viewDescriptionLabel = new QLabel;
   viewDescriptionLabel->setWordWrap(true);
   viewDescriptionLabel->setSizePolicy(QSizePolicy::Preferred,
                                       QSizePolicy::Expanding);
@@ -54,6 +54,7 @@ void ItemInfoWindow::initViewFields() {
   descriptionScrollArea->setAlignment(Qt::AlignTop);
   descriptionScrollArea->setSizePolicy(QSizePolicy::Preferred,
                                        QSizePolicy::Expanding);
+
   viewFormLayout->addRow("Name: ", viewNameLabel);
   viewFormLayout->addRow("Quantity: ", viewQuantityLabel);
   viewFormLayout->addRow("Tags:", viewTagsLabel);
@@ -67,30 +68,24 @@ void ItemInfoWindow::initViewFields() {
 
 // Not very dry here...
 void ItemInfoWindow::initEditFields() {
-  editFields = new QWidget;
   auto editBox = new QVBoxLayout{editFields};
   auto editFormLayout = new QFormLayout;
+  auto descriptionScrollArea = makeDescriptionScrollArea();
 
-  editNameLabel = new QLineEdit;
   editNameLabel->setPlaceholderText("Item name");
   editNameLabel->setText(item ? item->name : "");
-  editQuantityBox = new QSpinBox;
+
   editQuantityBox->setMaximum(9999);
   editQuantityBox->setValue(item ? item->quantity : 0);
-  editTagsLabel = new QLineEdit;
+
   editTagsLabel->setPlaceholderText("Separate tags with #: #tag1 #tag2 #tag3");
-  auto descriptionScrollArea = new QScrollArea;
-  editDescriptionLabel = new QTextEdit;
+
   editDescriptionLabel->setPlaceholderText("Write item description here.");
   editDescriptionLabel->setLineWrapMode(QTextEdit::WidgetWidth);
   editDescriptionLabel->setSizePolicy(QSizePolicy::Preferred,
                                       QSizePolicy::Expanding);
   editDescriptionLabel->setAlignment(Qt::AlignTop);
   descriptionScrollArea->setWidget(editDescriptionLabel);
-  descriptionScrollArea->setWidgetResizable(true);
-  descriptionScrollArea->setAlignment(Qt::AlignTop);
-  descriptionScrollArea->setSizePolicy(QSizePolicy::Preferred,
-                                       QSizePolicy::Expanding);
   editFormLayout->addRow("Name: ", editNameLabel);
   editFormLayout->addRow("Quantity: ", editQuantityBox);
   editFormLayout->addRow("Tags:", editTagsLabel);
@@ -99,6 +94,7 @@ void ItemInfoWindow::initEditFields() {
   editBox->addSpacing(20);
   editBox->addWidget(new QLabel{"Description:"});
   editBox->addWidget(descriptionScrollArea);
+
   layout->addWidget(editFields);
 }
 
@@ -117,53 +113,69 @@ void ItemInfoWindow::toggleEditing() {
   viewFields->setVisible(!editing);
 }
 
-// TODO: chop this up.
 void ItemInfoWindow::updateItem(Item *selectedItem) {
   this->item = selectedItem;
-  if (item) {
-    title->setText(QString("<b>%1</b>").arg(item->name));
-    
-    QString name{item->name};
-    viewNameLabel->setText(name);
-    editNameLabel->setText(name);
-    
-    unsigned int quantity = item->quantity;
-    viewQuantityLabel->setText(QString::number(quantity));
-    editQuantityBox->setValue(quantity);
-    
-    QString tags{QStringList::fromVector(item->tags).join(", ")};
-    viewTagsLabel->setText(tags);
-    editTagsLabel->setText(tags);
-    
-    QString description = item->description;
-    viewDescriptionLabel->setText(description);
-    editDescriptionLabel->setText(description);
 
-    viewFields->setVisible(!editing);
-    editFields->setVisible(editing);
-    tip->setVisible(false);
-    editButton->setVisible(true);
-    
+  if (!item) {
+    title->setText("<b>Item info</b>");
+    title->setAlignment(Qt::AlignVCenter);
+    hideViews();
     return;
   }
-  
-  title->setText("<b>Item info</b>");
-  title->setAlignment(Qt::AlignVCenter);
-  // These below are mostly for debugging use. You shouldn't see nulls in the app.
-  for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel, viewDescriptionLabel}) {
-    label->setText("null");
-  }
-  for (auto lineEdit: {editNameLabel, editTagsLabel}) {
-    lineEdit->setText("null");
-  }
-  editDescriptionLabel->setText("null");
-  editQuantityBox->setValue(0);
-  viewNameLabel->setText("null");
-  viewQuantityLabel->setText("null");
-  viewTagsLabel->setText("null");
-  viewDescriptionLabel->setText("null");
+
+  title->setText(QString("<b>%1</b>").arg(item->name));
+
+  QString name{item->name};
+  viewNameLabel->setText(name);
+  editNameLabel->setText(name);
+
+  unsigned int quantity = item->quantity;
+  viewQuantityLabel->setText(QString::number(quantity));
+  editQuantityBox->setValue(quantity);
+
+  QString tags{QStringList::fromVector(item->tags).join(", ")};
+  viewTagsLabel->setText(tags);
+  editTagsLabel->setText(tags);
+
+  QString description = item->description;
+  viewDescriptionLabel->setText(description);
+  editDescriptionLabel->setText(description);
+  showViews();
+}
+
+void ItemInfoWindow::showViews() {
+  viewFields->setVisible(!editing);
+  editFields->setVisible(editing);
+  tip->setVisible(false);
+  editButton->setVisible(true);
+}
+
+void ItemInfoWindow::hideViews() {
   viewFields->setVisible(false);
   editFields->setVisible(false);
   tip->setVisible(true);
   editButton->setVisible(false);
+}
+
+// This is mostly for debugging use.
+// You shouldn't see nulls in the app.
+void ItemInfoWindow::setFieldsNull() {
+  for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel,
+                     viewDescriptionLabel}) {
+    label->setText("null");
+  }
+  for (auto lineEdit : {editNameLabel, editTagsLabel}) {
+    lineEdit->setText("null");
+  }
+  editQuantityBox->setValue(0);
+  editDescriptionLabel->setText("null");
+}
+
+QScrollArea *ItemInfoWindow::makeDescriptionScrollArea() {
+  auto scrollArea = new QScrollArea;
+  scrollArea->setWidgetResizable(true);
+  scrollArea->setAlignment(Qt::AlignTop);
+  scrollArea->setSizePolicy(QSizePolicy::Preferred,
+                                       QSizePolicy::Expanding);
+  return scrollArea;
 }

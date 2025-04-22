@@ -26,37 +26,38 @@ class ItemInfoWindow : public QFrame {
   ~ItemInfoWindow() = default;
 
  private:
-  QString itemName = "Dummy Item";
-  unsigned int itemQuantity = 666;
-  QVector<QString> itemTags = {"cool", "beans", "my man"};
-  QString itemDescription = {R"(
-    This here is my item. Consider it superior to your item.
-    Coolness +666, Rad +420, Other stuff + a lot too!
-  )"};
-  
-  // TODO: Clean this up when actually connecting to the data model?
+  // State
   bool editing = false;
   Item *item = nullptr;
+  
+  QLabel *title;
   QLabel *tip;
   QWidget *topPanel;
   QVBoxLayout *layout;
-  QWidget *viewFields;
-  QWidget *editFields;
-  QLabel *title;
   QPushButton *editButton;
+  
+  // View mode.
+  QWidget *viewFields;
   QLabel *viewNameLabel;
-  QLineEdit *editNameLabel;
   QLabel *viewQuantityLabel;
-  QSpinBox *editQuantityBox;
   QLabel *viewTagsLabel;
-  QLineEdit *editTagsLabel;
   QLabel *viewDescriptionLabel;
+  
+  // Edit mode
+  QWidget *editFields;
+  QLineEdit *editNameLabel;
+  QSpinBox *editQuantityBox;
+  QLineEdit *editTagsLabel;
   QTextEdit *editDescriptionLabel;
-
+  
   void initViewFields();
   void initEditFields();
   void initEditButton();
   void toggleEditing();
+  void showViews();
+  void hideViews();
+  void setFieldsNull();
+  QScrollArea* makeDescriptionScrollArea();
 
  public slots:
   void updateItem(Item *item = nullptr);
