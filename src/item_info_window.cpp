@@ -15,6 +15,9 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
       tip{new QLabel{"Select a container from the left to browse items."}},
       topPanel{new QWidget}, editButton{new QPushButton} {
   layout->setAlignment(Qt::AlignTop);
+  
+  tip->setAlignment(Qt::AlignCenter);
+  tip->setWordWrap(true);
 
   title->setText(QString("<b>%1</b>").arg(itemName));
   topPanel->setLayout(new QHBoxLayout);
