@@ -20,7 +20,8 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), navigationWindow{new NavigationWindow},
+    : QMainWindow(parent), mainStack{new QStackedWidget},
+      browseWindow(new QWidget), navigationWindow{new NavigationWindow},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
       infoWindow{new ItemInfoWindow} {
@@ -37,42 +38,34 @@ MainWindow::MainWindow(QWidget *parent)
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::updateItem);
 
-  // Wrap inside a frame to pop!
-  leftWindowFrame = new QFrame;
-  rightWindowFrame = new QFrame;
-  for (auto frame : {leftWindowFrame, rightWindowFrame}) {
-    frame->setFrameShape(QFrame::StyledPanel);
-    frame->setFrameShadow(QFrame::Sunken);
-  }
-  auto leftWindowFrameLayout = new QVBoxLayout;
-  leftWindowFrameLayout->addWidget(leftStack);
-  leftWindowFrame->setLayout(leftWindowFrameLayout);
-  auto rightWindowFrameLayout = new QVBoxLayout;
-  rightWindowFrameLayout->addWidget(rightStack);
-  rightWindowFrame->setLayout(rightWindowFrameLayout);
-
-  auto dummyA = new ContainerWindow;
-  auto dummyB = new ContainerWindow;
-  auto dummyC = new ContainerWindow;
-  // auto dummyWidget = new QWidget;
-  // auto dummyLayout = new QVBoxLayout;
-  // dummyLayout->addWidget(new QLabel{"Dummy!"});
-  // auto backButton = new QPushButton{"Back"};
-  // connect(backButton, &QPushButton::clicked, this,
-  // &MainWindow::handleBackButton); dummyLayout->addWidget(backButton);
-  // dummyWidget->setLayout(dummyLayout);
-
-  leftStack->addWidget(containerWindow);
+  leftStack->addWidget(wrapInFrame(containerWindow));
   leftStack->addWidget(itemsWindow);
   rightStack->addWidget(infoWindow);
-
+  auto browseLayout = new QHBoxLayout;
+  browseWindow->setLayout(browseLayout);
+  browseWindow->layout()->addWidget(leftStack);
+  browseWindow->layout()->addWidget(rightStack);
+  browseLayout->setStretch(0, 1);
+  browseLayout->setStretch(1, 1);
   layout->addWidget(navigationWindow);
-  layout->addWidget(leftWindowFrame);
-  layout->addWidget(rightWindowFrame);
+  layout->addWidget(wrapInFrame(browseWindow));
+  // layout->addWidget(leftWindowFrame);
+  // layout->addWidget(rightWindowFrame);
 
   layout->setStretch(0, 1);
-  layout->setStretch(1, 2);
-  layout->setStretch(2, 2);
+  layout->setStretch(1, 4);
+}
+
+QWidget *MainWindow::wrapInFrame(QWidget *inner) {
+  if (!inner) {
+    qWarning() << "wrapInframe was given a nullptr";
+    return nullptr;
+  }
+  auto frame = new QFrame;
+  frame->setFrameShape(QFrame::StyledPanel);
+  frame->setLayout(new QHBoxLayout);
+  frame->layout()->addWidget(inner);
+  return frame;
 }
 
 // A placeholder for actual behaviour.

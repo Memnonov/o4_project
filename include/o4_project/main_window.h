@@ -24,16 +24,22 @@ class MainWindow : public QMainWindow {
   ~MainWindow() = default;
 
  private:
+  QStackedWidget mainStack;
+  QWidget *browseWindow;
+  
   NavigationWindow *navigationWindow;
   ContainerWindow *containerWindow;
   ItemsWindow *itemsWindow;
   ItemInfoWindow *infoWindow;
+  
   QStackedWidget *leftStack;
   QStackedWidget *rightStack;
+  
   QFrame* leftWindowFrame;
   QFrame* rightWindowFrame;
 
  private slots:
+  QWidget *wrapInFrame(QWidget *inner);
   void handleNavigation(NavigationWindow::NavAction action);
   void handleContainerClicked();
   void handleBackButton();
