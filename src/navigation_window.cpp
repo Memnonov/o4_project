@@ -4,6 +4,7 @@
 #include <QSize>
 #include <QSizePolicy>
 #include <QtLogging>
+#include <qicon.h>
 
 const QMap<NavigationWindow::NavAction, QString>
     NavigationWindow::navActionMap = {
@@ -49,6 +50,7 @@ void NavigationWindow::createButton(NavAction action) {
   buttons->addButton(button);
   button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   button->setCheckable(true);
+  button->setIcon(getNavIcon(action));
   if (action == NavigationWindow::NavAction::BrowseItems) {
     button->setChecked(true);
   }
@@ -57,7 +59,32 @@ void NavigationWindow::createButton(NavAction action) {
   layout->addWidget(button);
 }
 
-
 QString NavigationWindow::navActionToString(NavAction action) {
   return NavigationWindow::navActionMap.value(action, "");
+}
+
+QIcon NavigationWindow::getNavIcon(NavAction action) {
+  using NavAction = NavigationWindow::NavAction;
+  switch (action) {
+  case NavAction::BrowseItems: {
+    return QIcon{":/icons/eye.svg"};
+  }
+  case NavAction::MoveItems: {
+    return QIcon{":/icons/arrow-separate.svg"};
+  }
+  case NavAction::SearchItems: {
+    return QIcon{":/icons/search.svg"};
+  }
+  case NavAction::Tutorial: {
+    return QIcon{":/icons/book.svg"};
+  }
+  case NavAction::About: {
+    return QIcon{":/icons/help-square.svg"};
+  }
+  case NavAction::Quit: {
+    return QIcon{":/icons/log-out.svg"};
+  }
+  default:
+    return QIcon();
+  }
 }

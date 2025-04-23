@@ -41,6 +41,7 @@ class NavigationWindow : public QFrame {
   void initButtons();
   void initLogo();
   void createButton(NavAction action);
+  QIcon getNavIcon(NavAction action);
 
  signals:
   void buttonPressed(NavAction action);
