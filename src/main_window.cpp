@@ -20,52 +20,23 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), mainStack{new QStackedWidget},
-      browseWindow(new QWidget), navigationWindow{new NavigationWindow},
+    : QMainWindow{parent}, mainStack{new QStackedWidget},
+      browseWindow{new BrowseWindow}, navigationWindow{new NavigationWindow},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
       infoWindow{new ItemInfoWindow} {
-  QWidget *central = new QWidget(this);
-  QHBoxLayout *layout = new QHBoxLayout(central);
+  auto *central = new QWidget(this);
+  auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);
 
   connect(navigationWindow, &NavigationWindow::buttonPressed, this,
           &MainWindow::handleNavigation);
-  connect(containerWindow, &ContainerWindow::containerSelected, this,
-          &MainWindow::handleContainerClicked);
-  connect(itemsWindow, &ItemsWindow::itemsWindowClosed, this,
-          &MainWindow::handleBackButton);
-  connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
-          &ItemInfoWindow::updateItem);
-
-  leftStack->addWidget(wrapInFrame(containerWindow));
-  leftStack->addWidget(itemsWindow);
-  rightStack->addWidget(infoWindow);
-  auto browseLayout = new QHBoxLayout;
-  browseWindow->setLayout(browseLayout);
-  browseWindow->layout()->addWidget(leftStack);
-  browseWindow->layout()->addWidget(rightStack);
-  browseLayout->setStretch(0, 1);
-  browseLayout->setStretch(1, 1);
+  
   layout->addWidget(navigationWindow);
-  layout->addWidget(wrapInFrame(browseWindow));
-  // layout->addWidget(leftWindowFrame);
-  // layout->addWidget(rightWindowFrame);
-
+  layout->addWidget(browseWindow);
+  
   layout->setStretch(0, 1);
   layout->setStretch(1, 4);
-}
-
-QWidget *MainWindow::wrapInFrame(QWidget *inner) {
-  if (!inner) {
-    qWarning() << "wrapInframe was given a nullptr";
-    return nullptr;
-  }
-  auto frame = new QFrame;
-  frame->setFrameShape(QFrame::StyledPanel);
-  frame->setLayout(new QHBoxLayout);
-  frame->layout()->addWidget(inner);
-  return frame;
 }
 
 // A placeholder for actual behaviour.
@@ -78,17 +49,4 @@ void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
   default:
     break;
   }
-}
-
-// A placeholder too
-void MainWindow::handleContainerClicked() {
-  // TODO: something
-  qDebug() << "Clicked a Container!\n";
-  leftStack->setCurrentWidget(itemsWindow);
-}
-
-void MainWindow::handleBackButton() {
-  qDebug() << "Clicked back form a container\n";
-  leftStack->setCurrentWidget(containerWindow);
-  infoWindow->updateItem();
 }

@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include <qapplication.h>
 #include <qboxlayout.h>
+#include <qframe.h>
 #include <qicon.h>
 #include <qlabel.h>
 #include <qlayoutitem.h>
@@ -17,7 +18,7 @@ ContainerWindow::ContainerWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea{this}},
       newContainerButton(new QPushButton{this}) {
-
+  setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initLabel();
 

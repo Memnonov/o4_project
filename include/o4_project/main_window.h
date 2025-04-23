@@ -14,6 +14,7 @@
 #include "../o4_project/container_window.h"
 #include "../o4_project/items_window.h"
 #include "../o4_project/item_info_window.h"
+#include "browse_window.h"
 #include "items_window.h"
 
 class MainWindow : public QMainWindow {
@@ -25,7 +26,7 @@ class MainWindow : public QMainWindow {
 
  private:
   QStackedWidget mainStack;
-  QWidget *browseWindow;
+  BrowseWindow *browseWindow;
   
   NavigationWindow *navigationWindow;
   ContainerWindow *containerWindow;
@@ -39,10 +40,7 @@ class MainWindow : public QMainWindow {
   QFrame* rightWindowFrame;
 
  private slots:
-  QWidget *wrapInFrame(QWidget *inner);
   void handleNavigation(NavigationWindow::NavAction action);
-  void handleContainerClicked();
-  void handleBackButton();
 };
 
 #endif  // !MAIN_WINDOW_H

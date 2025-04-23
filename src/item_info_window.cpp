@@ -5,6 +5,7 @@
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
+#include <qframe.h>
 #include <qlogging.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
@@ -20,6 +21,7 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
       editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
       editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
   layout->setAlignment(Qt::AlignTop);
+  setFrameShape(StyledPanel);
 
   tip->setAlignment(Qt::AlignCenter);
   tip->setText("Select a container from the left to browse items.");

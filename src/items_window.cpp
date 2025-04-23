@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <qabstractbutton.h>
 #include <qboxlayout.h>
+#include <qframe.h>
 #include <qlineedit.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
@@ -20,6 +21,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr},
       filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ} {
+  setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   // Setting up the top row
