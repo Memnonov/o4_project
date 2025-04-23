@@ -2,6 +2,6 @@
 
 SearchWindow::SearchWindow(QWidget *parent)
     : ModeFrame{parent}, placeholder(new QLabel{"Search window here!"}) {
-  layout->addWidget(placeholder);
   layout->setAlignment(Qt::AlignCenter);
+  layout->addWidget(placeholder);
 }
