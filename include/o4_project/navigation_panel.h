@@ -1,7 +1,7 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
-#ifndef NAVIGATION_WINDOW_H
-#define NAVIGATION_WINDOW_H
+#ifndef NAVIGATION_PANEL_H
+#define NAVIGATION_PANEL_H
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -13,7 +13,7 @@
 #include <QMap>
 #include <QFrame>
 
-class NavigationWindow : public QFrame {
+class NavigationPanel : public QFrame {
   Q_OBJECT;
 
  public:
@@ -29,8 +29,8 @@ class NavigationWindow : public QFrame {
   static const QMap<NavAction, QString> navActionMap;
   static QString navActionToString(NavAction action);
   
-  explicit NavigationWindow(QWidget *parent = nullptr);
-  ~NavigationWindow() = default;
+  explicit NavigationPanel(QWidget *parent = nullptr);
+  ~NavigationPanel() = default;
 
 
  private:
@@ -47,4 +47,4 @@ class NavigationWindow : public QFrame {
   void buttonPressed(NavAction action);
 };
 
-#endif  // !NAVIGATION_WINDOW_H
+#endif  // !NAVIGATION_PANEL_H

@@ -12,12 +12,15 @@ set(SOURCES
     src/container.cpp
     src/container_model.cpp
     src/main_window.cpp
-    src/navigation_window.cpp
+    src/navigation_panel.cpp
     src/container_window.cpp
     src/items_window.cpp
     src/item_info_window.cpp
     src/browse_window.cpp
     src/search_window.cpp
+    src/move_window.cpp
+    src/tutorial_window.cpp
+    src/about_window.cpp
 )
 
 set(HEADERS
@@ -25,13 +28,16 @@ set(HEADERS
     include/o4_project/container.h
     include/o4_project/container_model.h
     include/o4_project/main_window.h
-    include/o4_project/navigation_window.h
+    include/o4_project/navigation_panel.h
     include/o4_project/container_window.h
     include/o4_project/items_window.h
     include/o4_project/item_info_window.h
     include/o4_project/mode_frame.h
     include/o4_project/browse_window.h
     include/o4_project/search_window.h
+    include/o4_project/move_window.h
+    include/o4_project/tutorial_window.h
+    include/o4_project/about_window.h
 )
 
 set(TEST_SOURCES
