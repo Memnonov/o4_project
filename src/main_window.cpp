@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, mainStack{new QStackedWidget},
       aboutWindow{new AboutWindow}, tutorialWindow{new TutorialWindow},
       moveWindow{new MoveWindow}, browseWindow{new BrowseWindow},
-      navigationWindow{new NavigationWindow},
+      navigationPanel{new NavigationPanel},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
       infoWindow{new ItemInfoWindow}, searchWindow{new SearchWindow} {
@@ -28,9 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);
 
-  connect(navigationWindow, &NavigationWindow::buttonPressed, this,
+  connect(navigationPanel, &NavigationPanel::buttonPressed, this,
           &MainWindow::handleNavigation);
-  layout->addWidget(navigationWindow);
+  layout->addWidget(navigationPanel);
   initMainStack();
   layout->addWidget(mainStack);
 
@@ -47,10 +47,10 @@ void MainWindow::initMainStack() {
 }
 
 // A placeholder for actual behaviour.
-void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
-  using NavAction = NavigationWindow::NavAction;
+void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
+  using NavAction = NavigationPanel::NavAction;
   qDebug() << "Pressed navigation button: "
-           << NavigationWindow::navActionToString(action);
+           << NavigationPanel::navActionToString(action);
   switch (action) {
   case NavAction::BrowseItems:
     mainStack->setCurrentWidget(browseWindow);

@@ -1,21 +1,21 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
-#include "../include/o4_project/navigation_window.h"
+#include "../include/o4_project/navigation_panel.h"
 #include <QSize>
 #include <QSizePolicy>
 #include <QtLogging>
 #include <qicon.h>
 
-const QMap<NavigationWindow::NavAction, QString>
-    NavigationWindow::navActionMap = {
-        {NavigationWindow::NavAction::BrowseItems, "Browse Items"},
-        {NavigationWindow::NavAction::SearchItems, "Search Items"},
-        {NavigationWindow::NavAction::MoveItems, "Move Items"},
-        {NavigationWindow::NavAction::Tutorial, "Tutorial"},
-        {NavigationWindow::NavAction::About, "About"},
-        {NavigationWindow::NavAction::Quit, "Quit"}};
+const QMap<NavigationPanel::NavAction, QString>
+    NavigationPanel::navActionMap = {
+        {NavigationPanel::NavAction::BrowseItems, "Browse Items"},
+        {NavigationPanel::NavAction::SearchItems, "Search Items"},
+        {NavigationPanel::NavAction::MoveItems, "Move Items"},
+        {NavigationPanel::NavAction::Tutorial, "Tutorial"},
+        {NavigationPanel::NavAction::About, "About"},
+        {NavigationPanel::NavAction::Quit, "Quit"}};
 
-NavigationWindow::NavigationWindow(QWidget *parent)
+NavigationPanel::NavigationPanel(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, logo(new QLabel),
       buttons{new QButtonGroup{this}} {
   setObjectName("NavigationWindow");
@@ -27,7 +27,7 @@ NavigationWindow::NavigationWindow(QWidget *parent)
   layout->addStretch();
 }
 
-void NavigationWindow::initLogo() {
+void NavigationPanel::initLogo() {
   logo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   QPixmap logoPixMap{":/logo/ai_logo.png"};
   if (logoPixMap.isNull()) {
@@ -38,20 +38,20 @@ void NavigationWindow::initLogo() {
   layout->addWidget(logo);
 }
 
-void NavigationWindow::initButtons() {
+void NavigationPanel::initButtons() {
   buttons->setExclusive(true);
-  for (const auto &key : NavigationWindow::navActionMap.keys()) {
+  for (const auto &key : NavigationPanel::navActionMap.keys()) {
     createButton(key);
   }
 }
 
-void NavigationWindow::createButton(NavAction action) {
+void NavigationPanel::createButton(NavAction action) {
   auto button = new QPushButton(navActionToString(action));
   buttons->addButton(button);
   button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   button->setCheckable(true);
   button->setIcon(getNavIcon(action));
-  if (action == NavigationWindow::NavAction::BrowseItems) {
+  if (action == NavigationPanel::NavAction::BrowseItems) {
     button->setChecked(true);
   }
   connect(button, &QPushButton::clicked, this,
@@ -59,12 +59,12 @@ void NavigationWindow::createButton(NavAction action) {
   layout->addWidget(button);
 }
 
-QString NavigationWindow::navActionToString(NavAction action) {
-  return NavigationWindow::navActionMap.value(action, "");
+QString NavigationPanel::navActionToString(NavAction action) {
+  return NavigationPanel::navActionMap.value(action, "");
 }
 
-QIcon NavigationWindow::getNavIcon(NavAction action) {
-  using NavAction = NavigationWindow::NavAction;
+QIcon NavigationPanel::getNavIcon(NavAction action) {
+  using NavAction = NavigationPanel::NavAction;
   switch (action) {
   case NavAction::BrowseItems: {
     return QIcon{":/icons/eye.svg"};
