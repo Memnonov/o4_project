@@ -5,6 +5,7 @@
 #include "../include/o4_project/navigation_window.h"
 #include "container_window.h"
 #include "item_info_window.h"
+#include "search_window.h"
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QStackedWidget>
@@ -24,27 +25,36 @@ MainWindow::MainWindow(QWidget *parent)
       browseWindow{new BrowseWindow}, navigationWindow{new NavigationWindow},
       containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
-      infoWindow{new ItemInfoWindow} {
+      infoWindow{new ItemInfoWindow}, searchWindow{new SearchWindow} {
   auto *central = new QWidget(this);
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);
 
   connect(navigationWindow, &NavigationWindow::buttonPressed, this,
           &MainWindow::handleNavigation);
-  
+
+  mainStack->addWidget(browseWindow);
+  mainStack->addWidget(searchWindow);
   layout->addWidget(navigationWindow);
-  layout->addWidget(browseWindow);
-  
+  layout->addWidget(mainStack);
+
   layout->setStretch(0, 1);
   layout->setStretch(1, 4);
 }
 
 // A placeholder for actual behaviour.
 void MainWindow::handleNavigation(NavigationWindow::NavAction action) {
+  using NavAction = NavigationWindow::NavAction;
   qDebug() << "Pressed navigation button: "
            << NavigationWindow::navActionToString(action);
   switch (action) {
-  case NavigationWindow::NavAction::Quit:
+  case NavAction::BrowseItems:
+    mainStack->setCurrentWidget(browseWindow);
+    break;
+  case NavAction::SearchItems:
+    mainStack->setCurrentWidget(searchWindow);
+    break;
+  case NavAction::Quit:
     QApplication::quit();
   default:
     break;

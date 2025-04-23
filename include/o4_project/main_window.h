@@ -16,6 +16,7 @@
 #include "../o4_project/item_info_window.h"
 #include "browse_window.h"
 #include "items_window.h"
+#include "search_window.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT;
@@ -25,8 +26,9 @@ class MainWindow : public QMainWindow {
   ~MainWindow() = default;
 
  private:
-  QStackedWidget mainStack;
+  QStackedWidget *mainStack;
   BrowseWindow *browseWindow;
+  SearchWindow *searchWindow;
   
   NavigationWindow *navigationWindow;
   ContainerWindow *containerWindow;

@@ -17,6 +17,7 @@ set(SOURCES
     src/items_window.cpp
     src/item_info_window.cpp
     src/browse_window.cpp
+    src/search_window.cpp
 )
 
 set(HEADERS
@@ -30,6 +31,7 @@ set(HEADERS
     include/o4_project/item_info_window.h
     include/o4_project/mode_frame.h
     include/o4_project/browse_window.h
+    include/o4_project/search_window.h
 )
 
 set(TEST_SOURCES
