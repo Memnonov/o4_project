@@ -16,6 +16,7 @@ public:
 private:
   enum class Stack { right, left };
 
+  QWidget *middlePanel;
   QPushButton *moveSelectedButton;
   QStackedWidget *leftStack;
   QStackedWidget *rightStack;
@@ -29,6 +30,7 @@ private:
   void initConnections();
 
 private slots:
+  QWidget* getMiddlePanel();
   void handleContainerSelected(Stack stack);
   void handleContainerClosed(Stack stack);
 };

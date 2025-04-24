@@ -10,6 +10,7 @@
 #include <qboxlayout.h>
 #include <qbuttongroup.h>
 #include <qhash.h>
+#include <qlogging.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
 #include <qtoolbar.h>
@@ -20,6 +21,11 @@ class ItemsWindow : public QFrame {
 public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
+  void setMovingItems(bool moving) {
+    this->movingItems = moving;
+    updateRows();
+    moveItemsButton->setVisible(moving);
+  }
 
 private:
   // TODO: Get rid of dummy.
@@ -43,16 +49,19 @@ private:
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
+  QVBoxLayout *itemRows;
+  bool movingItems = false;
   QButtonGroup *buttonGroup;
   SortMode sortMode;
   QScrollArea *scrollArea;
   QPushButton *closeButton;
   QPushButton *selectedItemButton;
   QPushButton *bottomDeleteButton;
+  QPushButton *moveItemsButton;
 
   void createDummyRows(QVBoxLayout *rows);
+  void updateRows();
   QString cycleSortMode();
-
   void closeButtonPushed();
 
 signals:

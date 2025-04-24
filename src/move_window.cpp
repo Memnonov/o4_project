@@ -1,20 +1,25 @@
 #include "../include/o4_project/move_window.h"
+#include <qlabel.h>
+#include <qnamespace.h>
+#include <qsizepolicy.h>
+#include <qwidget.h>
 
 MoveWindow::MoveWindow(QWidget *parent)
     : ModeFrame{parent}, leftStack{new QStackedWidget},
-      moveSelectedButton{new QPushButton}, rightStack{new QStackedWidget},
-      rightContainer{new ContainerWindow}, leftContainer{new ContainerWindow},
-      leftItems{new ItemsWindow}, rightItems{new ItemsWindow} {
+      middlePanel{new QWidget}, moveSelectedButton{new QPushButton},
+      rightStack{new QStackedWidget}, rightContainer{new ContainerWindow},
+      leftContainer{new ContainerWindow}, leftItems{new ItemsWindow},
+      rightItems{new ItemsWindow} {
   leftStack->addWidget(leftContainer);
   leftStack->addWidget(leftItems);
+  leftItems->setMovingItems(true);
   layout->addWidget(leftStack);
 
-  moveSelectedButton->setIcon(QIcon(":/icons/arrow-separate.svg"));
-  moveSelectedButton->setText("Move Selected");
-  layout->addWidget(moveSelectedButton);
+  layout->addWidget(getMiddlePanel());
 
   rightStack->addWidget(rightContainer);
   rightStack->addWidget(rightItems);
+  rightItems->setMovingItems(true);
   layout->addWidget(rightStack);
 
   layout->setStretch(0, 1);
@@ -60,4 +65,21 @@ void MoveWindow::handleContainerClosed(Stack stack) {
     break;
   }
   }
+}
+
+QWidget *MoveWindow::getMiddlePanel() {
+  auto middlePanel = new QWidget;
+  auto panelLayout = new QVBoxLayout{middlePanel};
+  // moveSelectedButton->setIcon(QIcon(":/icons/arrow-separate.svg"));
+  moveSelectedButton->setContentsMargins(0, 0, 0, 0);
+  moveSelectedButton->setText( "→\n←");
+  moveSelectedButton->setSizePolicy(QSizePolicy::Preferred,
+                                    QSizePolicy::Preferred);
+  auto tip = new QLabel("Move all\nselected.");
+  tip->setAlignment(Qt::AlignCenter);
+  panelLayout->addStretch();
+  panelLayout->addWidget(tip);
+  panelLayout->addWidget(moveSelectedButton);
+  panelLayout->addStretch();
+  return middlePanel;
 }
