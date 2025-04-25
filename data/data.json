@@ -1,0 +1,216 @@
+{
+  "containers": [
+    {
+      "name": "Hunter's Rucksack",
+      "items": [
+        {
+          "name": "Hunting Knife",
+          "quantity": 1,
+          "description": "<p>A sharp hunting knife used for skinning animals and cutting through tough hides. The blade has seen many uses but still holds an edge.</p>",
+          "tags": ["weapon", "knife", "hunting"],
+          "favourite": true
+        },
+        {
+          "name": "Trap",
+          "quantity": 5,
+          "description": "<p>A simple snare trap, used to capture small game. Lightweight and easy to carry, it can be set up quickly in the wild.</p>",
+          "tags": ["tool", "trap", "hunting"],
+          "favourite": false
+        },
+        {
+          "name": "Arrows",
+          "quantity": 30,
+          "description": "<p>A quiver filled with sharp hunting arrows, perfect for ranged combat or bringing down prey from a distance.</p>",
+          "tags": ["ammunition", "arrows", "hunting"],
+          "favourite": true
+        },
+        {
+          "name": "Rations",
+          "quantity": 10,
+          "description": "<p>A supply of dried meat, nuts, and berries, perfect for surviving in the wilderness during long hunting trips.</p>",
+          "tags": ["food", "ration", "sustenance"],
+          "favourite": false
+        },
+        {
+          "name": "Camouflage Cloak",
+          "quantity": 1,
+          "description": "<p>A cloak made of natural materials that blend in with the surrounding environment, providing extra stealth when hunting or avoiding detection.</p>",
+          "tags": ["armor", "clothing", "stealth"],
+          "favourite": false
+        }
+      ]
+    },
+    {
+      "name": "Cultist's Coffer",
+      "items": [
+        {
+          "name": "Black Ritual Dagger",
+          "quantity": 1,
+          "description": "<p>A dark ceremonial dagger used in the cult's rituals. Its blade is forged from obsidian and is rumored to hold sinister powers.</p>",
+          "tags": ["weapon", "ritual", "dark"],
+          "favourite": true
+        },
+        {
+          "name": "Candle of Everdark",
+          "quantity": 3,
+          "description": "<p>A candle that burns with an eerie, pale flame. It is said to reveal hidden truths when burned in the dark.</p><p><b>Effect:</b> Reveals hidden objects or symbols.</p>",
+          "tags": ["magic", "ritual", "dark"],
+          "favourite": false
+        },
+        {
+          "name": "Blood Vial",
+          "quantity": 5,
+          "description": "<p>A small vial filled with blood, used in the dark rites of the cult. Drinking it may grant forbidden power, but at a cost.</p><p><b>Effect:</b> Temporary increase in dark powers, but causes corruption over time.</p>",
+          "tags": ["potion", "dark", "ritual"],
+          "favourite": false
+        },
+        {
+          "name": "Cultist Robes",
+          "quantity": 1,
+          "description": "<p>The dark robes of a cultist, embroidered with arcane symbols and sigils. Provides some protection against magical effects.</p>",
+          "tags": ["armor", "clothing", "dark"],
+          "favourite": false
+        },
+        {
+          "name": "Pentagram Amulet",
+          "quantity": 1,
+          "description": "<p>An amulet shaped like an inverted pentagram, said to protect its wearer from the forces of good.</p>",
+          "tags": ["magic", "amulet", "dark"],
+          "favourite": true
+        }
+      ]
+    },
+    {
+      "name": "Merchant's Satchel",
+      "items": [
+        {
+          "name": "Assorted Gems",
+          "quantity": 15,
+          "description": "<p>A collection of various gemstones, each one valuable in its own right. Some may be used as currency, others may be traded for rare items.</p>",
+          "tags": ["treasure", "gems", "currency"],
+          "favourite": true
+        },
+        {
+          "name": "Fine Silk",
+          "quantity": 5,
+          "description": "<p>A bolt of fine silk fabric, used to craft luxurious clothing or other delicate items.</p>",
+          "tags": ["material", "fabric", "luxury"],
+          "favourite": false
+        },
+        {
+          "name": "Gold Coins",
+          "quantity": 50,
+          "description": "<p>A small pouch filled with glittering gold coins. Enough to buy a horse, pay for a month's worth of supplies, or hire a mercenary.</p>",
+          "tags": ["currency", "gold", "wealth"],
+          "favourite": true
+        },
+        {
+          "name": "Merchant's Ledger",
+          "quantity": 1,
+          "description": "<p>A small book containing records of transactions and debts. Essential for any merchant looking to keep their business in order.</p>",
+          "tags": ["book", "ledger", "business"],
+          "favourite": false
+        }
+      ]
+    },
+    {
+      "name": "Explorer's Pack",
+      "items": [
+        {
+          "name": "Compass",
+          "quantity": 1,
+          "description": "<p>A finely crafted compass, essential for navigating unknown territories and avoiding getting lost.</p>",
+          "tags": ["tool", "navigation", "exploration"],
+          "favourite": true
+        },
+        {
+          "name": "Rope",
+          "quantity": 5,
+          "description": "<p>A length of strong rope, useful for climbing, tying up prisoners, or securing items during travel.</p>",
+          "tags": ["tool", "climbing", "travel"],
+          "favourite": false
+        },
+        {
+          "name": "Torch",
+          "quantity": 10,
+          "description": "<p>A bundle of torches, useful for lighting your way through dark caves, ruins, or forests. Essential for any serious explorer.</p>",
+          "tags": ["tool", "light", "exploration"],
+          "favourite": false
+        },
+        {
+          "name": "Explorer's Journal",
+          "quantity": 1,
+          "description": "<p>A leather-bound journal, used by explorers to record their discoveries and map out uncharted lands.</p>",
+          "tags": ["book", "journal", "exploration"],
+          "favourite": false
+        }
+      ]
+    },
+    {
+      "name": "Thief's Satchel",
+      "items": [
+        {
+          "name": "Lockpicks",
+          "quantity": 10,
+          "description": "<p>A set of finely crafted lockpicks, essential for any thief looking to open locked doors, chests, or safes.</p>",
+          "tags": ["tool", "lockpicking", "thief"],
+          "favourite": true
+        },
+        {
+          "name": "Smoke Bomb",
+          "quantity": 5,
+          "description": "<p>A small bomb filled with a dense, black smoke. Useful for creating a distraction and making a quick escape.</p><p><b>Effect:</b> Creates a cloud of smoke, obscuring vision for a short time.</p>",
+          "tags": ["tool", "distraction", "escape"],
+          "favourite": false
+        },
+        {
+          "name": "Poisoned Dagger",
+          "quantity": 1,
+          "description": "<p>A small dagger coated with a deadly poison. Used for silent, lethal attacks.</p>",
+          "tags": ["weapon", "poison", "thief"],
+          "favourite": true
+        },
+        {
+          "name": "Gold Coins",
+          "quantity": 20,
+          "description": "<p>A small pouch containing 20 gold coins. Thieves rarely keep their money for long, but this is a nice stash for the moment.</p>",
+          "tags": ["currency", "gold", "wealth"],
+          "favourite": false
+        }
+      ]
+    },
+    {
+      "name": "Bard's Lute",
+      "items": [
+        {
+          "name": "Lute",
+          "quantity": 1,
+          "description": "<p>A finely crafted lute, a source of both entertainment and power. Can be played to charm or rally allies in battle.</p>",
+          "tags": ["instrument", "music", "bard"],
+          "favourite": true
+        },
+        {
+          "name": "Songs of the Old Gods",
+          "quantity": 1,
+          "description": "<p>An old, tattered songbook containing forgotten ballads and epic tales of the gods. Can be used to inspire those around you.</p>",
+          "tags": ["book", "song", "bard"],
+          "favourite": false
+        },
+        {
+          "name": "Magic Flute",
+          "quantity": 1,
+          "description": "<p>A flute imbued with a magical charm. When played, it can summon creatures or calm the hearts of the most fearsome foes.</p>",
+          "tags": ["instrument", "magic", "bard"],
+          "favourite": true
+        },
+        {
+          "name": "Silver Coins",
+          "quantity": 10,
+          "description": "<p>A small pouch of silver coins, enough to pay for a night's stay at an inn or buy a drink at the tavern.</p>",
+          "tags": ["currency", "silver", "wealth"],
+          "favourite": false
+        }
+      ]
+    }
+  ]
+}

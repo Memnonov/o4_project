@@ -38,6 +38,7 @@ set(HEADERS
     include/o4_project/move_window.h
     include/o4_project/tutorial_window.h
     include/o4_project/about_window.h
+    include/o4_project/json_utils.h
 )
 
 set(TEST_SOURCES

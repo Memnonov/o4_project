@@ -15,6 +15,7 @@ class Item {
   unsigned int quantity{1};
   QString description{"No description"};
   QStringList tags{};
+  bool favourite;
 
   Item(const QString name, unsigned int quantity, const QString description,
        const QStringList tags)
