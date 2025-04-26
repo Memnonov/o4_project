@@ -51,6 +51,9 @@ set(TEST_HEADERS
     test/container_tests.h
     test/container_model_tests.h
     include/o4_project/container_model.h
+    include/o4_project/container.h
+    include/o4_project/json_utils.h
+    test/json_tests.h
 )
 
 set (RESOURCE_FILES

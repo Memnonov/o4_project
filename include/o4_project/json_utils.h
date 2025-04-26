@@ -13,45 +13,49 @@
 #include <QStringList>
 #include <QVector>
 #include <QtLogging>
-#include <container.h>
-#include <item.h>
+#include "container.h"
+#include "item.h"
 #include <memory>
-#include <qcontainerfwd.h>
-#include <qiodevicebase.h>
-#include <qjsonvalue.h>
 #include <qlogging.h>
 
 namespace JSONUtils {
-QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path);
+QVector<std::shared_ptr<Container>> parseInventoryFromFile(QString path);
+QVector<std::shared_ptr<Container>> parseInvetoryFromJSON(QJsonDocument json);
 QStringList getTags(QJsonArray tags);
 
-inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
-  QVector<std::shared_ptr<Container>> resultContainers;
+inline QVector<std::shared_ptr<Container>>
+parseInventoryFromFile(QString path) {
   QFile file{path};
   if (!file.open(QIODeviceBase::ReadOnly)) {
     qDebug() << "Couldn't open data file.";
-    return resultContainers;
+    return {};
   }
 
   QByteArray bytes = file.readAll();
   if (bytes.isEmpty()) {
     qDebug() << "Data JSON was empty";
-    return resultContainers;
+    return {};
   }
 
   auto json = QJsonDocument::fromJson(bytes);
   if (json.isNull()) {
     qDebug() << "Couldn't read JSON from data.";
-    return resultContainers;
+    return {};
   }
 
+  return parseInvetoryFromJSON(json);
+}
+
+inline QVector<std::shared_ptr<Container>>
+parseInvetoryFromJSON(QJsonDocument json) {
   auto obj = json.object();
-  if (obj.isEmpty() || !obj.contains("containers") ||
-      !obj["containers"].isArray()) {
+  if (obj.isEmpty() ||
+      !obj.contains("containers") | !obj["containers"].isArray()) {
     qDebug() << "Invalid data JSON";
   }
 
   auto containers = obj["containers"].toArray();
+  QVector<std::shared_ptr<Container>> resultContainers;
   for (const QJsonValue &value : containers) {
     if (!value.isObject()) {
       qDebug() << "Invalid data JSON";
@@ -70,10 +74,9 @@ inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
           itemObj["description"].toString(), getTags(itemObj["tags"].toArray()),
           itemObj["favourite"].toBool());
       container->addItem(item);
-      qDebug() << "  Added item: " + item->name;
     }
+    resultContainers.push_back(container);
   }
-
   return resultContainers;
 }
 
@@ -82,8 +85,7 @@ inline QStringList getTags(QJsonArray tags) {
   for (const QJsonValue &value : tags) {
     result.push_back(value.toString());
   }
-  qDebug() << "    Got tags: " + result.join(", ");
-  return QStringList{};
+  return result;
 }
 
 } // namespace JSONUtils
