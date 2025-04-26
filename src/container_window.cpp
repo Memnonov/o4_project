@@ -1,4 +1,5 @@
 #include "../include/o4_project/container_window.h"
+#include "container_model.h"
 #include <QIcon>
 #include <QPushButton>
 #include <qapplication.h>
@@ -9,13 +10,15 @@
 #include <qlayoutitem.h>
 #include <qlogging.h>
 #include <qnamespace.h>
+#include <qobject.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
+#include <qsharedpointer.h>
 #include <qsizepolicy.h>
 #include <qwidget.h>
 
-ContainerWindow::ContainerWindow(QWidget *parent)
-    : QFrame{parent}, layout{new QVBoxLayout{this}},
+ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
+    : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea{this}},
       newContainerButton(new QPushButton{this}) {
   setFrameShape(StyledPanel);
@@ -56,27 +59,28 @@ void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
 
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
-  }
 
-  for (unsigned int i = 0; i < 18; ++i) {
-    QWidget *row = new QWidget;
-    row->setMinimumHeight(rowHeight); // TODO(mikko): fix magic numbers
-    QHBoxLayout *box = new QHBoxLayout;
-    box->setContentsMargins(0, 0, 4, 4);
-    box->setSpacing(0);
+    for (unsigned int i = 0; i < 18; ++i) {
+      QWidget *row = new QWidget;
+      row->setMinimumHeight(rowHeight); // TODO(mikko): fix magic numbers
+      QHBoxLayout *box = new QHBoxLayout;
+      box->setContentsMargins(0, 0, 4, 4);
+      box->setSpacing(0);
 
-    QPushButton *button = new QPushButton{"Junk Container"};
-    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    connect(button, &QPushButton::clicked, this,
-            [this]() { emit containerSelected(); });
+      QPushButton *button = new QPushButton{"Junk Container"};
+      button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+      connect(button, &QPushButton::clicked, this,
+              [this]() { emit containerSelected(); });
 
-    QPushButton *deleteButton = new QPushButton;
-    deleteButton->setIcon(deleteIcon);
-    deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+      QPushButton *deleteButton = new QPushButton;
+      deleteButton->setIcon(deleteIcon);
+      deleteButton->setSizePolicy(QSizePolicy::Preferred,
+                                  QSizePolicy::Expanding);
 
-    row->setLayout(box);
-    box->addWidget(button);
-    box->addWidget(deleteButton);
-    rows->addWidget(row);
+      row->setLayout(box);
+      box->addWidget(button);
+      box->addWidget(deleteButton);
+      rows->addWidget(row);
+    }
   }
 }

@@ -7,13 +7,15 @@
 #include "container_window.h"
 #include "items_window.h"
 #include "item_info_window.h"
+#include "container_model.h"
 
 class BrowseWindow : public ModeFrame {
  public:
-  BrowseWindow(QWidget *parent = nullptr); 
+  BrowseWindow(ContainerModel *model, QWidget *parent = nullptr); 
   ~BrowseWindow() {}
 
  private:
+  ContainerModel *model;
   ContainerWindow *containerWindow;
   ItemsWindow *itemsWindow;
   ItemInfoWindow *infoWindow;
@@ -22,9 +24,11 @@ class BrowseWindow : public ModeFrame {
 
   // Makes this concrete.
   virtual void dummyFunction() {}
+  
   void initConnections();
   void handleContainerSelected();
   void handleItemsWindowClosed();
+  
 };
 
 #endif // !BROWSE_WINDOW_H

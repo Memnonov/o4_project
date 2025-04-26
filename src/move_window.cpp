@@ -4,11 +4,11 @@
 #include <qsizepolicy.h>
 #include <qwidget.h>
 
-MoveWindow::MoveWindow(QWidget *parent)
-    : ModeFrame{parent}, leftStack{new QStackedWidget},
+MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
+    : ModeFrame{parent}, model{model}, leftStack{new QStackedWidget},
       middlePanel{new QWidget}, moveSelectedButton{new QPushButton},
-      rightStack{new QStackedWidget}, rightContainer{new ContainerWindow},
-      leftContainer{new ContainerWindow}, leftItems{new ItemsWindow},
+      rightStack{new QStackedWidget}, rightContainer{new ContainerWindow{model}},
+      leftContainer{new ContainerWindow{model}}, leftItems{new ItemsWindow},
       rightItems{new ItemsWindow} {
   leftStack->addWidget(leftContainer);
   leftStack->addWidget(leftItems);

@@ -7,15 +7,18 @@
 #include "items_window.h"
 #include "mode_frame.h"
 #include <QStackedWidget>
+#include "container_model.h"
 
 class MoveWindow : public ModeFrame {
 public:
-  MoveWindow(QWidget *parent = nullptr);
+  MoveWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~MoveWindow() {}
 
 private:
   enum class Stack { right, left };
 
+
+  ContainerModel *model;
   QWidget *middlePanel;
   QPushButton *moveSelectedButton;
   QStackedWidget *leftStack;

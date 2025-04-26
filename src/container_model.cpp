@@ -7,6 +7,13 @@
 #include <memory>
 #include <utility>
 
+ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {};
+
+
+const QVector<std::shared_ptr<Container>>& ContainerModel::getContainers() const {
+  return containers;
+}
+
 void ContainerModel::addContainer(QString name) {
   containers.push_back(std::move(std::make_shared<Container>(name)));
 }

@@ -17,12 +17,9 @@ class ContainerModel : public QObject {
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
  public:
-  ContainerModel() = default;
-  ContainerModel(const ContainerModel &) = delete;
-  ContainerModel &operator=(const ContainerModel &) = delete;
-  ContainerModel(ContainerModel &&) = delete;
-  ContainerModel &operator=(ContainerModel &&) = delete;
+  ContainerModel(QObject *parent = nullptr);
 
+  const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addContainer(QString name = "Unnamed container");
   void removeContainer(unsigned int index);
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);

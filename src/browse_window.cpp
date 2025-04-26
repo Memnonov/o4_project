@@ -1,9 +1,14 @@
 #include "../include/o4_project/browse_window.h"
+#include "container_model.h"
+#include <qlogging.h>
 
-BrowseWindow::BrowseWindow(QWidget *parent)
-    : ModeFrame{parent}, containerWindow{new ContainerWindow},
+BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
+    : ModeFrame{parent}, model{model}, containerWindow{new ContainerWindow{model}},
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget} {
+  if (model) {
+    qDebug() << "Browse window has a model.";
+  }
   leftStack->addWidget(containerWindow);
   leftStack->addWidget(itemsWindow);
   rightStack->addWidget(infoWindow);

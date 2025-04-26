@@ -17,13 +17,15 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, mainStack{new QStackedWidget},
-      aboutWindow{new AboutWindow}, tutorialWindow{new TutorialWindow},
-      moveWindow{new MoveWindow}, browseWindow{new BrowseWindow},
+    : QMainWindow{parent}, model{new ContainerModel{this}},
+      mainStack{new QStackedWidget}, aboutWindow{new AboutWindow},
+      tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
+      browseWindow{new BrowseWindow{model}},
       navigationPanel{new NavigationPanel},
-      containerWindow{new ContainerWindow}, leftStack{new QStackedWidget},
-      rightStack{new QStackedWidget}, itemsWindow{new ItemsWindow},
-      infoWindow{new ItemInfoWindow}, searchWindow{new SearchWindow} {
+      containerWindow{new ContainerWindow{model}},
+      leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
+      itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
+      searchWindow{new SearchWindow} {
   auto *central = new QWidget(this);
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);

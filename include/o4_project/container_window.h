@@ -5,19 +5,24 @@
 
 #include <QFrame>
 #include <QObject>
+#include <memory>
 #include <qboxlayout.h>
 #include <QScrollArea>
+#include <qcontainerfwd.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
+#include "container.h"
+#include "container_model.h"
 
 class ContainerWindow : public QFrame {
   Q_OBJECT;
 
  public:
-  explicit ContainerWindow(QWidget *parent = nullptr);
+  explicit ContainerWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~ContainerWindow() = default;
 
  private:
+  ContainerModel *model;
   QVBoxLayout* layout;
   QScrollArea* scrollArea;
   QPushButton* newContainerButton;
@@ -25,6 +30,7 @@ class ContainerWindow : public QFrame {
   void initLabel();
   void initNewContainerButton(QVBoxLayout *rows);
   void createDummyRows(QVBoxLayout *rows);
+  const QVector<std::shared_ptr<Container>> getContainers() const;
 
   signals:
     void containerSelected();
