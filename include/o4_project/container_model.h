@@ -8,6 +8,7 @@
 #include <memory>
 #include <qcontainerfwd.h>
 #include <qtmetamacros.h>
+#include "json_utils.h"
 
 class ContainerModel;
 

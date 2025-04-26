@@ -1,4 +1,5 @@
 #include "../include/o4_project/container_window.h"
+#include "container.h"
 #include "container_model.h"
 #include <QIcon>
 #include <QPushButton>
@@ -19,15 +20,19 @@
 
 ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea{this}},
-      newContainerButton(new QPushButton{this}) {
+      scrollArea{new QScrollArea}, rows{new QVBoxLayout},
+      newContainerButton(new QPushButton) {
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initLabel();
 
-  QWidget *rowsWidget = new QWidget{this};
-  QVBoxLayout *rows = new QVBoxLayout{rowsWidget};
-  createDummyRows(rows);
+  auto *rowsWidget = new QWidget;
+  rowsWidget->setLayout(rows);
+  rows->setSpacing(0);
+  rows->setAlignment(Qt::AlignTop);
+  updateRows();
+  updateRows();  // TODO: Remove this. Twice just to see if it works as intended.
+  updateRows();  // TODO: Remove this. Twice just to see if it works as intended.
   initNewContainerButton(rows);
 
   scrollArea->setWidgetResizable(true);
@@ -50,37 +55,53 @@ void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {
   rows->addWidget(newContainerButton);
 }
 
-void ContainerWindow::createDummyRows(QVBoxLayout *rows) {
+void ContainerWindow::updateRows() {
+  clearRows();
+  qDebug() << "Creating real rows!";
   // Creating dummy rows
-  rows->setSpacing(0);
   // TODO(mikko): Fix asset paths.
   const QIcon deleteIcon{":/icons/trash.svg"};
-  static constexpr unsigned int rowHeight = 40;
+  static constexpr unsigned int minRowHeight = 40;
+  static constexpr unsigned int maxRowHeight = minRowHeight * 2;
 
   if (deleteIcon.isNull()) {
     qDebug() << "Couldn't load icon\n";
-
-    for (unsigned int i = 0; i < 18; ++i) {
-      QWidget *row = new QWidget;
-      row->setMinimumHeight(rowHeight); // TODO(mikko): fix magic numbers
-      QHBoxLayout *box = new QHBoxLayout;
-      box->setContentsMargins(0, 0, 4, 4);
-      box->setSpacing(0);
-
-      QPushButton *button = new QPushButton{"Junk Container"};
-      button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-      connect(button, &QPushButton::clicked, this,
-              [this]() { emit containerSelected(); });
-
-      QPushButton *deleteButton = new QPushButton;
-      deleteButton->setIcon(deleteIcon);
-      deleteButton->setSizePolicy(QSizePolicy::Preferred,
-                                  QSizePolicy::Expanding);
-
-      row->setLayout(box);
-      box->addWidget(button);
-      box->addWidget(deleteButton);
-      rows->addWidget(row);
-    }
   }
+
+  auto containers = model->getContainers();
+  for (auto const &container : containers) {
+    QWidget *row = new QWidget;
+    row->setMinimumHeight(minRowHeight); // TODO(mikko): fix magic numbers?
+    row->setMaximumHeight(maxRowHeight);
+    QHBoxLayout *box = new QHBoxLayout;
+    box->setContentsMargins(0, 0, 4, 4);
+    box->setSpacing(0);
+
+    QPushButton *button = new QPushButton{container->name};
+    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(button, &QPushButton::clicked, this,
+            [this]() { emit containerSelected(); }); // TODO: Pass the container.
+
+    QPushButton *deleteButton = new QPushButton;
+    deleteButton->setIcon(deleteIcon);
+    deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
+    row->setLayout(box);
+    box->addWidget(button);
+    box->addWidget(deleteButton);
+    rows->addWidget(row);
+  }
+}
+
+void ContainerWindow::clearRows() {
+  QLayoutItem *row;
+  while ((row = rows->takeAt(0)) != nullptr) {
+    row->widget()->deleteLater();
+  }
+  delete row;
+}
+
+const QVector<std::shared_ptr<Container>>
+ContainerWindow::getContainers() const {
+  return {};
 }

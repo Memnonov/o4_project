@@ -7,7 +7,9 @@
 #include <memory>
 #include <utility>
 
-ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {};
+ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
+  containers = JSONUtils::parseInventoryFromFile("./data/data.json");  // Good enough for this
+};
 
 
 const QVector<std::shared_ptr<Container>>& ContainerModel::getContainers() const {

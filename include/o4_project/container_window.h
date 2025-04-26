@@ -23,13 +23,15 @@ class ContainerWindow : public QFrame {
 
  private:
   ContainerModel *model;
+  QVBoxLayout *rows;
   QVBoxLayout* layout;
   QScrollArea* scrollArea;
   QPushButton* newContainerButton;
   
   void initLabel();
   void initNewContainerButton(QVBoxLayout *rows);
-  void createDummyRows(QVBoxLayout *rows);
+  void updateRows();
+  void clearRows();
   const QVector<std::shared_ptr<Container>> getContainers() const;
 
   signals:

@@ -5,7 +5,6 @@
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
-  JSONUtils::parseInventoryFromFile("./data/data.json");
   QApplication app(argc, argv);
   MainWindow mainWindow;
   mainWindow.show();
