@@ -45,7 +45,7 @@ inline void JsonTests::testParseJsonDocument() {
 
   QByteArray bytes{string};
   auto document = QJsonDocument::fromJson(bytes);
-  auto result = JSONUtils::parseInvetoryFromJSON(document);
+  auto result = JSONUtils::parseInventoryFromJSON(document);
   QVERIFY(result.length() == 1);
   auto container = result.at(0);
   QVERIFY(container);

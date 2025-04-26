@@ -20,7 +20,7 @@
 
 namespace JSONUtils {
 QVector<std::shared_ptr<Container>> parseInventoryFromFile(QString path);
-QVector<std::shared_ptr<Container>> parseInvetoryFromJSON(QJsonDocument json);
+QVector<std::shared_ptr<Container>> parseInventoryFromJSON(QJsonDocument json);
 QStringList getTags(QJsonArray tags);
 
 inline QVector<std::shared_ptr<Container>>
@@ -43,11 +43,11 @@ parseInventoryFromFile(QString path) {
     return {};
   }
 
-  return parseInvetoryFromJSON(json);
+  return parseInventoryFromJSON(json);
 }
 
 inline QVector<std::shared_ptr<Container>>
-parseInvetoryFromJSON(QJsonDocument json) {
+parseInventoryFromJSON(QJsonDocument json) {
   auto obj = json.object();
   if (obj.isEmpty() ||
       !obj.contains("containers") | !obj["containers"].isArray()) {
