@@ -23,6 +23,8 @@
 
 namespace JSONUtils {
 QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path);
+QStringList getTags(QJsonArray tags);
+
 inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
   QVector<std::shared_ptr<Container>> resultContainers;
   QFile file{path};
@@ -58,7 +60,7 @@ inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
     auto containerObj = value.toObject();
     auto container =
         std::make_shared<Container>(containerObj["name"].toString());
-    qDebug() << "Created container " + container->name;
+    qDebug() << "\nCreated container " + container->name;
 
     auto items = containerObj["items"].toArray();
     for (const QJsonValue &value : items) {
@@ -66,7 +68,7 @@ inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
       auto item = std::make_shared<Item>(
           itemObj["name"].toString(), itemObj["quantity"].toInt(),
           itemObj["description"].toString(),
-          QStringList{"Implement tags, you lazy son of a gun!"});
+          getTags(itemObj["tags"].toArray()));
       container->addItem(item);
       qDebug() << "  Added item: " + item->name;
     }
@@ -75,5 +77,15 @@ inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
   return resultContainers;
 }
 
-#endif // !JSON_UTILS_H
+inline QStringList getTags(QJsonArray tags) {
+  QStringList result;
+  for (const QJsonValue &value : tags) {
+    result.push_back(value.toString());
+  }
+  qDebug() << "    Got tags: " + result.join(", ");
+  return QStringList{};
 }
+
+} // namespace JSONUtils
+
+#endif // !JSON_UTILS_H
