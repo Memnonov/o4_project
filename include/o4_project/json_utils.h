@@ -67,8 +67,8 @@ inline QVector<std::shared_ptr<Container>> initInventoryFromJSON(QString path) {
       auto itemObj = value.toObject();
       auto item = std::make_shared<Item>(
           itemObj["name"].toString(), itemObj["quantity"].toInt(),
-          itemObj["description"].toString(),
-          getTags(itemObj["tags"].toArray()));
+          itemObj["description"].toString(), getTags(itemObj["tags"].toArray()),
+          itemObj["favourite"].toBool());
       container->addItem(item);
       qDebug() << "  Added item: " + item->name;
     }

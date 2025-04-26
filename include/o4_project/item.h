@@ -10,7 +10,7 @@
 class Item {
   friend class ContainerModelTests;
 
- public:
+public:
   QString name{"No name"};
   unsigned int quantity{1};
   QString description{"No description"};
@@ -18,13 +18,14 @@ class Item {
   bool favourite;
 
   Item(const QString name, unsigned int quantity, const QString description,
-       const QStringList tags)
+       const QStringList tags, bool favourite = false)
       : name{std::move(name)}, quantity{quantity},
-        description{std::move(description)}, tags{std::move(tags)} {}
+        description{std::move(description)}, tags{std::move(tags)},
+        favourite{favourite} {}
 
   explicit Item(const QString name) : Item(name, 1, "", {}) {}
 
   Item() = default;
 };
 
-#endif  // !ITEM_H
+#endif // !ITEM_H
