@@ -5,27 +5,25 @@
 
 #include <QString>
 #include <QStringList>
-#include <utility>
+#include <QStringLiteral>
+#include <qstringliteral.h>
 
 class Item {
   friend class ContainerModelTests;
 
 public:
-  QString name{"No name"};
+  QString name{QStringLiteral("New Item")};
   unsigned int quantity{1};
-  QString description{"No description"};
+  QString description{QStringLiteral("No description.")};
   QStringList tags{};
-  bool favourite;
+  bool favourite = false;
 
-  Item(const QString name, unsigned int quantity, const QString description,
-       const QStringList tags, bool favourite = false)
-      : name{std::move(name)}, quantity{quantity},
-        description{std::move(description)}, tags{std::move(tags)},
+  Item(const QString &name, unsigned int quantity, const QString &description,
+       const QStringList &tags, const bool favourite = false)
+      : name{name}, quantity{quantity}, description{description}, tags{tags},
         favourite{favourite} {}
 
   explicit Item(const QString name) : Item(name, 1, "", {}) {}
-
-  Item() = default;
 };
 
 #endif // !ITEM_H
