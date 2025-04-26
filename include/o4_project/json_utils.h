@@ -50,8 +50,9 @@ inline QVector<std::shared_ptr<Container>>
 parseInventoryFromJSON(QJsonDocument json) {
   auto obj = json.object();
   if (obj.isEmpty() ||
-      !obj.contains("containers") | !obj["containers"].isArray()) {
+      !obj.contains("containers") || !obj["containers"].isArray()) {
     qDebug() << "Invalid data JSON";
+    return {};
   }
 
   auto containers = obj["containers"].toArray();

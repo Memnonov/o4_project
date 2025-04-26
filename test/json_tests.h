@@ -10,7 +10,6 @@
 #include <QtLogging>
 #include <qlogging.h>
 #include <qtestcase.h>
-#include <qtmetamacros.h>
 
 class JsonTests : public QObject {
   Q_OBJECT;
@@ -21,27 +20,18 @@ private slots:
 
 inline void JsonTests::testParseJsonDocument() {
   QJsonDocument json;
-  auto string = R"(
-  {
-    "containers": [
-      {
-        "name": "container",
-        "items": [
-          {
-            "name": "name",
-            "quantity": 1,
-            "description": "test",
-            "tags": [
-              "tag"
-            ],
-            "favourite": false
-          }
-]
-      }
-    ]
-  } 
-  )";
-
+  auto string = R"( {
+    "containers": [ {
+      "name": "container",
+      "items": [ {
+          "name": "name",
+          "quantity": 1,
+          "description": "test",
+          "tags": [ "tag" ],
+          "favourite": false
+        }]
+      }]
+  })";
 
   QByteArray bytes{string};
   auto document = QJsonDocument::fromJson(bytes);
