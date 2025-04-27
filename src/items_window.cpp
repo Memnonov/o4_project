@@ -63,8 +63,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   auto rowsWidget = new QWidget;
   updateRows();
   rowsWidget->setLayout(itemRows);
+  itemRows->setAlignment(Qt::AlignTop);
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
+  scrollArea->setAlignment(Qt::AlignTop);
   layout->addWidget(scrollArea);
 
   auto moveWidget = new QWidget;
@@ -103,14 +105,20 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(true);
   // TODO(mikko): Fix asset paths.
-  for (unsigned int i = 0; i < 18; ++i) {
+  if (!currentContainer) {
+    return;
+  }
+  static constexpr unsigned int minHeight = 40;
+  static constexpr unsigned int maxHeight = minHeight * 2;
+  for (auto const &item : currentContainer->getItems()) {
     QWidget *row = new QWidget;
-    row->setMinimumHeight(40); // TODO(mikko): fix magic numbers?
+    row->setMinimumHeight(minHeight); // TODO(mikko): fix magic numbers?
+    row->setMaximumHeight(maxHeight);
     QHBoxLayout *box = new QHBoxLayout;
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
 
-    QPushButton *button = new QPushButton{"Junk Item"};
+    QPushButton *button = new QPushButton{item->name};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
     buttonGroup->addButton(button);
@@ -184,4 +192,5 @@ void ItemsWindow::handleContainerSelected(Container *container) {
   currentContainer = container;
   title->setText(
       QString("<b>%1</b>").arg((container) ? container->name : "null"));
+  updateRows();
 }
