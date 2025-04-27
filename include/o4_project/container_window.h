@@ -35,7 +35,7 @@ class ContainerWindow : public QFrame {
   const QVector<std::shared_ptr<Container>> getContainers() const;
 
   signals:
-    void containerSelected();
+    void containerSelected(Container *container);
 };
 
 #endif // !CONTAINERS_WINDOW_H

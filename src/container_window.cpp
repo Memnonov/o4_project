@@ -30,10 +30,8 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
   rowsWidget->setLayout(rows);
   rows->setSpacing(0);
   rows->setAlignment(Qt::AlignTop);
-  updateRows();
-  updateRows();  // TODO: Remove this. Twice just to see if it works as intended.
-  updateRows();  // TODO: Remove this. Twice just to see if it works as intended.
   initNewContainerButton(rows);
+  updateRows();
 
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
@@ -52,7 +50,6 @@ void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {
   QIcon plusIcon{":/icons/plus.svg"};
   newContainerButton->setIcon(plusIcon);
   newContainerButton->setMinimumHeight(40);
-  rows->addWidget(newContainerButton);
 }
 
 void ContainerWindow::updateRows() {
@@ -79,8 +76,9 @@ void ContainerWindow::updateRows() {
 
     QPushButton *button = new QPushButton{container->name};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    connect(button, &QPushButton::clicked, this,
-            [this]() { emit containerSelected(); }); // TODO: Pass the container.
+    connect(button, &QPushButton::clicked, this, [this, container]() {
+      emit containerSelected(container.get());
+    }); // TODO: Pass the container.
 
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);
@@ -91,6 +89,7 @@ void ContainerWindow::updateRows() {
     box->addWidget(deleteButton);
     rows->addWidget(row);
   }
+  rows->addWidget(newContainerButton);
 }
 
 void ContainerWindow::clearRows() {

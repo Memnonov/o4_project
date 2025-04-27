@@ -7,6 +7,7 @@
 #include <qabstractbutton.h>
 #include <qboxlayout.h>
 #include <qframe.h>
+#include <qlabel.h>
 #include <qlineedit.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
@@ -18,7 +19,7 @@
 #include <qwidget.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
-    : QFrame{parent}, layout{new QVBoxLayout{this}},
+    : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
       scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr},
       filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ},
       itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton} {
@@ -37,10 +38,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   closeButton->setFlat(true);
   connect(closeButton, &QPushButton::clicked, this,
           &ItemsWindow::closeButtonPushed);
-  QLabel *itemsLabel = new QLabel{"<b>Items</b>"};
-  itemsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  itemsLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  topRow->addWidget(itemsLabel);
+  title->setText("No container selected");
+  title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+  topRow->addWidget(title);
   topRow->addWidget(closeButton);
   // topRow->setLayout(topRowLayout);
   layout->addWidget(topRow);
@@ -177,4 +178,10 @@ QString ItemsWindow::cycleSortMode() {
   currentMode = (++currentMode) % sortModeToString.count();
   sortMode = static_cast<ItemsWindow::SortMode>(currentMode);
   return sortModeToString.value(sortMode, "");
+}
+
+void ItemsWindow::handleContainerSelected(Container *container) {
+  currentContainer = container;
+  title->setText(
+      QString("<b>%1</b>").arg((container) ? container->name : "null"));
 }

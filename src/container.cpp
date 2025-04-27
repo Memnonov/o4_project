@@ -7,6 +7,10 @@
 #include <qdebug.h>
 #include <utility>
 
+const QVector<std::shared_ptr<Item>> Container::getItems() const {
+  return items;
+}
+
 void Container::addItem(std::shared_ptr<Item> item) {
   items.push_back(std::move(item));
 }

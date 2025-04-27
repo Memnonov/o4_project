@@ -16,6 +16,7 @@ class Container {
 
  public:
   QString name{"Unnamed Container"};
+  const QVector<std::shared_ptr<Item>> getItems() const;
 
   explicit Container(const QString& name) : name{name} {}
 

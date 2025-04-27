@@ -3,9 +3,10 @@
 #include <qlogging.h>
 
 BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
-    : ModeFrame{parent}, model{model}, containerWindow{new ContainerWindow{model}},
-      itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
-      leftStack{new QStackedWidget}, rightStack{new QStackedWidget} {
+    : ModeFrame{parent}, model{model},
+      containerWindow{new ContainerWindow{model}}, itemsWindow{new ItemsWindow},
+      infoWindow{new ItemInfoWindow}, leftStack{new QStackedWidget},
+      rightStack{new QStackedWidget} {
   if (model) {
     qDebug() << "Browse window has a model.";
   }
@@ -26,10 +27,12 @@ void BrowseWindow::initConnections() {
           &BrowseWindow::handleItemsWindowClosed);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::updateItem);
+  connect(containerWindow, &ContainerWindow::containerSelected, itemsWindow,
+          &ItemsWindow::handleContainerSelected);
 }
 
-void BrowseWindow::handleContainerSelected() {
-  // Actually implement this.
+void BrowseWindow::handleContainerSelected(Container *container) {
+  qDebug() << "Selected container: " << container->name;
   leftStack->setCurrentWidget(itemsWindow);
 }
 

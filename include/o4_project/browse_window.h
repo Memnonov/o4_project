@@ -26,7 +26,9 @@ class BrowseWindow : public ModeFrame {
   virtual void dummyFunction() {}
   
   void initConnections();
-  void handleContainerSelected();
+
+ private slots:
+  void handleContainerSelected(Container *container);
   void handleItemsWindowClosed();
   
 };

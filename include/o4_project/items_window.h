@@ -4,6 +4,8 @@
 #define ITEMS_WINDOW_H
 
 #include "item.h"
+#include "container.h"
+#include <QLabel>
 #include <QFrame>
 #include <QObject>
 #include <QScrollArea>
@@ -28,6 +30,7 @@ public:
   }
 
 private:
+  Container* currentContainer = nullptr;
   // TODO: Get rid of dummy.
   Item dummyItem{
       "Dummy item",
@@ -42,6 +45,7 @@ private:
       {"tag", "tag", "tag"}};
 
   QVBoxLayout *layout;
+  QLabel *title;
   QToolBar *filterSortPanel;
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
@@ -67,6 +71,9 @@ private:
 signals:
   void itemSelected(Item *item);
   void itemsWindowClosed();
+
+ public slots:
+  void handleContainerSelected(Container *container);
 };
 
 #endif // !ITEMS_WINDOW_H
