@@ -39,7 +39,7 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
 
   initViewFields();
   initEditFields();
-  updateItem();
+  handleItemSelected();
 }
 
 void ItemInfoWindow::initViewFields() {
@@ -115,7 +115,7 @@ void ItemInfoWindow::toggleEditing() {
   viewFields->setVisible(!editing);
 }
 
-void ItemInfoWindow::updateItem(Item *selectedItem) {
+void ItemInfoWindow::handleItemSelected(Item *selectedItem) {
   this->item = selectedItem;
 
   if (!item) {
@@ -124,24 +124,7 @@ void ItemInfoWindow::updateItem(Item *selectedItem) {
     hideViews();
     return;
   }
-
-  title->setText(QString("<b>%1</b>").arg(item->name));
-
-  QString name{item->name};
-  viewNameLabel->setText(name);
-  editNameLabel->setText(name);
-
-  unsigned int quantity = item->quantity;
-  viewQuantityLabel->setText(QString::number(quantity));
-  editQuantityBox->setValue(quantity);
-
-  QString tags{QStringList::fromVector(item->tags).join(", ")};
-  viewTagsLabel->setText(tags);
-  editTagsLabel->setText(tags);
-
-  QString description = item->description;
-  viewDescriptionLabel->setText(description);
-  editDescriptionLabel->setText(description);
+  refresh();
   showViews();
 }
 
@@ -177,7 +160,29 @@ QScrollArea *ItemInfoWindow::makeDescriptionScrollArea() {
   auto scrollArea = new QScrollArea;
   scrollArea->setWidgetResizable(true);
   scrollArea->setAlignment(Qt::AlignTop);
-  scrollArea->setSizePolicy(QSizePolicy::Preferred,
-                                       QSizePolicy::Expanding);
+  scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
   return scrollArea;
+}
+
+void ItemInfoWindow::refresh() {
+  if (!item) {
+    return;
+  }
+  title->setText(QString("<b>%1</b>").arg(item->name));
+
+  QString name{item->name};
+  viewNameLabel->setText(name);
+  editNameLabel->setText(name);
+
+  unsigned int quantity = item->quantity;
+  viewQuantityLabel->setText(QString::number(quantity));
+  editQuantityBox->setValue(quantity);
+
+  QString tags{QStringList::fromVector(item->tags).join(", ")};
+  viewTagsLabel->setText(tags);
+  editTagsLabel->setText(tags);
+
+  QString description = item->description;
+  viewDescriptionLabel->setText(description);
+  editDescriptionLabel->setText(description);
 }

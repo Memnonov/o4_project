@@ -1,5 +1,6 @@
 #include "../include/o4_project/browse_window.h"
 #include "container_model.h"
+#include "items_window.h"
 #include <qlogging.h>
 
 BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
@@ -26,9 +27,11 @@ void BrowseWindow::initConnections() {
   connect(itemsWindow, &ItemsWindow::itemsWindowClosed, this,
           &BrowseWindow::handleItemsWindowClosed);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
-          &ItemInfoWindow::updateItem);
+          &ItemInfoWindow::handleItemSelected);
   connect(containerWindow, &ContainerWindow::containerSelected, itemsWindow,
           &ItemsWindow::handleContainerSelected);
+  connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
+          &ItemInfoWindow::handleItemSelected);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
@@ -39,5 +42,5 @@ void BrowseWindow::handleContainerSelected(Container *container) {
 void BrowseWindow::handleItemsWindowClosed() {
   // Actually implement this.
   leftStack->setCurrentWidget(containerWindow);
-  infoWindow->updateItem();
+  infoWindow->handleItemSelected();
 }

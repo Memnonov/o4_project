@@ -53,6 +53,7 @@ class ItemInfoWindow : public QFrame {
   void initViewFields();
   void initEditFields();
   void initEditButton();
+  void refresh();
   void toggleEditing();
   void showViews();
   void hideViews();
@@ -60,9 +61,7 @@ class ItemInfoWindow : public QFrame {
   QScrollArea* makeDescriptionScrollArea();
 
  public slots:
-  void updateItem(Item *item = nullptr);
-
- signals:
+  void handleItemSelected(Item *item = nullptr);
 };
 
 #endif // !ITEM_INFO_WINDOW_H

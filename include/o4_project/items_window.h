@@ -23,6 +23,7 @@ class ItemsWindow : public QFrame {
 public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
+  
   void setMovingItems(bool moving) {
     this->movingItems = moving;
     updateRows();
