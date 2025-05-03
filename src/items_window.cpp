@@ -22,14 +22,16 @@ ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
-      sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
-      moveItemsButton{new QPushButton} {
+      editButton{new QPushButton}, sortMode{ItemsWindow::SortMode::AtoZ},
+      itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton},
+      editNameLine{new QLineEdit} {
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   // Setting up the top row
-  auto topRow = new QToolBar;
-  // auto topRowLayout = new QHBoxLayout;
+  auto topRow = new QWidget;
+  auto topRowLayout = new QHBoxLayout{topRow};
+
   closeButton = new QPushButton;
   auto closeIcon = QIcon{":/icons/xmark.svg"};
   if (closeIcon.isNull()) {
@@ -42,10 +44,18 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   title->setText("No container selected");
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  topRow->addWidget(title);
-  topRow->addWidget(closeButton);
+  
+  editNameLine->setPlaceholderText("Container Name");
+  initEditButton();
+  
+  topRowLayout->addWidget(title);
+  topRowLayout->addWidget(editNameLine);
+  topRowLayout->addWidget(editButton);
+  topRowLayout->addWidget(closeButton);
   // topRow->setLayout(topRowLayout);
   layout->addWidget(topRow);
+  editNameLine->setVisible(false);
+  topRow->update();
 
   // Set up filterSortPanel
   filterSortPanel->addWidget(new QLabel{"Filter: "});
@@ -96,16 +106,25 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   layout->addWidget(addDeleteWidget);
 }
 
+void ItemsWindow::initEditButton() {
+  editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
+  editButton->setFlat(true);
+  connect(editButton, &QPushButton::clicked, this, [this] () {
+    toggleEditing();
+  });
+}
+
+void ItemsWindow::toggleEditing() {
+  editing = !editing;
+  title->setVisible(!editing);
+  editNameLine->setVisible(editing);
+}
+
 void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
-  if (movingItems) {
-    qDebug() << "Creating move dummy rows!";
-  } else {
-    qDebug() << "Creating normal dummy rows!";
-  }
   // Creating dummy rows
   rows->setSpacing(0);
   buttonGroup = new QButtonGroup{this};
-  buttonGroup->setExclusive(true);
+  buttonGroup->setExclusive(!movingItems);
   // TODO(mikko): Fix asset paths.
   if (!currentContainer) {
     return;
@@ -113,6 +132,12 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   static constexpr unsigned int minHeight = 40;
   static constexpr unsigned int maxHeight = minHeight * 2;
   for (auto const &item : currentContainer->getItems()) {
+    QPushButton *moveButton;
+    if (movingItems) {
+      moveButton = new QPushButton;
+      moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    }
+
     QWidget *row = new QWidget;
     row->setMinimumHeight(minHeight); // TODO(mikko): fix magic numbers?
     row->setMaximumHeight(maxHeight);
@@ -131,6 +156,10 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     });
 
     row->setLayout(box);
+    if (movingItems && isRightWindow) {
+      box->addWidget(moveButton);
+      moveButton->setIcon(QIcon(":/icons/fast-arrow-left"));
+    }
     box->addWidget(button);
     rows->addWidget(row);
 
@@ -146,11 +175,9 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
                                  QSizePolicy::Expanding);
       box->addWidget(minusButton);
       box->addWidget(plusButton);
-    } else {
-      auto moveButton = new QPushButton;
-      moveButton->setIcon(QIcon(":/icons/fast-arrow-right"));
-      moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    } else if (!isRightWindow) {
       box->addWidget(moveButton);
+      moveButton->setIcon(QIcon(":/icons/fast-arrow-right"));
     }
   }
 }
@@ -192,8 +219,12 @@ QString ItemsWindow::cycleSortMode() {
 }
 
 void ItemsWindow::handleContainerSelected(Container *container) {
+  if (!container) {
+    return;
+  }
   currentContainer = container;
   title->setText(
       QString("<b>%1</b>").arg((container) ? container->name : "null"));
+  editNameLine->setText(container->name);
   updateRows();
 }

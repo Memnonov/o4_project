@@ -21,7 +21,7 @@
 ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea}, rows{new QVBoxLayout},
-      newContainerButton(new QPushButton) {
+      newContainerButton(new QPushButton), editNameLine{new QLineEdit} {
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initLabel();

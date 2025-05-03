@@ -1,4 +1,5 @@
 #include "../include/o4_project/move_window.h"
+#include "container_window.h"
 #include <qlabel.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
@@ -21,6 +22,7 @@ MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
   rightStack->addWidget(rightContainer);
   rightStack->addWidget(rightItems);
   rightItems->setMovingItems(true);
+  rightItems->setRightWindow(true);
   layout->addWidget(rightStack);
 
   layout->setStretch(0, 1);
@@ -32,8 +34,14 @@ void MoveWindow::initConnections() {
   using Stack = MoveWindow::Stack;
   connect(leftContainer, &ContainerWindow::containerSelected, this,
           [this]() { handleContainerSelected(Stack::left); });
+  connect(leftContainer, &ContainerWindow::containerSelected, leftItems,
+          &ItemsWindow::handleContainerSelected);
+  
   connect(rightContainer, &ContainerWindow::containerSelected, this,
           [this]() { handleContainerSelected(Stack::right); });
+  connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
+          &ItemsWindow::handleContainerSelected);
+  
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::left); });
   connect(rightItems, &ItemsWindow::itemsWindowClosed, this,

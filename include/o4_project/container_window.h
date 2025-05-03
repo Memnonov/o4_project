@@ -3,16 +3,17 @@
 #ifndef CONTAINERS_WINDOW_H
 #define CONTAINERS_WINDOW_H
 
+#include "container.h"
+#include "container_model.h"
 #include <QFrame>
+#include <QLineEdit>
 #include <QObject>
+#include <QScrollArea>
 #include <memory>
 #include <qboxlayout.h>
-#include <QScrollArea>
 #include <qcontainerfwd.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
-#include "container.h"
-#include "container_model.h"
 
 class ContainerWindow : public QFrame {
   Q_OBJECT;
@@ -24,18 +25,19 @@ class ContainerWindow : public QFrame {
  private:
   ContainerModel *model;
   QVBoxLayout *rows;
-  QVBoxLayout* layout;
-  QScrollArea* scrollArea;
-  QPushButton* newContainerButton;
-  
+  QVBoxLayout *layout;
+  QScrollArea *scrollArea;
+  QPushButton *newContainerButton;
+  QLineEdit *editNameLine;
+
   void initLabel();
   void initNewContainerButton(QVBoxLayout *rows);
   void updateRows();
   void clearRows();
   const QVector<std::shared_ptr<Container>> getContainers() const;
 
-  signals:
-    void containerSelected(Container *container);
+ signals:
+  void containerSelected(Container *container);
 };
 
 #endif // !CONTAINERS_WINDOW_H

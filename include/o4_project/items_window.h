@@ -5,6 +5,7 @@
 
 #include "item.h"
 #include "container.h"
+#include <QLineEdit>
 #include <QLabel>
 #include <QFrame>
 #include <QObject>
@@ -29,36 +30,47 @@ public:
     updateRows();
     moveItemsButton->setVisible(moving);
     addDeleteWidget->setVisible(!moving);
+    buttonGroup->setExclusive(!moving);
+  }
+
+  void setRightWindow(bool isRightWindow) {
+    this->isRightWindow = isRightWindow;
   }
 
 private:
-  Container* currentContainer = nullptr;
-
-  QVBoxLayout *layout;
-  QLabel *title;
-  QToolBar *filterSortPanel;
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
       {ItemsWindow::SortMode::AtoZ, "A-Z"},
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
-  QVBoxLayout *itemRows;
+  
   bool movingItems = false;
-  QButtonGroup *buttonGroup;
+  bool isRightWindow = false;
+  bool editing = false;
   SortMode sortMode;
+  
+  Container* currentContainer = nullptr;
+  QVBoxLayout *layout;
+  QLabel *title;
+  QToolBar *filterSortPanel;
+  QVBoxLayout *itemRows;
+  QButtonGroup *buttonGroup;
   QScrollArea *scrollArea;
   QPushButton *closeButton;
+  QPushButton *editButton;
   QPushButton *selectedItemButton;
   QPushButton *bottomDeleteButton;
   QPushButton *moveItemsButton;
   QWidget *addDeleteWidget;
-  // QHBoxLayout
+  QLineEdit *editNameLine;
 
   void createDummyRows(QVBoxLayout *rows);
   void updateRows();
+  void initEditButton();
   QString cycleSortMode();
   void closeButtonPushed();
+  void toggleEditing();
 
 signals:
   void itemSelected(Item *item);

@@ -17,7 +17,7 @@
     <file>icons/help-square.svg</file>
     <file>icons/log-out.svg</file>
     <file>icons/fast-arrow-right.svg</file>
-
+    <file>icons/fast-arrow-left.svg</file>
     <file>icons/plus-square.svg</file>
     <file>icons/minus-square.svg</file>
   </qresource>
