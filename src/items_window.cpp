@@ -20,9 +20,10 @@
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
-      scrollArea{new QScrollArea{this}}, selectedItemButton{nullptr},
-      filterSortPanel{new QToolBar}, sortMode{ItemsWindow::SortMode::AtoZ},
-      itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton} {
+      addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
+      selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
+      sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
+      moveItemsButton{new QPushButton} {
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -77,9 +78,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   moveItemsButton->setIcon(QIcon(":/icons/arrow-separate"));
   moveItemsButton->setText("Move items");
   layout->addWidget(moveWidget);
-  auto bottomRow = new QWidget;
+
+  // auto bottomRow = new QWidget;
   auto bottomRowLayout = new QHBoxLayout;
-  bottomRow->setLayout(bottomRowLayout);
+  addDeleteWidget->setLayout(bottomRowLayout);
   auto bottomAddButton = new QPushButton{"Add"};
   bottomAddButton->setIcon(QIcon(":/icons/plus.svg"));
   bottomRowLayout->addWidget(bottomAddButton);
@@ -91,7 +93,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   }
   bottomDeleteButton->setIcon(deleteIcon);
   bottomRowLayout->addWidget(bottomDeleteButton);
-  layout->addWidget(bottomRow);
+  layout->addWidget(addDeleteWidget);
 }
 
 void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
@@ -118,7 +120,8 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
 
-    QPushButton *button = new QPushButton{item->name};
+    QPushButton *button =
+        new QPushButton{QString("%1 × %2").arg(item->name).arg(item->quantity)};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
     buttonGroup->addButton(button);

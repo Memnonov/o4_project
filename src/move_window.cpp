@@ -7,7 +7,8 @@
 MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
     : ModeFrame{parent}, model{model}, leftStack{new QStackedWidget},
       middlePanel{new QWidget}, moveSelectedButton{new QPushButton},
-      rightStack{new QStackedWidget}, rightContainer{new ContainerWindow{model}},
+      rightStack{new QStackedWidget},
+      rightContainer{new ContainerWindow{model}},
       leftContainer{new ContainerWindow{model}}, leftItems{new ItemsWindow},
       rightItems{new ItemsWindow} {
   leftStack->addWidget(leftContainer);
@@ -72,7 +73,7 @@ QWidget *MoveWindow::getMiddlePanel() {
   auto panelLayout = new QVBoxLayout{middlePanel};
   // moveSelectedButton->setIcon(QIcon(":/icons/arrow-separate.svg"));
   moveSelectedButton->setContentsMargins(0, 0, 0, 0);
-  moveSelectedButton->setText( "→\n←");
+  moveSelectedButton->setText("→\n←");
   moveSelectedButton->setSizePolicy(QSizePolicy::Preferred,
                                     QSizePolicy::Preferred);
   auto tip = new QLabel("Move all\nselected.");
