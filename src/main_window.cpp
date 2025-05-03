@@ -17,10 +17,10 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, model{new ContainerModel{this}},
+    : QMainWindow{parent}, model{new ContainerModel{this}}, statusBar{new StatusBar},
       mainStack{new QStackedWidget}, aboutWindow{new AboutWindow},
       tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
-      browseWindow{new BrowseWindow{model}},
+      browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
       navigationPanel{new NavigationPanel},
       containerWindow{new ContainerWindow{model}},
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
@@ -33,14 +33,18 @@ MainWindow::MainWindow(QWidget *parent)
   connect(navigationPanel, &NavigationPanel::buttonPressed, this,
           &MainWindow::handleNavigation);
   layout->addWidget(navigationPanel);
-  initMainStack();
-  layout->addWidget(mainStack);
+  initMainArea();
+
+  layout->addWidget(mainArea);
 
   layout->setStretch(0, 1);
   layout->setStretch(1, 4);
 }
 
-void MainWindow::initMainStack() {
+void MainWindow::initMainArea() {
+  mainArea->setLayout(new QVBoxLayout);
+  mainArea->layout()->addWidget(statusBar);
+  mainArea->layout()->addWidget(mainStack);
   mainStack->addWidget(browseWindow);
   mainStack->addWidget(searchWindow);
   mainStack->addWidget(moveWindow);

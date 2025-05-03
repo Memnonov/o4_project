@@ -13,7 +13,7 @@
 #include <qwidget.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
-    : title{new QLabel}, layout{new QVBoxLayout{this}}, tip{new QLabel{}},
+    : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}}, tip{new QLabel{}},
       topPanel{new QWidget}, editButton{new QPushButton},
       viewFields{new QWidget}, viewNameLabel{new QLabel},
       viewQuantityLabel{new QLabel}, viewTagsLabel{new QLabel},

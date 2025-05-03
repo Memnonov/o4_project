@@ -20,5 +20,7 @@
     <file>icons/fast-arrow-left.svg</file>
     <file>icons/plus-square.svg</file>
     <file>icons/minus-square.svg</file>
+    <file>icons/undo.svg</file>
+    <file>icons/redo.svg</file>
   </qresource>
 </RCC>

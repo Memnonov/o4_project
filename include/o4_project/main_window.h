@@ -20,6 +20,7 @@
 #include "browse_window.h"
 #include "items_window.h"
 #include "search_window.h"
+#include "status_bar.h"
 #include "tutorial_window.h"
 #include "about_window.h"
 #include "container_model.h"
@@ -33,12 +34,14 @@ class MainWindow : public QMainWindow {
 
  private:
   ContainerModel *model;
+  QWidget *mainArea;
   QStackedWidget *mainStack;
   BrowseWindow *browseWindow;
   SearchWindow *searchWindow;
   MoveWindow *moveWindow;
   TutorialWindow *tutorialWindow;
   AboutWindow *aboutWindow;
+  StatusBar *statusBar;
   
   NavigationPanel *navigationPanel;
   ContainerWindow *containerWindow;
@@ -51,7 +54,7 @@ class MainWindow : public QMainWindow {
   QFrame* leftWindowFrame;
   QFrame* rightWindowFrame;
 
-  void initMainStack();
+  void initMainArea();
 
  private slots:
   void handleNavigation(NavigationPanel::NavAction action);
