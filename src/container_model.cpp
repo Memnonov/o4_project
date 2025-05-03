@@ -12,6 +12,7 @@ ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
 };
 
 
+// TODO: Maybe just return a simple view like QVector<Container*> ?
 const QVector<std::shared_ptr<Container>>& ContainerModel::getContainers() const {
   return containers;
 }

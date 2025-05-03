@@ -93,11 +93,11 @@ void ContainerWindow::updateRows() {
 }
 
 void ContainerWindow::clearRows() {
-  QLayoutItem *row;
-  while ((row = rows->takeAt(0)) != nullptr) {
-    row->widget()->deleteLater();
+  QLayoutItem *item;
+  while ((item = rows->takeAt(0)) != nullptr) {
+    item->widget()->deleteLater();
   }
-  delete row;
+  delete item;
 }
 
 const QVector<std::shared_ptr<Container>>
