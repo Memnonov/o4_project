@@ -73,7 +73,7 @@ private:
   void toggleEditing();
 
 signals:
-  void itemSelected(Item *item);
+  void itemSelected(Item *item, Container *container);
   void itemsWindowClosed();
 
  public slots:

@@ -17,6 +17,7 @@
 #include <QSpinBox>
 #include <QString>
 #include "item.h"
+#include "container.h"
 
 class ItemInfoWindow : public QFrame {
   Q_OBJECT;
@@ -29,6 +30,7 @@ class ItemInfoWindow : public QFrame {
   // State
   bool editing = false;
   Item *item = nullptr;
+  Container *container = nullptr;
   
   QLabel *title;
   QLabel *tip;
@@ -61,7 +63,7 @@ class ItemInfoWindow : public QFrame {
   QScrollArea* makeDescriptionScrollArea();
 
  public slots:
-  void handleItemSelected(Item *item = nullptr);
+  void handleItemSelected(Item *item = nullptr, Container *container = nullptr);
 };
 
 #endif // !ITEM_INFO_WINDOW_H

@@ -151,7 +151,7 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     button->setCheckable(true);
     buttonGroup->addButton(button);
     connect(button, &QPushButton::clicked, this, [this, item]() {
-      emit itemSelected(item.get());
+      emit itemSelected(item.get(), currentContainer);
       bottomDeleteButton->setEnabled(true);
     });
 

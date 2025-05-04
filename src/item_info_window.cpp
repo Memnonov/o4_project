@@ -5,6 +5,7 @@
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
+#include <qboxlayout.h>
 #include <qframe.h>
 #include <qlogging.h>
 #include <qnamespace.h>
@@ -27,11 +28,12 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
   tip->setText("Select a container from the left to browse items.");
   tip->setWordWrap(true);
 
-  topPanel->setLayout(new QHBoxLayout);
+  auto topPanelLayout = new QHBoxLayout{topPanel};
+  // topPanel->setLayout(new QHBoxLayout);
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initEditButton();
-  topPanel->layout()->addWidget(title);
-  topPanel->layout()->addWidget(editButton);
+  topPanelLayout->addWidget(title);
+  topPanelLayout->addWidget(editButton, 0, Qt::AlignTop);
 
   layout->addWidget(topPanel);
   tip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -115,10 +117,11 @@ void ItemInfoWindow::toggleEditing() {
   viewFields->setVisible(!editing);
 }
 
-void ItemInfoWindow::handleItemSelected(Item *selectedItem) {
+void ItemInfoWindow::handleItemSelected(Item *selectedItem, Container *container) {
   this->item = selectedItem;
+  this->container = container;
 
-  if (!item) {
+  if (!item || !container) {
     title->setText("<b>Item info</b>");
     title->setAlignment(Qt::AlignVCenter);
     hideViews();
@@ -168,7 +171,7 @@ void ItemInfoWindow::refresh() {
   if (!item) {
     return;
   }
-  title->setText(QString("<b>%1</b>").arg(item->name));
+  title->setText(QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
 
   QString name{item->name};
   viewNameLabel->setText(name);
