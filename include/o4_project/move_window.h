@@ -36,6 +36,7 @@ private slots:
   QWidget* getMiddlePanel();
   void handleContainerSelected(Stack stack);
   void handleContainerClosed(Stack stack);
+  void updateMoveSelectedButton();
 };
 
 #endif // !MOVE_WINDOW_H

@@ -12,6 +12,7 @@
 #include <QScrollArea>
 #include <qboxlayout.h>
 #include <qbuttongroup.h>
+#include <qcontainerfwd.h>
 #include <qhash.h>
 #include <qlogging.h>
 #include <qpushbutton.h>
@@ -37,6 +38,10 @@ public:
     this->isRightWindow = isRightWindow;
   }
 
+  bool hasContainerSelected() const {
+    return currentContainer != nullptr;
+  }
+
 private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
@@ -44,6 +49,8 @@ private:
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
+
+  QVector<Item*> selectedItems;
   
   bool movingItems = false;
   bool isRightWindow = false;

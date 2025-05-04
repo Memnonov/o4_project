@@ -21,6 +21,7 @@ class ContainerWindow : public QFrame {
  public:
   explicit ContainerWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~ContainerWindow() = default;
+  bool hasContainerSelected();
 
  private:
   ContainerModel *model;

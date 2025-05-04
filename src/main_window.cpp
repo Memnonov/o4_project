@@ -11,6 +11,7 @@
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlogging.h>
+#include <qobject.h>
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
 #include <qstackedwidget.h>
@@ -26,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
       searchWindow{new SearchWindow} {
+  qRegisterMetaType<Item*>("Item*");
+  
   auto *central = new QWidget(this);
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);

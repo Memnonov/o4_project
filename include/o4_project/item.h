@@ -6,6 +6,7 @@
 #include <QString>
 #include <QStringList>
 #include <QStringLiteral>
+#include <qobject.h>
 #include <qstringliteral.h>
 
 class Item {
@@ -25,5 +26,7 @@ public:
 
   explicit Item(const QString name) : Item(name, 1, "", {}) {}
 };
+
+Q_DECLARE_METATYPE(Item*);
 
 #endif // !ITEM_H

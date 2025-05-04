@@ -36,12 +36,12 @@ void MoveWindow::initConnections() {
           [this]() { handleContainerSelected(Stack::left); });
   connect(leftContainer, &ContainerWindow::containerSelected, leftItems,
           &ItemsWindow::handleContainerSelected);
-  
+
   connect(rightContainer, &ContainerWindow::containerSelected, this,
           [this]() { handleContainerSelected(Stack::right); });
   connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
           &ItemsWindow::handleContainerSelected);
-  
+
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::left); });
   connect(rightItems, &ItemsWindow::itemsWindowClosed, this,
@@ -84,6 +84,7 @@ QWidget *MoveWindow::getMiddlePanel() {
   moveSelectedButton->setText("→\n←");
   moveSelectedButton->setSizePolicy(QSizePolicy::Preferred,
                                     QSizePolicy::Preferred);
+  moveSelectedButton->setEnabled(false);
   auto tip = new QLabel("Move all\nselected.");
   tip->setAlignment(Qt::AlignCenter);
   panelLayout->addStretch();
@@ -91,4 +92,11 @@ QWidget *MoveWindow::getMiddlePanel() {
   panelLayout->addWidget(moveSelectedButton);
   panelLayout->addStretch();
   return middlePanel;
+}
+
+void MoveWindow::updateMoveSelectedButton() {
+  if (!leftItems->hasContainerSelected() ||
+      !rightItems->hasContainerSelected()) {
+    moveSelectedButton->setEnabled(false);
+  }
 }
