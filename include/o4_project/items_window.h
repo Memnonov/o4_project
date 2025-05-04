@@ -41,6 +41,8 @@ public:
   bool hasContainerSelected() const {
     return currentContainer != nullptr;
   }
+  
+  bool hasItemSelected() const;
 
 private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
@@ -49,6 +51,7 @@ private:
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
+
 
   QVector<Item*> selectedItems;
   

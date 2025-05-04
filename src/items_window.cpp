@@ -44,10 +44,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   title->setText("No container selected");
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  
+
   editNameLine->setPlaceholderText("Container Name");
   initEditButton();
-  
+
   topRowLayout->addWidget(title);
   topRowLayout->addWidget(editNameLine);
   topRowLayout->addWidget(editButton);
@@ -109,9 +109,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 void ItemsWindow::initEditButton() {
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
   editButton->setFlat(true);
-  connect(editButton, &QPushButton::clicked, this, [this] () {
-    toggleEditing();
-  });
+  connect(editButton, &QPushButton::clicked, this,
+          [this]() { toggleEditing(); });
 }
 
 void ItemsWindow::toggleEditing() {
@@ -149,9 +148,12 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
         new QPushButton{QString("%1 × %2").arg(item->name).arg(item->quantity)};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
+    button->setProperty("item", QVariant::fromValue(item.get()));
     buttonGroup->addButton(button);
-    connect(button, &QPushButton::clicked, this, [this, item]() {
+    connect(button, &QPushButton::clicked, this, [this, item, button]() {
       emit itemSelected(item.get(), currentContainer);
+      qDebug() << "Clicked on item: "
+               << button->property("item").value<Item *>()->name;
       bottomDeleteButton->setEnabled(true);
     });
 
@@ -208,6 +210,7 @@ void ItemsWindow::closeButtonPushed() {
     checked->setChecked(false);
   }
   buttonGroup->setExclusive(true);
+  currentContainer = nullptr;
   emit itemsWindowClosed();
 }
 
@@ -227,4 +230,13 @@ void ItemsWindow::handleContainerSelected(Container *container) {
       QString("<b>%1</b>").arg((container) ? container->name : "null"));
   editNameLine->setText(container->name);
   updateRows();
+}
+
+bool ItemsWindow::hasItemSelected() const {
+  for (auto *button : buttonGroup->buttons()) {
+    if (button->isChecked()) {
+      return true;
+    }
+  }
+  return false;
 }

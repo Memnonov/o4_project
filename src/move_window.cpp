@@ -36,11 +36,24 @@ void MoveWindow::initConnections() {
           [this]() { handleContainerSelected(Stack::left); });
   connect(leftContainer, &ContainerWindow::containerSelected, leftItems,
           &ItemsWindow::handleContainerSelected);
-
   connect(rightContainer, &ContainerWindow::containerSelected, this,
           [this]() { handleContainerSelected(Stack::right); });
   connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
           &ItemsWindow::handleContainerSelected);
+
+  // Toggling the batch move button
+  connect(leftContainer, &ContainerWindow::containerSelected, this,
+          &MoveWindow::updateMoveSelectedButton);
+  connect(leftItems, &ItemsWindow::itemSelected, this,
+          &MoveWindow::updateMoveSelectedButton);
+  connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
+          &MoveWindow::updateMoveSelectedButton);
+  connect(rightContainer, &ContainerWindow::containerSelected, this,
+          &MoveWindow::updateMoveSelectedButton);
+  connect(rightItems, &ItemsWindow::itemSelected, this,
+          &MoveWindow::updateMoveSelectedButton);
+  connect(rightItems, &ItemsWindow::itemsWindowClosed, this,
+          &MoveWindow::updateMoveSelectedButton);
 
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::left); });
@@ -98,5 +111,11 @@ void MoveWindow::updateMoveSelectedButton() {
   if (!leftItems->hasContainerSelected() ||
       !rightItems->hasContainerSelected()) {
     moveSelectedButton->setEnabled(false);
+    return;
   }
+  if (leftItems->hasItemSelected() || rightItems->hasItemSelected()) {
+    moveSelectedButton->setEnabled(true);
+    return;
+  }
+  moveSelectedButton->setEnabled(false);
 }
