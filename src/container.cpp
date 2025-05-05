@@ -8,8 +8,11 @@
 #include <QtLogging>
 #include <utility>
 
-const QVector<std::shared_ptr<Item>> Container::getItems() const {
-  qDebug() << "Getting " << items.size() << " items from " << this->name;
+QVector<Item*> Container::getItems() const {
+  QVector<Item*> items;
+  for (auto const &item : this->items) {
+    items.push_back(item.get());
+  }
   return items;
 }
 

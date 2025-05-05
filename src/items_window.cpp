@@ -148,10 +148,10 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
         new QPushButton{QString("%1 × %2").arg(item->name).arg(item->quantity)};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     button->setCheckable(true);
-    button->setProperty("item", QVariant::fromValue(item.get()));
+    button->setProperty("item", QVariant::fromValue(item));
     buttonGroup->addButton(button);
     connect(button, &QPushButton::clicked, this, [this, item, button]() {
-      emit itemSelected(item.get(), currentContainer);
+      emit itemSelected(item, currentContainer);
       qDebug() << "Clicked on item: "
                << button->property("item").value<Item *>()->name;
       bottomDeleteButton->setEnabled(true);
