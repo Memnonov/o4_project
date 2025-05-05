@@ -130,8 +130,12 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   }
   static constexpr unsigned int minHeight = 40;
   static constexpr unsigned int maxHeight = minHeight * 2;
+
+  auto items = currentContainer->getItems();
+  
   for (auto const &item : currentContainer->getItems()) {
     QPushButton *moveButton;
+    
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -150,6 +154,11 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
     button->setCheckable(true);
     button->setProperty("item", QVariant::fromValue(item));
     buttonGroup->addButton(button);
+    if (item->favourite) {
+      button->setIcon(QIcon{":/icons/star-solid.svg"});
+    }
+
+    
     connect(button, &QPushButton::clicked, this, [this, item, button]() {
       emit itemSelected(item, currentContainer);
       qDebug() << "Clicked on item: "
@@ -243,4 +252,8 @@ bool ItemsWindow::hasItemSelected() const {
 
 void ItemsWindow::setCanMoveItems(bool canMove) {
   moveItemsButton->setEnabled(canMove);
+}
+
+void ItemsWindow::sortItems(QVector<Item*> &items) {
+
 }

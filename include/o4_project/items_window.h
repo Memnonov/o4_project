@@ -81,6 +81,7 @@ private:
   QString cycleSortMode();
   void closeButtonPushed();
   void toggleEditing();
+  void sortItems(QVector<Item*> &items);
 
 signals:
   void itemSelected(Item *item, Container *container);

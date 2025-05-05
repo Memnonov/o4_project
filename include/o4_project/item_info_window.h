@@ -37,6 +37,7 @@ class ItemInfoWindow : public QFrame {
   QWidget *topPanel;
   QVBoxLayout *layout;
   QPushButton *editButton;
+  QPushButton *favouriteButton;
   
   // View mode.
   QWidget *viewFields;
@@ -55,15 +56,18 @@ class ItemInfoWindow : public QFrame {
   void initViewFields();
   void initEditFields();
   void initEditButton();
+  void initFavouriteButton();
   void refresh();
   void toggleEditing();
   void showViews();
   void hideViews();
   void setFieldsNull();
+  void updateFavouriteButton();
   QScrollArea* makeDescriptionScrollArea();
 
  public slots:
   void handleItemSelected(Item *item = nullptr, Container *container = nullptr);
+  void handleFavouriteButtonClicked();
 };
 
 #endif // !ITEM_INFO_WINDOW_H

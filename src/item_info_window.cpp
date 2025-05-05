@@ -14,24 +14,27 @@
 #include <qwidget.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
-    : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}}, tip{new QLabel{}},
-      topPanel{new QWidget}, editButton{new QPushButton},
-      viewFields{new QWidget}, viewNameLabel{new QLabel},
-      viewQuantityLabel{new QLabel}, viewTagsLabel{new QLabel},
-      viewDescriptionLabel{new QLabel}, editFields{new QWidget},
-      editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
-      editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
+    : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}},
+      tip{new QLabel{}}, topPanel{new QWidget}, editButton{new QPushButton},
+      favouriteButton{new QPushButton}, viewFields{new QWidget},
+      viewNameLabel{new QLabel}, viewQuantityLabel{new QLabel},
+      viewTagsLabel{new QLabel}, viewDescriptionLabel{new QLabel},
+      editFields{new QWidget}, editNameLabel{new QLineEdit},
+      editQuantityBox{new QSpinBox}, editTagsLabel{new QLineEdit},
+      editDescriptionLabel(new QTextEdit) {
   layout->setAlignment(Qt::AlignTop);
   setFrameShape(StyledPanel);
+
+  initFavouriteButton();
+  initEditButton();
 
   tip->setAlignment(Qt::AlignCenter);
   tip->setText("Select a container from the left to browse items.");
   tip->setWordWrap(true);
 
   auto topPanelLayout = new QHBoxLayout{topPanel};
-  // topPanel->setLayout(new QHBoxLayout);
+  topPanelLayout->addWidget(favouriteButton);
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  initEditButton();
   topPanelLayout->addWidget(title);
   topPanelLayout->addWidget(editButton, 0, Qt::AlignTop);
 
@@ -117,7 +120,8 @@ void ItemInfoWindow::toggleEditing() {
   viewFields->setVisible(!editing);
 }
 
-void ItemInfoWindow::handleItemSelected(Item *selectedItem, Container *container) {
+void ItemInfoWindow::handleItemSelected(Item *selectedItem,
+                                        Container *container) {
   this->item = selectedItem;
   this->container = container;
 
@@ -131,11 +135,13 @@ void ItemInfoWindow::handleItemSelected(Item *selectedItem, Container *container
   showViews();
 }
 
+// TODO: Combine this and the one below? : D
 void ItemInfoWindow::showViews() {
   viewFields->setVisible(!editing);
   editFields->setVisible(editing);
   tip->setVisible(false);
   editButton->setVisible(true);
+  favouriteButton->setVisible(true);
 }
 
 void ItemInfoWindow::hideViews() {
@@ -143,10 +149,11 @@ void ItemInfoWindow::hideViews() {
   editFields->setVisible(false);
   tip->setVisible(true);
   editButton->setVisible(false);
+  favouriteButton->setVisible(false);
 }
 
 // This is mostly for debugging use.
-// You shouldn't see nulls in the app.
+// You shouldn't see nulls in the app anymore.
 void ItemInfoWindow::setFieldsNull() {
   for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel,
                      viewDescriptionLabel}) {
@@ -171,7 +178,8 @@ void ItemInfoWindow::refresh() {
   if (!item) {
     return;
   }
-  title->setText(QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
+  title->setText(
+      QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
 
   QString name{item->name};
   viewNameLabel->setText(name);
@@ -188,4 +196,20 @@ void ItemInfoWindow::refresh() {
   QString description = item->description;
   viewDescriptionLabel->setText(description);
   editDescriptionLabel->setText(description);
+  updateFavouriteButton();
+}
+
+void ItemInfoWindow::initFavouriteButton() {
+  favouriteButton->setIcon(QIcon{":/icons/star.svg"});
+  favouriteButton->setFlat(true);
+}
+
+void ItemInfoWindow::updateFavouriteButton() {
+  auto icon = QString(":/icons/%1.svg").arg(item->favourite ? "star-solid" : "star");
+  favouriteButton->setIcon(QIcon{icon});
+}
+
+void ItemInfoWindow::handleFavouriteButtonClicked() {
+  qDebug() << "Clicked favourite button.";
+  updateFavouriteButton();
 }
