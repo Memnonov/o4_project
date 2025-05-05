@@ -15,6 +15,9 @@ class StatusBar : public QWidget {
  public:
   explicit StatusBar(QWidget *parent = nullptr);
 
+ public slots:
+  void updateStatus(QString message);
+
  signals:
   void refresh();
   void undoClicked();

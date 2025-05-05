@@ -65,6 +65,7 @@ void MainWindow::initConnections() {
   connect(statusBar, &StatusBar::redoClicked, model, &ContainerModel::handleRedo);
   connect(model, &ContainerModel::modelChanged, browseWindow, &BrowseWindow::refresh);
   connect(model, &ContainerModel::modelChanged, moveWindow, &MoveWindow::refresh);
+  connect(model, &ContainerModel::modelChanged, statusBar, &StatusBar::updateStatus);
 }
 
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {

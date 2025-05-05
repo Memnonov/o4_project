@@ -40,3 +40,7 @@ void StatusBar::initUndoButtons() {
     emit redoClicked();
   });
 }
+
+void StatusBar::updateStatus(QString message) {
+  statusMessage->setText(message);
+}

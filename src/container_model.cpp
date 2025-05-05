@@ -7,13 +7,18 @@
 #include <functional>
 #include <memory>
 #include <qlogging.h>
+#include <qundostack.h>
 #include <utility>
 
 void ContainerModel::initDefaultInventory() {
   containers = JSONUtils::parseInventoryFromFile("./data/data.json");
 }
 
-ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {};
+ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
+  connect(&undoStack, &QUndoStack::indexChanged, this, [this] () {
+    emit modelChanged(getStatusMessage());
+  });
+};
 
 bool ContainerModel::contains(Container *container) {
   for (auto const &cont : containers) {
@@ -38,9 +43,17 @@ void ContainerModel::removeContainer(std::shared_ptr<Container> container) {
   if (containers.contains(container)){
     qDebug() << "Removing container.";
   }
-  qDebug() << "Amount of containers before: " << containers.size();
   containers.removeAll(container);
-  qDebug() << "Amount of containers after: " << containers.size();
+  QMetaObject::invokeMethod(this, [this]() {
+    emit this->modelChanged(this->getStatusMessage());
+  });
+}
+
+QString ContainerModel::getStatusMessage() const {
+  if (undoStack.count() == 0 || undoStack.index() == 0) {
+    return "Checking your loot.";
+  }
+  return undoStack.command(undoStack.index() - 1)->text();
 }
 
 void ContainerModel::addItem(std::shared_ptr<Item> item,
@@ -116,14 +129,13 @@ class ContainerModel::NewContainerCmd : public QUndoCommand {
  public:
   NewContainerCmd(ContainerModel *model) : model{model} {
     container = std::make_shared<Container>();
+    setText("Created a new command!");
   }
   void undo() override { 
     model->removeContainer(container);
-    emit model->modelChanged();
   }
   void redo() override {
     model->addContainer(container);
-    emit model->modelChanged();
   }
  private:
   ContainerModel *model;

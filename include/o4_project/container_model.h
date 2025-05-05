@@ -27,6 +27,7 @@ class ContainerModel : public QObject {
   void initDefaultInventory();
   void newContainerRequest();
   bool contains(Container *container);
+  QString getStatusMessage() const;
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
@@ -40,7 +41,7 @@ class ContainerModel : public QObject {
   void handleRedo() { undoStack.redo(); qDebug() << "handling redo"; }
 
  signals:
-  void modelChanged();
+  void modelChanged(QString message);
 
  private:
   // QVector insists on copyable elements, hence shared.
