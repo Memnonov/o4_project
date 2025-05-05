@@ -58,6 +58,7 @@ class MainWindow : public QMainWindow {
 
  private slots:
   void handleNavigation(NavigationPanel::NavAction action);
+  void initConnections();
 };
 
 #endif  // !MAIN_WINDOW_H

@@ -24,6 +24,8 @@ class StatusBar : public QWidget {
   QLabel *statusMessage;
   QPushButton *undoButton;
   QPushButton *redoButton;
+
+  void initUndoButtons();
 };
 
 #endif // !STATUS_BAR_H

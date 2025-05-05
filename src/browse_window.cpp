@@ -47,4 +47,8 @@ void BrowseWindow::handleItemsWindowClosed() {
 
 void BrowseWindow::refresh() {
   containerWindow->updateRows();
+  if (!model->contains(itemsWindow->getCurrentContainer())) {
+    leftStack->setCurrentWidget(containerWindow);
+    infoWindow->handleItemSelected();
+  }
 }

@@ -111,11 +111,19 @@ ItemsWindow::ItemsWindow(QWidget *parent)
           [this]() { confirmDeleteItem(); });
 }
 
+Container *ItemsWindow::getCurrentContainer() {
+  return currentContainer;
+}
+
 void ItemsWindow::initEditButton() {
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
   editButton->setFlat(true);
   connect(editButton, &QPushButton::clicked, this,
           [this]() { toggleEditing(); });
+}
+
+void ItemsWindow::refresh() {
+  updateRows();
 }
 
 void ItemsWindow::toggleEditing() {

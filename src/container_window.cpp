@@ -54,7 +54,6 @@ void ContainerWindow::initNewContainerButton() {
   newContainerButton->setMinimumHeight(40);
   connect(newContainerButton, &QPushButton::clicked, this, [this] () {
     this->model->newContainerRequest();
-    this->updateRows();
   });
 }
 

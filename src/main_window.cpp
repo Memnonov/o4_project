@@ -2,6 +2,7 @@
 
 #include "../include/o4_project/main_window.h"
 #include "about_window.h"
+#include "browse_window.h"
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QStackedWidget>
@@ -36,8 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);
 
-  connect(navigationPanel, &NavigationPanel::buttonPressed, this,
-          &MainWindow::handleNavigation);
+  initConnections();
   layout->addWidget(navigationPanel);
   initMainArea();
 
@@ -58,7 +58,15 @@ void MainWindow::initMainArea() {
   mainStack->addWidget(aboutWindow);
 }
 
-// A placeholder for actual behaviour.
+void MainWindow::initConnections() {
+  connect(navigationPanel, &NavigationPanel::buttonPressed, this,
+          &MainWindow::handleNavigation);
+  connect(statusBar, &StatusBar::undoClicked, model, &ContainerModel::handleUndo);
+  connect(statusBar, &StatusBar::redoClicked, model, &ContainerModel::handleRedo);
+  connect(model, &ContainerModel::modelChanged, browseWindow, &BrowseWindow::refresh);
+  connect(model, &ContainerModel::modelChanged, moveWindow, &MoveWindow::refresh);
+}
+
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
   using NavAction = NavigationPanel::NavAction;
   qDebug() << "Pressed navigation button: "

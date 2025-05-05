@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <qlogging.h>
 #include <utility>
 
 void ContainerModel::initDefaultInventory() {
@@ -13,6 +14,15 @@ void ContainerModel::initDefaultInventory() {
 }
 
 ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {};
+
+bool ContainerModel::contains(Container *container) {
+  for (auto const &cont : containers) {
+    if (container == cont.get()) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // TODO: Maybe just return a simple view like QVector<Container*> ?
 const QVector<std::shared_ptr<Container>> &
@@ -25,7 +35,12 @@ void ContainerModel::addContainer(std::shared_ptr<Container> container) {
 }
 
 void ContainerModel::removeContainer(std::shared_ptr<Container> container) {
+  if (containers.contains(container)){
+    qDebug() << "Removing container.";
+  }
+  qDebug() << "Amount of containers before: " << containers.size();
   containers.removeAll(container);
+  qDebug() << "Amount of containers after: " << containers.size();
 }
 
 void ContainerModel::addItem(std::shared_ptr<Item> item,
@@ -102,8 +117,14 @@ class ContainerModel::NewContainerCmd : public QUndoCommand {
   NewContainerCmd(ContainerModel *model) : model{model} {
     container = std::make_shared<Container>();
   }
-  void undo() override { model->removeContainer(container); }
-  void redo() override { model->addContainer(container); }
+  void undo() override { 
+    model->removeContainer(container);
+    emit model->modelChanged();
+  }
+  void redo() override {
+    model->addContainer(container);
+    emit model->modelChanged();
+  }
  private:
   ContainerModel *model;
   std::shared_ptr<Container> container;

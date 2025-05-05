@@ -7,6 +7,8 @@
 #include <QObject>
 #include <memory>
 #include <qcontainerfwd.h>
+#include <qlogging.h>
+#include <qtextdocument.h>
 #include <qtmetamacros.h>
 #include <QUndoStack>
 #include <QUndoCommand>
@@ -24,6 +26,7 @@ class ContainerModel : public QObject {
   ContainerModel(QObject *parent = nullptr);
   void initDefaultInventory();
   void newContainerRequest();
+  bool contains(Container *container);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
@@ -31,6 +34,13 @@ class ContainerModel : public QObject {
   void moveItem(unsigned int itemIndex, unsigned int from, unsigned int to);
   void moveItems(unsigned int contA, unsigned int contB,
                  QVector<unsigned int> itemsA, QVector<unsigned int> itemsB);
+
+ public slots:
+  void handleUndo() { undoStack.undo(); qDebug() << "handling undo"; }
+  void handleRedo() { undoStack.redo(); qDebug() << "handling redo"; }
+
+ signals:
+  void modelChanged();
 
  private:
   // QVector insists on copyable elements, hence shared.

@@ -34,8 +34,8 @@ MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
 void MoveWindow::refresh() {
   leftContainer->updateRows();
   rightContainer->updateRows();
-  leftItems->updateRows();
-  rightItems->updateRows();
+  leftItems->refresh();
+  rightItems->refresh();
 }
 
 void MoveWindow::initConnections() {

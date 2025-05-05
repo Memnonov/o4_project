@@ -30,11 +30,11 @@ class ItemsWindow : public QFrame {
 public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
-  void updateRows();
+  void refresh();
+  Container *getCurrentContainer();
   
   void setMovingItems(bool moving) {
     this->movingItems = moving;
-    updateRows();
     moveItemsButton->setVisible(moving);
     addDeleteWidget->setVisible(!moving);
     buttonGroup->setExclusive(!moving);
@@ -82,6 +82,7 @@ private:
   QWidget *addDeleteWidget;
   QLineEdit *editNameLine;
 
+  void updateRows();
   void createDummyRows(QVBoxLayout *rows);
   void initEditButton();
   QString cycleSortMode();
