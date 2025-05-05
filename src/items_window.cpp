@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <qabstractbutton.h>
 #include <qboxlayout.h>
+#include <qcontainerfwd.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -106,6 +107,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   bottomDeleteButton->setIcon(deleteIcon);
   bottomRowLayout->addWidget(bottomDeleteButton);
   layout->addWidget(addDeleteWidget);
+  connect(bottomDeleteButton, &QPushButton::clicked, this,
+          [this]() { confirmDeleteItem(); });
 }
 
 void ItemsWindow::initEditButton() {
@@ -207,8 +210,7 @@ void ItemsWindow::updateRows() {
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
-  newButton->setFlat(true),
-  newButton->setMinimumHeight(40);
+  newButton->setFlat(true), newButton->setMinimumHeight(40);
   newButton->setMinimumHeight(40);
   itemRows->addWidget(newButton);
 }
@@ -216,6 +218,7 @@ void ItemsWindow::updateRows() {
 // Kinda hacky!?
 void ItemsWindow::closeButtonPushed() {
   buttonGroup->setExclusive(false);
+  bottomDeleteButton->setEnabled(false);
   auto checked = buttonGroup->checkedButton();
   if (checked) {
     qDebug() << "Should have unchecked a button?";
@@ -233,6 +236,16 @@ QString ItemsWindow::cycleSortMode() {
   return sortModeToString.value(sortMode, "");
 }
 
+QVector<Item *> ItemsWindow::getSelectedItems() const {
+  QVector<Item *> items;
+  for (auto button : buttonGroup->buttons()) {
+    if (button->isChecked()) {
+      items.push_back(button->property("item").value<Item *>());
+    }
+  }
+  return items;
+}
+
 void ItemsWindow::handleContainerSelected(Container *container) {
   if (!container) {
     return;
@@ -245,7 +258,7 @@ void ItemsWindow::handleContainerSelected(Container *container) {
 }
 
 bool ItemsWindow::hasItemSelected() const {
-  for (auto *button : buttonGroup->buttons()) {
+  for (auto button : buttonGroup->buttons()) {
     if (button->isChecked()) {
       return true;
     }
@@ -257,7 +270,24 @@ void ItemsWindow::setCanMoveItems(bool canMove) {
   moveItemsButton->setEnabled(canMove);
 }
 
-// Very ugly, but no time to fight the autoformat ; )
+void ItemsWindow::confirmDeleteItem() {
+  QMessageBox messageBox{this};
+  messageBox.setIcon(QMessageBox::Icon::Warning);
+
+  auto items = getSelectedItems();
+  QStringList itemsString;
+  std::for_each(items.begin(), items.end(), [&itemsString](Item *item) {
+    itemsString.push_back(item->name);
+  });
+
+  messageBox.setText(
+      QString{"Delete items:<br>%1"}.arg(itemsString.join(", ")));
+  messageBox.setDefaultButton(QMessageBox::Cancel);
+  messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+  auto choice = messageBox.exec();
+}
+
+// Looks very ugly, but no time to fight the autoformat ; )
 const std::unordered_map<ItemsWindow::SortMode,
                          std::function<bool(const Item *, const Item *)>>
     ItemsWindow::comparators = {

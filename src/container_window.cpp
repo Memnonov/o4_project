@@ -113,7 +113,7 @@ ContainerWindow::getContainers() const {
 void ContainerWindow::confirmDelete(Container *container) {
   QMessageBox messageBox{this};
   messageBox.setIcon(QMessageBox::Icon::Warning);
-  messageBox.setText(QString{"Delete container: %1"}.arg(container->name));
+  messageBox.setText(QString{"Delete items: %1"}.arg(container->name));
   messageBox.setDefaultButton(QMessageBox::Cancel);
   messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
   auto choice = messageBox.exec();

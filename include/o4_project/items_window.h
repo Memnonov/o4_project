@@ -20,6 +20,9 @@
 #include <qscrollarea.h>
 #include <qtoolbar.h>
 #include <unordered_map>
+#include <QMessageBox>
+#include <QVector>
+#include <QStringList>
 
 class ItemsWindow : public QFrame {
   Q_OBJECT;
@@ -46,6 +49,8 @@ public:
   
   bool hasItemSelected() const;
 
+  QVector<Item*> getSelectedItems() const;
+
 private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
@@ -56,8 +61,6 @@ private:
   
   static const std::unordered_map<SortMode, std::function<bool(const Item*, const Item*)>> comparators;
 
-  QVector<Item*> selectedItems;
-  
   bool movingItems = false;
   bool isRightWindow = false;
   bool editing = false;
@@ -93,6 +96,7 @@ signals:
  public slots:
   void handleContainerSelected(Container *container);
   void setCanMoveItems(bool canMove);
+  void confirmDeleteItem();
 };
 
 #endif // !ITEMS_WINDOW_H
