@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QToolBar>
+#include <algorithm>
 #include <qabstractbutton.h>
 #include <qboxlayout.h>
 #include <qframe.h>
@@ -65,6 +66,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
   connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
     sortButton->setText(cycleSortMode());
+    updateRows();
     qDebug() << "Changed sort mode!";
   });
   filterSortPanel->addWidget(sortButton);
@@ -132,10 +134,11 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   static constexpr unsigned int maxHeight = minHeight * 2;
 
   auto items = currentContainer->getItems();
-  
-  for (auto const &item : currentContainer->getItems()) {
+  std::sort(items.begin(), items.end(), ItemsWindow::comparators.at(sortMode));
+
+  for (auto const &item : items) {
     QPushButton *moveButton;
-    
+
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -158,7 +161,6 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
       button->setIcon(QIcon{":/icons/star-solid.svg"});
     }
 
-    
     connect(button, &QPushButton::clicked, this, [this, item, button]() {
       emit itemSelected(item, currentContainer);
       qDebug() << "Clicked on item: "
@@ -205,6 +207,7 @@ void ItemsWindow::updateRows() {
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
+  newButton->setFlat(true),
   newButton->setMinimumHeight(40);
   newButton->setMinimumHeight(40);
   itemRows->addWidget(newButton);
@@ -254,6 +257,33 @@ void ItemsWindow::setCanMoveItems(bool canMove) {
   moveItemsButton->setEnabled(canMove);
 }
 
-void ItemsWindow::sortItems(QVector<Item*> &items) {
+// Very ugly, but no time to fight the autoformat ; )
+const std::unordered_map<ItemsWindow::SortMode,
+                         std::function<bool(const Item *, const Item *)>>
+    ItemsWindow::comparators = {
 
-}
+        {ItemsWindow::SortMode::AtoZ,
+         [](const Item *a, const Item *b) {
+           if (a->favourite != b->favourite) {
+             return a->favourite;
+           }
+           return a->name < b->name;
+         }},
+
+        {ItemsWindow::SortMode::ZtoA,
+         [](const Item *a, const Item *b) {
+           if (a->favourite != b->favourite) {
+             return a->favourite;
+           }
+           return a->name > b->name;
+         }},
+
+        {ItemsWindow::SortMode::Quantity,
+         [](const Item *a, const Item *b) {
+           if (a->favourite != b->favourite) {
+             return a->favourite;
+           }
+           return a->quantity > b->quantity;
+         }}
+
+};

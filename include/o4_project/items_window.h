@@ -10,6 +10,7 @@
 #include <QFrame>
 #include <QObject>
 #include <QScrollArea>
+#include <functional>
 #include <qboxlayout.h>
 #include <qbuttongroup.h>
 #include <qcontainerfwd.h>
@@ -18,6 +19,7 @@
 #include <qpushbutton.h>
 #include <qscrollarea.h>
 #include <qtoolbar.h>
+#include <unordered_map>
 
 class ItemsWindow : public QFrame {
   Q_OBJECT;
@@ -51,14 +53,15 @@ private:
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
-
+  
+  static const std::unordered_map<SortMode, std::function<bool(const Item*, const Item*)>> comparators;
 
   QVector<Item*> selectedItems;
   
   bool movingItems = false;
   bool isRightWindow = false;
   bool editing = false;
-  SortMode sortMode;
+  SortMode sortMode = SortMode::AtoZ;
   
   Container* currentContainer = nullptr;
   QVBoxLayout *layout;

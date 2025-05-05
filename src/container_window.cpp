@@ -49,6 +49,7 @@ void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {
   newContainerButton->setText("Add new");
   QIcon plusIcon{":/icons/plus.svg"};
   newContainerButton->setIcon(plusIcon);
+  newContainerButton->setFlat(true);
   newContainerButton->setMinimumHeight(40);
 }
 
