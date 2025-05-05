@@ -10,6 +10,7 @@
 #include <qlabel.h>
 #include <qlayoutitem.h>
 #include <qlogging.h>
+#include <qmessagebox.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpushbutton.h>
@@ -84,6 +85,9 @@ void ContainerWindow::updateRows() {
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);
     deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    connect(deleteButton, &QPushButton::clicked, this, [this, container] () {
+      confirmDelete(container.get());
+    });
 
     row->setLayout(box);
     box->addWidget(button);
@@ -104,4 +108,13 @@ void ContainerWindow::clearRows() {
 const QVector<std::shared_ptr<Container>>
 ContainerWindow::getContainers() const {
   return {};
+}
+
+void ContainerWindow::confirmDelete(Container *container) {
+  QMessageBox messageBox{this};
+  messageBox.setIcon(QMessageBox::Icon::Warning);
+  messageBox.setText(QString{"Delete container: %1"}.arg(container->name));
+  messageBox.setDefaultButton(QMessageBox::Cancel);
+  messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+  auto choice = messageBox.exec();
 }

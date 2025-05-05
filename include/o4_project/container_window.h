@@ -14,6 +14,7 @@
 #include <qcontainerfwd.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
+#include <QMessageBox>
 
 class ContainerWindow : public QFrame {
   Q_OBJECT;
@@ -36,6 +37,10 @@ class ContainerWindow : public QFrame {
   void updateRows();
   void clearRows();
   const QVector<std::shared_ptr<Container>> getContainers() const;
+
+ public slots:
+  void confirmDelete(Container *container);
+
 
  signals:
   void containerSelected(Container *container);
