@@ -1,5 +1,6 @@
 #include "../include/o4_project/move_window.h"
 #include "container_window.h"
+#include <array>
 #include <qlabel.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
@@ -43,17 +44,17 @@ void MoveWindow::initConnections() {
 
   // Toggling the batch move button
   connect(leftContainer, &ContainerWindow::containerSelected, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
   connect(leftItems, &ItemsWindow::itemSelected, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
   connect(rightContainer, &ContainerWindow::containerSelected, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
   connect(rightItems, &ItemsWindow::itemSelected, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
   connect(rightItems, &ItemsWindow::itemsWindowClosed, this,
-          &MoveWindow::updateMoveSelectedButton);
+          &MoveWindow::updateMoveButtons);
 
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::left); });
@@ -107,15 +108,19 @@ QWidget *MoveWindow::getMiddlePanel() {
   return middlePanel;
 }
 
-void MoveWindow::updateMoveSelectedButton() {
+void MoveWindow::updateMoveButtons() {
   if (!leftItems->hasContainerSelected() ||
       !rightItems->hasContainerSelected()) {
     moveSelectedButton->setEnabled(false);
+    leftItems->setCanMoveItems(false);
+    rightItems->setCanMoveItems(false);
     return;
   }
-  if (leftItems->hasItemSelected() || rightItems->hasItemSelected()) {
-    moveSelectedButton->setEnabled(true);
-    return;
-  }
-  moveSelectedButton->setEnabled(false);
+  
+  bool leftCanMove = leftItems->hasItemSelected();
+  bool rightCanMove = rightItems->hasItemSelected();
+  
+  leftItems->setCanMoveItems(leftCanMove);
+  rightItems->setCanMoveItems(rightCanMove);
+  moveSelectedButton->setEnabled(leftCanMove | rightCanMove);
 }

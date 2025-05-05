@@ -88,6 +88,7 @@ signals:
 
  public slots:
   void handleContainerSelected(Container *container);
+  void setCanMoveItems(bool canMove);
 };
 
 #endif // !ITEMS_WINDOW_H

@@ -240,3 +240,7 @@ bool ItemsWindow::hasItemSelected() const {
   }
   return false;
 }
+
+void ItemsWindow::setCanMoveItems(bool canMove) {
+  moveItemsButton->setEnabled(canMove);
+}
