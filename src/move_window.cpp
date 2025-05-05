@@ -1,6 +1,5 @@
 #include "../include/o4_project/move_window.h"
 #include "container_window.h"
-#include <array>
 #include <qlabel.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
