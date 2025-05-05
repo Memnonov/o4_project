@@ -1,30 +1,31 @@
 // Copyright [2025] Auli Jussila & Mikko Memonen
 
 #include "../include/o4_project/container_model.h"
+#include "../include/o4_project/json_utils.h"
 #include <QHash>
 #include <algorithm>
 #include <functional>
 #include <memory>
 #include <utility>
 
-ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
-  containers = JSONUtils::parseInventoryFromFile("./data/data.json");  // Good enough for this
-};
+void ContainerModel::initDefaultInventory() {
+  containers = JSONUtils::parseInventoryFromFile("./data/data.json");
+}
 
+ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {};
 
 // TODO: Maybe just return a simple view like QVector<Container*> ?
-const QVector<std::shared_ptr<Container>>& ContainerModel::getContainers() const {
+const QVector<std::shared_ptr<Container>> &
+ContainerModel::getContainers() const {
   return containers;
 }
 
-void ContainerModel::addContainer(QString name) {
-  containers.push_back(std::move(std::make_shared<Container>(name)));
+void ContainerModel::addContainer(std::shared_ptr<Container> container) {
+  containers.push_back(container);
 }
 
-void ContainerModel::removeContainer(unsigned int index) {
-  if (index < containers.size()) {
-    containers.remove(index);
-  }
+void ContainerModel::removeContainer(std::shared_ptr<Container> container) {
+  containers.removeAll(container);
 }
 
 void ContainerModel::addItem(std::shared_ptr<Item> item,
@@ -94,4 +95,20 @@ ContainerModel::getContainer(unsigned int index) const {
     return containers[index];
   }
   return nullptr;
+}
+
+class ContainerModel::NewContainerCmd : public QUndoCommand {
+ public:
+  NewContainerCmd(ContainerModel *model) : model{model} {
+    container = std::make_shared<Container>();
+  }
+  void undo() override { model->removeContainer(container); }
+  void redo() override { model->addContainer(container); }
+ private:
+  ContainerModel *model;
+  std::shared_ptr<Container> container;
+};
+
+void ContainerModel::newContainerRequest() {
+  undoStack.push(new NewContainerCmd(this));
 }

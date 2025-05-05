@@ -23,6 +23,7 @@ class ContainerWindow : public QFrame {
   explicit ContainerWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~ContainerWindow() = default;
   bool hasContainerSelected();
+  void updateRows();
 
  private:
   ContainerModel *model;
@@ -33,8 +34,7 @@ class ContainerWindow : public QFrame {
   QLineEdit *editNameLine;
 
   void initLabel();
-  void initNewContainerButton(QVBoxLayout *rows);
-  void updateRows();
+  void initNewContainerButton();
   void clearRows();
   const QVector<std::shared_ptr<Container>> getContainers() const;
 

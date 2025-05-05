@@ -13,6 +13,7 @@ class MoveWindow : public ModeFrame {
 public:
   MoveWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~MoveWindow() {}
+  void refresh();
 
 private:
   enum class Stack { right, left };

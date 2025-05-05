@@ -31,7 +31,7 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
   rowsWidget->setLayout(rows);
   rows->setSpacing(0);
   rows->setAlignment(Qt::AlignTop);
-  initNewContainerButton(rows);
+  initNewContainerButton();
   updateRows();
 
   scrollArea->setWidgetResizable(true);
@@ -46,12 +46,16 @@ void ContainerWindow::initLabel() {
   layout->addSpacing(20);
 }
 
-void ContainerWindow::initNewContainerButton(QVBoxLayout *rows) {
+void ContainerWindow::initNewContainerButton() {
   newContainerButton->setText("Add new");
   QIcon plusIcon{":/icons/plus.svg"};
   newContainerButton->setIcon(plusIcon);
   newContainerButton->setFlat(true);
   newContainerButton->setMinimumHeight(40);
+  connect(newContainerButton, &QPushButton::clicked, this, [this] () {
+    this->model->newContainerRequest();
+    this->updateRows();
+  });
 }
 
 void ContainerWindow::updateRows() {
@@ -99,6 +103,7 @@ void ContainerWindow::updateRows() {
 
 void ContainerWindow::clearRows() {
   QLayoutItem *item;
+  rows->removeWidget(newContainerButton);
   while ((item = rows->takeAt(0)) != nullptr) {
     item->widget()->deleteLater();
   }

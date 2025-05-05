@@ -8,21 +8,24 @@
 #include <memory>
 #include <qcontainerfwd.h>
 #include <qtmetamacros.h>
-#include "json_utils.h"
+#include <QUndoStack>
+#include <QUndoCommand>
+#include <qundostack.h>
 
 class ContainerModel;
 
 class ContainerModel : public QObject {
   friend class ContainerModelTests;
+  friend class NewContainerCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
  public:
   ContainerModel(QObject *parent = nullptr);
+  void initDefaultInventory();
+  void newContainerRequest();
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
-  void addContainer(QString name = "Unnamed container");
-  void removeContainer(unsigned int index);
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
   void removeItem(unsigned int itemIndex, unsigned int container);
   void moveItem(unsigned int itemIndex, unsigned int from, unsigned int to);
@@ -32,7 +35,13 @@ class ContainerModel : public QObject {
  private:
   // QVector insists on copyable elements, hence shared.
   QVector<std::shared_ptr<Container>> containers;
+  QUndoStack undoStack;
+  void addContainer(std::shared_ptr<Container>);
+  void removeContainer(std::shared_ptr<Container>);
 
+  // ----------UndoCommands----------------------
+  class NewContainerCmd;
+  
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };
 

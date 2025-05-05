@@ -14,6 +14,8 @@ class BrowseWindow : public ModeFrame {
   BrowseWindow(ContainerModel *model, QWidget *parent = nullptr); 
   ~BrowseWindow() {}
 
+  void refresh();
+
  private:
   ContainerModel *model;
   ContainerWindow *containerWindow;

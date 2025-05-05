@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
       searchWindow{new SearchWindow} {
   qRegisterMetaType<Item*>("Item*");
+  model->initDefaultInventory();
+  browseWindow->refresh();
+  moveWindow->refresh();
   
   auto *central = new QWidget(this);
   auto *layout = new QHBoxLayout(central);

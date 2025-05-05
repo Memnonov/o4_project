@@ -31,6 +31,13 @@ MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
   initConnections();
 }
 
+void MoveWindow::refresh() {
+  leftContainer->updateRows();
+  rightContainer->updateRows();
+  leftItems->updateRows();
+  rightItems->updateRows();
+}
+
 void MoveWindow::initConnections() {
   using Stack = MoveWindow::Stack;
   connect(leftContainer, &ContainerWindow::containerSelected, this,
@@ -116,10 +123,10 @@ void MoveWindow::updateMoveButtons() {
     rightItems->setCanMoveItems(false);
     return;
   }
-  
+
   bool leftCanMove = leftItems->hasItemSelected();
   bool rightCanMove = rightItems->hasItemSelected();
-  
+
   leftItems->setCanMoveItems(leftCanMove);
   rightItems->setCanMoveItems(rightCanMove);
   moveSelectedButton->setEnabled(leftCanMove | rightCanMove);

@@ -30,6 +30,7 @@ class ItemsWindow : public QFrame {
 public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
+  void updateRows();
   
   void setMovingItems(bool moving) {
     this->movingItems = moving;
@@ -82,7 +83,6 @@ private:
   QLineEdit *editNameLine;
 
   void createDummyRows(QVBoxLayout *rows);
-  void updateRows();
   void initEditButton();
   QString cycleSortMode();
   void closeButtonPushed();

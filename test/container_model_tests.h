@@ -22,15 +22,19 @@ class ContainerModelTests : public QObject {
 
 inline void ContainerModelTests::testAddContainer() {
   ContainerModel model;
-  model.addContainer("Testi A");
-  model.addContainer("Testi B");
+  auto contA = std::make_shared<Container>();
+  auto contB = std::make_shared<Container>();
+  model.addContainer(contA);
+  model.addContainer(contB);
   QCOMPARE(model.containers.size(), 2);
 }
 
 inline void ContainerModelTests::testRemoveContainer() {
   ContainerModel model;
-  model.addContainer("Testi A");
-  model.addContainer("Testi B");
+  auto contA = std::make_shared<Container>();
+  auto contB = std::make_shared<Container>();
+  model.addContainer(contA);
+  model.addContainer(contB);
   model.removeContainer(0);
   QCOMPARE(model.containers.size(), 1);
 }
@@ -38,12 +42,15 @@ inline void ContainerModelTests::testRemoveContainer() {
 inline void ContainerModelTests::testMoveItems() {
   ContainerModel model;
 
-  model.addContainer("Testi A");
+  auto contA = std::make_shared<Container>("Testi A");
+  auto contB = std::make_shared<Container>("Testi B");
+  
+  model.addContainer(contA);
   QVERIFY(model.containers[0]->name == "Testi A");
   model.addItem(std::move(std::make_shared<Item>("Moves to B")), 0);
   QVERIFY(model.containers[0]->items[0]->name == "Moves to B");
 
-  model.addContainer("Testi B");
+  model.addContainer(contB);
   QVERIFY(model.containers[1]->name == "Testi B");
   model.addItem(std::move(std::make_shared<Item>("Moves to A")), 1);
   QVERIFY(model.containers[1]->items[0]->name == "Moves to A");
