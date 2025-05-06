@@ -22,6 +22,7 @@ set(SOURCES
     src/tutorial_window.cpp
     src/about_window.cpp
     src/status_bar.cpp
+    src/search_model.cpp
 )
 
 set(HEADERS
@@ -41,6 +42,7 @@ set(HEADERS
     include/o4_project/about_window.h
     include/o4_project/json_utils.h
     include/o4_project/status_bar.h
+    include/o4_project/search_model.h
 )
 
 set(TEST_SOURCES

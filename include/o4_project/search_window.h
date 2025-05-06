@@ -4,6 +4,7 @@
 #define SEARCH_WINDOW_H
 
 #include "mode_frame.h"
+#include "search_model.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QVBoxLayout>
@@ -13,12 +14,13 @@
 
 class SearchWindow : public ModeFrame {
  public:
-  SearchWindow(ContainerModel *model, QWidget *parent = nullptr); 
+  SearchWindow(ContainerModel *model, SearchModel *searchModel, QWidget *parent = nullptr); 
   ~SearchWindow() override = default;
   void refresh();
 
  private:
   ContainerModel *model;
+  SearchModel *searchModel;
   QLabel *placeholder;
   QFrame *searchForm;
   QTableView *table;
@@ -30,6 +32,7 @@ class SearchWindow : public ModeFrame {
   // Makes this concrete.
   virtual void dummyFunction() override {}
   void initSearchForm();
+  void initTable();
   void updateContainerNames();
 };
 

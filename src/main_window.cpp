@@ -19,7 +19,7 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, model{new ContainerModel{this}},
+    : QMainWindow{parent}, model{new ContainerModel{this}}, searchModel{new SearchModel{model, this}},
       statusBar{new StatusBar}, mainStack{new QStackedWidget},
       aboutWindow{new AboutWindow}, tutorialWindow{new TutorialWindow},
       moveWindow{new MoveWindow{model}}, browseWindow{new BrowseWindow{model}},
@@ -27,11 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
       containerWindow{new ContainerWindow{model}},
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
-      searchWindow{new SearchWindow{model}} {
+      searchWindow{new SearchWindow{model, searchModel}} {
   qRegisterMetaType<Item *>("Item*");
+
   model->initDefaultInventory();
   browseWindow->refresh();
   moveWindow->refresh();
+  searchModel->refresh();
   searchWindow->refresh();
 
   auto *central = new QWidget(this);
