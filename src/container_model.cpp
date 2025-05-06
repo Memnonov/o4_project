@@ -12,6 +12,7 @@
 
 void ContainerModel::initDefaultInventory() {
   containers = JSONUtils::parseInventoryFromFile("./data/data.json");
+  qDebug() << "Default inventory loaded";
 }
 
 ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
@@ -27,6 +28,15 @@ bool ContainerModel::contains(Container *container) {
     }
   }
   return false;
+}
+
+QStringList ContainerModel::getContainerNames() const {
+  QStringList names;
+  for (auto const &container : containers) {
+    names << container->name;
+  }
+  qDebug() << "Container names size: " << names.size();
+  return names;
 }
 
 // TODO: Maybe just return a simple view like QVector<Container*> ?

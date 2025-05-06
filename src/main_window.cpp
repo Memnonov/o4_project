@@ -19,20 +19,21 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, model{new ContainerModel{this}}, statusBar{new StatusBar},
-      mainStack{new QStackedWidget}, aboutWindow{new AboutWindow},
-      tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
-      browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
-      navigationPanel{new NavigationPanel},
+    : QMainWindow{parent}, model{new ContainerModel{this}},
+      statusBar{new StatusBar}, mainStack{new QStackedWidget},
+      aboutWindow{new AboutWindow}, tutorialWindow{new TutorialWindow},
+      moveWindow{new MoveWindow{model}}, browseWindow{new BrowseWindow{model}},
+      mainArea{new QWidget}, navigationPanel{new NavigationPanel},
       containerWindow{new ContainerWindow{model}},
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
-      searchWindow{new SearchWindow} {
-  qRegisterMetaType<Item*>("Item*");
+      searchWindow{new SearchWindow{model}} {
+  qRegisterMetaType<Item *>("Item*");
   model->initDefaultInventory();
   browseWindow->refresh();
   moveWindow->refresh();
-  
+  searchWindow->refresh();
+
   auto *central = new QWidget(this);
   auto *layout = new QHBoxLayout(central);
   setCentralWidget(central);
@@ -61,11 +62,16 @@ void MainWindow::initMainArea() {
 void MainWindow::initConnections() {
   connect(navigationPanel, &NavigationPanel::buttonPressed, this,
           &MainWindow::handleNavigation);
-  connect(statusBar, &StatusBar::undoClicked, model, &ContainerModel::handleUndo);
-  connect(statusBar, &StatusBar::redoClicked, model, &ContainerModel::handleRedo);
-  connect(model, &ContainerModel::modelChanged, browseWindow, &BrowseWindow::refresh);
-  connect(model, &ContainerModel::modelChanged, moveWindow, &MoveWindow::refresh);
-  connect(model, &ContainerModel::modelChanged, statusBar, &StatusBar::updateStatus);
+  connect(statusBar, &StatusBar::undoClicked, model,
+          &ContainerModel::handleUndo);
+  connect(statusBar, &StatusBar::redoClicked, model,
+          &ContainerModel::handleRedo);
+  connect(model, &ContainerModel::modelChanged, browseWindow,
+          &BrowseWindow::refresh);
+  connect(model, &ContainerModel::modelChanged, moveWindow,
+          &MoveWindow::refresh);
+  connect(model, &ContainerModel::modelChanged, statusBar,
+          &StatusBar::updateStatus);
 }
 
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {

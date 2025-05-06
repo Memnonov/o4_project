@@ -28,6 +28,7 @@ class ContainerModel : public QObject {
   void newContainerRequest();
   bool contains(Container *container);
   QString getStatusMessage() const;
+  QStringList getContainerNames() const;
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
