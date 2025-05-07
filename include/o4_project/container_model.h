@@ -21,6 +21,7 @@ class ContainerModel : public QObject {
   friend class NewContainerCmd;
   friend class RemoveContainerCmd;
   friend class SetItemFavouriteCmd;
+  friend class NewItemCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
@@ -63,6 +64,7 @@ class ContainerModel : public QObject {
   class NewContainerCmd;
   class RemoveContainerCmd;
   class ToggleItemFavouriteCmd;
+  class NewItemCmd;
   
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };

@@ -71,3 +71,21 @@ void ContainerModel::toggleFavouriteRequest(Item *item, Container *container) {
     undoStack.push(new ToggleFavouriteCmd(this, item, container));
   }
 }
+
+
+
+// // A lil template, if you will
+// class CMD : public QUndoCommand {
+//  public:
+//   CMD(ContainerModel *model) : model{model} {
+//     // ctor
+//   }
+//   void redo() override {
+//     // redo
+//   };
+//   void undo() override {
+//     // undo
+//   };
+//  private:
+//   ContainerModel *model;
+// };
