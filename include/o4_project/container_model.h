@@ -52,7 +52,9 @@ class ContainerModel : public QObject {
   void removeContainer(std::shared_ptr<Container>);
 
   // ----------UndoCommands----------------------
+  // Implemented in commands.cpp
   class NewContainerCmd;
+  class RemoveContainerCmd;
   
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };

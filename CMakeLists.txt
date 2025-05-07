@@ -24,6 +24,7 @@ set(SOURCES
     src/status_bar.cpp
     src/search_model.cpp
     src/search_proxy_model.cpp
+    src/commands.cpp
 )
 
 set(HEADERS
