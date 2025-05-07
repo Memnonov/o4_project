@@ -91,7 +91,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 void ItemsWindow::initFilterSortPanel() {
   filterSortPanel->addWidget(new QLabel{"Filter: "});
   filterInput = new QLineEdit{};
-  filterInput->setPlaceholderText("Write item name or #tag here");
+  filterInput->setPlaceholderText("Filter by item name, tag or decription");
   filterSortPanel->addWidget(filterInput);
   auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
   connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {

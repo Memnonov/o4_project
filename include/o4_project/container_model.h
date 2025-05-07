@@ -25,7 +25,7 @@ class ContainerModel : public QObject {
  public:
   ContainerModel(QObject *parent = nullptr);
   void initDefaultInventory();
-  void newContainerRequest();
+  void newContainerRequest(const QString &name = "New Container");
   bool contains(Container *container);
   QString getStatusMessage() const;
   QStringList getContainerNames() const;

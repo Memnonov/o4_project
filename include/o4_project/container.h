@@ -15,15 +15,15 @@ class Container {
   friend class ContainerModelTests;
 
  public:
-  QString name{"Unnamed Container"};
+  QString name = "New Container";
   QVector<Item*> getItems() const;
 
-  explicit Container(const QString& name) : name{name} {}
+  explicit Container(const QString& name = "New Container") : name{name} {}
 
   Container(const QString& name, const QVector<std::shared_ptr<Item>> items)
       : name{name}, items{std::move(items)} {}
 
-  Container() = default;
+  // Container() = default;
   Container(const Container& other) = delete;
   Container& operator=(const Container& other) = delete;
 

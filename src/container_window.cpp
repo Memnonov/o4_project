@@ -52,8 +52,15 @@ void ContainerWindow::initNewContainerButton() {
   newContainerButton->setIcon(plusIcon);
   newContainerButton->setFlat(true);
   newContainerButton->setMinimumHeight(40);
-  connect(newContainerButton, &QPushButton::clicked, this, [this] () {
-    this->model->newContainerRequest();
+
+  connect(newContainerButton, &QPushButton::clicked, this, [this]() {
+    bool ok = false;
+    auto name = QInputDialog::getText(
+        this, "New Container", "Enter Container name:", QLineEdit::Normal, "",
+        &ok);
+    if (ok) {
+      this->model->newContainerRequest(name);
+    }
   });
 }
 
@@ -88,9 +95,8 @@ void ContainerWindow::updateRows() {
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);
     deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(deleteButton, &QPushButton::clicked, this, [this, container] () {
-      confirmDelete(container.get());
-    });
+    connect(deleteButton, &QPushButton::clicked, this,
+            [this, container]() { confirmDelete(container.get()); });
 
     row->setLayout(box);
     box->addWidget(button);

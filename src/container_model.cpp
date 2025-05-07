@@ -16,9 +16,8 @@ void ContainerModel::initDefaultInventory() {
 }
 
 ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
-  connect(&undoStack, &QUndoStack::indexChanged, this, [this] () {
-    emit modelChanged(getStatusMessage());
-  });
+  connect(&undoStack, &QUndoStack::indexChanged, this,
+          [this]() { emit modelChanged(getStatusMessage()); });
 };
 
 bool ContainerModel::contains(Container *container) {
@@ -50,13 +49,12 @@ void ContainerModel::addContainer(std::shared_ptr<Container> container) {
 }
 
 void ContainerModel::removeContainer(std::shared_ptr<Container> container) {
-  if (containers.contains(container)){
+  if (containers.contains(container)) {
     qDebug() << "Removing container.";
   }
   containers.removeAll(container);
-  QMetaObject::invokeMethod(this, [this]() {
-    emit this->modelChanged(this->getStatusMessage());
-  });
+  QMetaObject::invokeMethod(
+      this, [this]() { emit this->modelChanged(this->getStatusMessage()); });
 }
 
 QString ContainerModel::getStatusMessage() const {
@@ -136,22 +134,24 @@ ContainerModel::getContainer(unsigned int index) const {
 }
 
 class ContainerModel::NewContainerCmd : public QUndoCommand {
- public:
-  NewContainerCmd(ContainerModel *model) : model{model} {
-    container = std::make_shared<Container>();
-    setText("Created a new command!");
+public:
+  NewContainerCmd(ContainerModel *model, const QString &name = "New Container")
+      : model{model} {
+    if (name.length() < 1) {
+      container = std::make_shared<Container>();
+    } else {
+      container = std::make_shared<Container>(name);
+    }
+    setText(QString{"Created new Container: %1"}.arg(name));
   }
-  void undo() override { 
-    model->removeContainer(container);
-  }
-  void redo() override {
-    model->addContainer(container);
-  }
- private:
+  void undo() override { model->removeContainer(container); }
+  void redo() override { model->addContainer(container); }
+
+private:
   ContainerModel *model;
   std::shared_ptr<Container> container;
 };
 
-void ContainerModel::newContainerRequest() {
-  undoStack.push(new NewContainerCmd(this));
+void ContainerModel::newContainerRequest(const QString &name) {
+  undoStack.push(new NewContainerCmd(this, name));
 }

@@ -4,6 +4,7 @@
 #define CONTAINERS_WINDOW_H
 
 #include "container.h"
+#include <QInputDialog>
 #include "container_model.h"
 #include <QFrame>
 #include <QLineEdit>
