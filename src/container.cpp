@@ -30,6 +30,15 @@ void Container::addItem(std::shared_ptr<Item> item) {
   items.push_back(std::move(item));
 }
 
+std::shared_ptr<Item> Container::getItem(Item *item) {
+  for (auto const &element : items) {
+    if (item == element.get()) {
+      return element;
+    }
+  }
+  return nullptr;
+}
+
 std::shared_ptr<Item> Container::removeItem(unsigned int index) {
   if (index < items.size()) {
     return items.takeAt(index);

@@ -54,6 +54,7 @@ class ItemsWindow : public QFrame {
   void addNewClicked(Container *container, const QString &name);
   void itemSelected(Item *item, Container *container);
   void itemsWindowClosed();
+  void deleteItemClicked(Item *item, Container *container);
 
 
  private:

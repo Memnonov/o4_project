@@ -24,12 +24,14 @@ class ContainerModel : public QObject {
   class RemoveContainerCmd;
   class ToggleFavouriteCmd;
   class NewItemCmd;
+  class RemoveItemCmd;
   
   friend class ContainerModelTests;
   friend class NewContainerCmd;
   friend class RemoveContainerCmd;
   friend class SetItemFavouriteCmd;
   friend class NewItemCmd;
+  friend class RemoveItemCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
@@ -46,8 +48,10 @@ class ContainerModel : public QObject {
   void removeContainerRequest(Container *container);
   void toggleFavouriteRequest(Item *item, Container *container);
   void newItemRequest(Container *container, const QString &name);
+  void removeItemRequest(Item *item, Container *container);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
+  // These below ended up kinda useless ?
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
   void removeItem(unsigned int itemIndex, unsigned int container);
   void moveItem(unsigned int itemIndex, unsigned int from, unsigned int to);
@@ -55,8 +59,8 @@ class ContainerModel : public QObject {
                  QVector<unsigned int> itemsA, QVector<unsigned int> itemsB);
 
  public slots:
-  void handleUndo() { undoStack.undo(); qDebug() << "handling undo"; }
-  void handleRedo() { undoStack.redo(); qDebug() << "handling redo"; }
+  void handleUndo() { undoStack.undo(); }
+  void handleRedo() { undoStack.redo(); }
 
  signals:
   void modelChanged(QString message);

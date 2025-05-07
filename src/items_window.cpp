@@ -6,7 +6,9 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <algorithm>
+#include <qmessagebox.h>
 #include <qnamespace.h>
+#include <qtmetamacros.h>
 #include <qvector.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
@@ -304,17 +306,16 @@ void ItemsWindow::confirmDeleteItem() {
   QMessageBox messageBox{this};
   messageBox.setIcon(QMessageBox::Icon::Warning);
 
-  auto items = getSelectedItems();
-  QStringList itemsString;
-  std::for_each(items.begin(), items.end(), [&itemsString](Item *item) {
-    itemsString.push_back(item->name);
-  });
+  auto item = getSelectedItems().at(0);
 
   messageBox.setText(
-      QString{"Delete items:<br>%1"}.arg(itemsString.join(", ")));
+      QString{"Delete items:<br>%1"}.arg(item->name));
   messageBox.setDefaultButton(QMessageBox::Cancel);
   messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
   auto choice = messageBox.exec();
+  if (choice == QMessageBox::Yes) {
+    emit deleteItemClicked(item, currentContainer);
+  }
 }
 
 // Looks very ugly, but no time to fight the autoformat ; )

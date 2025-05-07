@@ -77,11 +77,8 @@ public:
   NewItemCmd(ContainerModel *model, Container *toContainer, const QString &name)
       : model{model} {
     // Now this is kinda hacky. No regrets. (Actually yes regrets)
-    qDebug() << "Created add new commmand";
     container = model->getContainer(toContainer);
-    qDebug() << "Got container? " << (container ? "yes" : "no");
     item = std::make_shared<Item>(name);
-    qDebug() << "Made item?" << (item ? "yes" : "no");
     setText(QString{"Created Item: %1"}.arg(item->name));
   }
   void redo() override { container->addItem(item); }
@@ -100,8 +97,33 @@ void ContainerModel::newItemRequest(Container *container, const QString &name) {
   undoStack.push(new NewItemCmd{this, container, name});
 }
 
+class ContainerModel::RemoveItemCmd : public QUndoCommand {
+public:
+  RemoveItemCmd(ContainerModel *model, Item *toRemove, Container *container)
+      : model{model}, container{container} {
+    if (!toRemove || !container) {
+      return;
+    }
+    item = container->getItem(toRemove);
+    setText(QString{"Removed Item: %1"}.arg(item->name));
+  }
+  void redo() override { container->removeItem(item); };
+  void undo() override { container->addItem(item); };
+
+private:
+  ContainerModel *model;
+  Container *container;
+  Item *toRemove;
+  std::shared_ptr<Item> item = nullptr;
+};
+
+void ContainerModel::removeItemRequest(Item *item, Container *container) {
+  undoStack.push(new RemoveItemCmd{this, item, container});
+}
+
+
 // // A lil template, if you will
-// class CMD : public QUndoCommand {
+// class ContainerModel::CMD : public QUndoCommand {
 //  public:
 //   CMD(ContainerModel *model) : model{model} {
 //     // ctor
