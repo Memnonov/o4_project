@@ -1,5 +1,7 @@
 #include "../include/o4_project/move_window.h"
+#include "container_model.h"
 #include "container_window.h"
+#include "items_window.h"
 #include <qlabel.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
@@ -66,6 +68,9 @@ void MoveWindow::initConnections() {
           [this]() { handleContainerClosed(Stack::left); });
   connect(rightItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::right); });
+  for (const auto &items : {leftItems, rightItems}) {
+    connect(items, &ItemsWindow::addNewClicked, model, &ContainerModel::newItemRequest);
+  }
 }
 
 void MoveWindow::handleContainerSelected(Stack stack) {

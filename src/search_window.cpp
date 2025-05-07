@@ -102,6 +102,7 @@ void SearchWindow::refresh() {
   table->resizeRowsToContents();
   table->resizeColumnsToContents();
   infoWindow->handleItemSelected(); // Set to null in case of changes.
+  searchModel->refresh();
 }
 
 void SearchWindow::connectFilters() {

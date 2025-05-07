@@ -24,7 +24,7 @@
 class ItemsWindow : public QFrame {
   Q_OBJECT;
 
-public:
+ public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
   void refresh();
@@ -50,7 +50,13 @@ public:
 
   QVector<Item*> getSelectedItems() const;
 
-private:
+ signals:
+  void addNewClicked(Container *container, const QString &name);
+  void itemSelected(Item *item, Container *container);
+  void itemsWindowClosed();
+
+
+ private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
       {ItemsWindow::SortMode::AtoZ, "A-Z"},
@@ -90,10 +96,7 @@ private:
   void toggleEditing();
   void sortItems(QVector<Item*> &items);
   bool filterItem(Item *item);
-
-signals:
-  void itemSelected(Item *item, Container *container);
-  void itemsWindowClosed();
+  void handleAddNewClicked();
 
  public slots:
   void handleContainerSelected(Container *container);

@@ -1,5 +1,6 @@
 #include "../include/o4_project/items_window.h"
 #include <QButtonGroup>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -74,6 +75,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   addDeleteWidget->setLayout(bottomRowLayout);
   auto bottomAddButton = new QPushButton{"Add"};
   bottomAddButton->setIcon(QIcon(":/icons/plus.svg"));
+  connect(bottomAddButton, &QPushButton::clicked, this, &ItemsWindow::handleAddNewClicked);
+  
   bottomRowLayout->addWidget(bottomAddButton);
   bottomDeleteButton = new QPushButton{"Delete"};
   bottomDeleteButton->setEnabled(false);
@@ -120,7 +123,10 @@ void ItemsWindow::initEditButton() {
           [this]() { toggleEditing(); });
 }
 
-void ItemsWindow::refresh() { updateRows(); }
+void ItemsWindow::refresh() {
+  updateRows();
+  qDebug() << "refresh: itemsWindow";
+}
 
 void ItemsWindow::toggleEditing() {
   editing = !editing;
@@ -226,13 +232,15 @@ void ItemsWindow::updateRows() {
     }
   }
   createRows(itemRows);
-  // New item button.
+  // New item button. Also dumb to remake it like this. No time to fix...
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
   newButton->setFlat(true), newButton->setMinimumHeight(40);
   newButton->setMinimumHeight(40);
   itemRows->addWidget(newButton);
+  connect(newButton, &QPushButton::clicked, this,
+          &ItemsWindow::handleAddNewClicked);
 }
 
 // Kinda hacky!?
@@ -339,3 +347,12 @@ const std::unordered_map<ItemsWindow::SortMode,
          }}
 
 };
+
+void ItemsWindow::handleAddNewClicked() {
+  bool ok = false;
+  auto name = QInputDialog::getText(
+      this, "New Item", "Enter Item name:", QLineEdit::Normal, "", &ok);
+  if (ok) {
+    emit addNewClicked(currentContainer, name);
+  }
+}

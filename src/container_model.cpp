@@ -129,6 +129,22 @@ ContainerModel::getContainer(unsigned int index) const {
 }
 
 std::shared_ptr<Container>
+ContainerModel::getContainer(Container *container) const {
+  if (!container) {
+    return nullptr;
+  }
+  auto it =
+      std::find_if(containers.begin(), containers.end(),
+                   [this, container](const std::shared_ptr<Container> &c) {
+                     return container == c.get();
+                   });
+  if (it == containers.end()) {
+    return nullptr;
+  }
+  return *it;
+}
+
+std::shared_ptr<Container>
 ContainerModel::removeContainer(Container *toRemove) {
   auto it =
       std::find_if(containers.begin(), containers.end(),

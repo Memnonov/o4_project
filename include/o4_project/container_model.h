@@ -13,10 +13,18 @@
 #include <QUndoStack>
 #include <QUndoCommand>
 #include <qundostack.h>
+#include "item.h"
 
 class ContainerModel;
 
 class ContainerModel : public QObject {
+  // ----------UndoCommands----------------------
+  // Implemented in commands.cpp
+  class NewContainerCmd;
+  class RemoveContainerCmd;
+  class ToggleFavouriteCmd;
+  class NewItemCmd;
+  
   friend class ContainerModelTests;
   friend class NewContainerCmd;
   friend class RemoveContainerCmd;
@@ -30,12 +38,14 @@ class ContainerModel : public QObject {
   void initDefaultInventory();
   bool contains(Container *container);
   QString getStatusMessage() const;
+  std::shared_ptr<Container> getContainer(Container *container) const;
   QStringList getContainerNames() const;
   std::shared_ptr<Item> getItem(Item *item, Container *container) const;
   
   void newContainerRequest(const QString &name = "New Container");
   void removeContainerRequest(Container *container);
   void toggleFavouriteRequest(Item *item, Container *container);
+  void newItemRequest(Container *container, const QString &name);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
@@ -52,19 +62,12 @@ class ContainerModel : public QObject {
   void modelChanged(QString message);
 
  private:
-  // QVector insists on copyable elements, hence shared.
   QVector<std::shared_ptr<Container>> containers;
   QUndoStack undoStack;
   void addContainer(std::shared_ptr<Container>);
   void removeContainer(std::shared_ptr<Container>);
   std::shared_ptr<Container> removeContainer(Container *container);
 
-  // ----------UndoCommands----------------------
-  // Implemented in commands.cpp
-  class NewContainerCmd;
-  class RemoveContainerCmd;
-  class ToggleItemFavouriteCmd;
-  class NewItemCmd;
   
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };

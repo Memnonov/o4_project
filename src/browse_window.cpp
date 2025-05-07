@@ -34,6 +34,7 @@ void BrowseWindow::initConnections() {
           &ItemInfoWindow::handleItemSelected);
   connect(infoWindow, &ItemInfoWindow::favouriteButtonClicked, model,
           &ContainerModel::toggleFavouriteRequest);
+  connect(itemsWindow, &ItemsWindow::addNewClicked, model, &ContainerModel::newItemRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
@@ -52,6 +53,7 @@ void BrowseWindow::refresh() {
     leftStack->setCurrentWidget(containerWindow);
     infoWindow->handleItemSelected();
   }
+  itemsWindow->refresh();
 }
 
 void BrowseWindow::handleGoToItem(Item *item, Container *container) {

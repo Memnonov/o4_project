@@ -1,5 +1,5 @@
 #include "../include/o4_project/container_model.h"
-#include <memory>
+#include "../include/o4_project/item.h"
 #include <qlogging.h>
 
 class ContainerModel::NewContainerCmd : public QUndoCommand {
@@ -48,7 +48,7 @@ void ContainerModel::removeContainerRequest(Container *container) {
   undoStack.push(new RemoveContainerCmd(this, container));
 }
 
-class ToggleFavouriteCmd : public QUndoCommand {
+class ContainerModel::ToggleFavouriteCmd : public QUndoCommand {
 public:
   ToggleFavouriteCmd(ContainerModel *model, Item *toFavourite,
                      Container *container)
@@ -72,7 +72,33 @@ void ContainerModel::toggleFavouriteRequest(Item *item, Container *container) {
   }
 }
 
+class ContainerModel::NewItemCmd : public QUndoCommand {
+public:
+  NewItemCmd(ContainerModel *model, Container *toContainer, const QString &name)
+      : model{model} {
+    // Now this is kinda hacky. No regrets. (Actually yes regrets)
+    qDebug() << "Created add new commmand";
+    container = model->getContainer(toContainer);
+    qDebug() << "Got container? " << (container ? "yes" : "no");
+    item = std::make_shared<Item>(name);
+    qDebug() << "Made item?" << (item ? "yes" : "no");
+    setText(QString{"Created Item: %1"}.arg(item->name));
+  }
+  void redo() override { container->addItem(item); }
+  void undo() override { container->removeItem(item); }
 
+private:
+  ContainerModel *model;
+  std::shared_ptr<Container> container;
+  std::shared_ptr<Item> item;
+};
+
+void ContainerModel::newItemRequest(Container *container, const QString &name) {
+  if (!container) {
+    return;
+  }
+  undoStack.push(new NewItemCmd{this, container, name});
+}
 
 // // A lil template, if you will
 // class CMD : public QUndoCommand {

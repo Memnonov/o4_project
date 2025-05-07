@@ -69,9 +69,6 @@ QVariant SearchModel::headerData(int section, Qt::Orientation orientation,
 }
 
 QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
-  if (!model) {
-    return {};
-  }
   QVector<ItemEntry> entries;
   auto containers = model->getContainers();
   for (auto const &container : containers) {
@@ -79,10 +76,12 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
       entries << ItemEntry{item, container};
     }
   }
+  qDebug() << "SearchModel got entries: " << entries.size();
   return entries;
 }
 
 void SearchModel::refresh() {
+  qDebug() << "Refresh search model.";
   beginResetModel();
   items = getItemsFromModel();
   endResetModel();
