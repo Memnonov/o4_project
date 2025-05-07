@@ -19,15 +19,17 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, model{new ContainerModel{this}}, searchModel{new SearchModel{model, this}},
-      statusBar{new StatusBar}, mainStack{new QStackedWidget},
-      aboutWindow{new AboutWindow}, tutorialWindow{new TutorialWindow},
-      moveWindow{new MoveWindow{model}}, browseWindow{new BrowseWindow{model}},
-      mainArea{new QWidget}, navigationPanel{new NavigationPanel},
+    : QMainWindow{parent}, model{new ContainerModel{this}},
+      searchProxyModel{new SearchProxyModel{this}},
+      searchModel{new SearchModel{model, this}}, statusBar{new StatusBar},
+      mainStack{new QStackedWidget}, aboutWindow{new AboutWindow},
+      tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
+      browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
+      navigationPanel{new NavigationPanel},
       containerWindow{new ContainerWindow{model}},
       leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
       itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
-      searchWindow{new SearchWindow{model, searchModel}} {
+      searchWindow{new SearchWindow{model, searchModel, searchProxyModel}} {
   qRegisterMetaType<Item *>("Item*");
 
   model->initDefaultInventory();

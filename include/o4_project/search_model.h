@@ -11,6 +11,14 @@ class SearchModel : public QAbstractTableModel {
  public:
   SearchModel(ContainerModel *model, QObject *parent = nullptr);
   ~SearchModel() = default;
+
+  enum Columns {
+    NAME = 0,
+    QUANTITY,
+    TAGS,
+    CONTAINER,
+    DESCRIPTION,
+  };
   
   void refresh();
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;

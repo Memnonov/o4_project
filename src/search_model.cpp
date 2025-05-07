@@ -10,35 +10,30 @@ SearchModel::SearchModel(ContainerModel *model, QObject *parent)
 
 // TODO: Implement these stubs.
 int SearchModel::rowCount(const QModelIndex &parent) const {
-  qDebug() << "rowCount called";
   return filteredItems.size();
 }
 int SearchModel::columnCount(const QModelIndex &parent) const {
-  qDebug() << "columnCount called";
   return 5;
 }
 
 QVariant SearchModel::data(const QModelIndex &index, int role) const {
-  qDebug() << "data called";
   if (!index.isValid() || role != Qt::DisplayRole) {
-    qDebug() << "Invalid index or role in table model";
     if (role == Qt::TextAlignmentRole) {
       return Qt::AlignCenter;
     }
     return {};
   }
-  qDebug() << "Getting data.";
   const auto &entry = filteredItems.at(index.row());
   switch (index.column()) {
-  case 0:
+    case NAME:
     return entry.item->name;
-  case 1:
+  case QUANTITY:
     return entry.item->quantity;
-  case 2:
+  case TAGS:
     return entry.item->tags.join(", ");
-  case 3:
+  case CONTAINER:
     return entry.container->name;
-  case 4:
+  case DESCRIPTION:
     return entry.item->description;
   default:
     return {};
@@ -79,13 +74,12 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
       entries << ItemEntry{item, container.get()};
     }
   }
-  qDebug() << "Entries for SearchModel, size: " << entries.size();
   return entries;
 }
 
 void SearchModel::refresh() {
   beginResetModel();
-  filteredItems = getItemsFromModel(); // TODO: Implement filtering
-  qDebug() << "Model contains entries: " << filteredItems.size();
+  // TODO: Filterint to be implemented in the proxy model?
+  filteredItems = getItemsFromModel();
   endResetModel();
 }

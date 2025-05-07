@@ -19,7 +19,7 @@
 #include "move_window.h"
 #include "browse_window.h"
 #include "items_window.h"
-#include "search_window.h"
+#include "search_proxy_model.h"
 #include "status_bar.h"
 #include "tutorial_window.h"
 #include "about_window.h"
@@ -35,6 +35,7 @@ class MainWindow : public QMainWindow {
  private:
   ContainerModel *model;
   SearchModel *searchModel;
+  SearchProxyModel *searchProxyModel;
   QWidget *mainArea;
   QStackedWidget *mainStack;
   BrowseWindow *browseWindow;

@@ -5,6 +5,7 @@
 
 #include "mode_frame.h"
 #include "search_model.h"
+#include "search_proxy_model.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QVBoxLayout>
@@ -14,13 +15,15 @@
 
 class SearchWindow : public ModeFrame {
  public:
-  SearchWindow(ContainerModel *model, SearchModel *searchModel, QWidget *parent = nullptr); 
+  SearchWindow(ContainerModel *model, SearchModel *searchModel,
+               SearchProxyModel *searchProxyModel, QWidget *parent = nullptr); 
   ~SearchWindow() override = default;
   void refresh();
 
  private:
   ContainerModel *model;
   SearchModel *searchModel;
+  SearchProxyModel *searchProxyModel;
   QLabel *placeholder;
   QFrame *searchForm;
   QTableView *table;

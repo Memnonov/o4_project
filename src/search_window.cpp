@@ -1,12 +1,13 @@
 #include "../include/o4_project/search_window.h"
+#include "search_proxy_model.h"
 #include <QHeaderView>
 #include <qabstractitemview.h>
 #include <qheaderview.h>
 #include <qnamespace.h>
 
 SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
-                           QWidget *parent)
-    : ModeFrame{parent}, model{model}, searchModel{searchModel},
+                           SearchProxyModel *searchProxyModel, QWidget *parent)
+    : ModeFrame{parent}, model{model}, searchModel{searchModel}, searchProxyModel{searchProxyModel},
       placeholder(new QLabel{"Search window here!"}), searchForm{new QFrame},
       table{new QTableView}, name{new QLineEdit}, tags{new QLineEdit},
       description{new QLineEdit}, containersBox{new QComboBox} {
@@ -21,11 +22,10 @@ SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
 }
 
 void SearchWindow::initTable() {
-  auto proxyModel = new QSortFilterProxyModel();
-  proxyModel->setSourceModel(searchModel);
-  proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  
-  table->setModel(proxyModel);
+  searchProxyModel->setSourceModel(searchModel);
+  searchProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+
+  table->setModel(searchProxyModel);
   table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   table->horizontalHeader()->setStretchLastSection(true);
   table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -35,7 +35,7 @@ void SearchWindow::initTable() {
   table->horizontalHeader()->setSectionsMovable(true);
 
   table->setSortingEnabled(true);
-  
+
   table->show();
 }
 

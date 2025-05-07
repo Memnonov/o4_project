@@ -23,6 +23,7 @@ set(SOURCES
     src/about_window.cpp
     src/status_bar.cpp
     src/search_model.cpp
+    src/search_proxy_model.cpp
 )
 
 set(HEADERS
@@ -43,6 +44,7 @@ set(HEADERS
     include/o4_project/json_utils.h
     include/o4_project/status_bar.h
     include/o4_project/search_model.h
+    include/o4_project/search_proxy_model.h
 )
 
 set(TEST_SOURCES
