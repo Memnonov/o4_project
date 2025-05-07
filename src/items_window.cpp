@@ -5,20 +5,8 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <algorithm>
-#include <qabstractbutton.h>
-#include <qboxlayout.h>
-#include <qcontainerfwd.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlogging.h>
-#include <qmainwindow.h>
 #include <qnamespace.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qtmetamacros.h>
-#include <qtoolbar.h>
-#include <qwidget.h>
+#include <qvector.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
@@ -59,18 +47,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   editNameLine->setVisible(false);
   topRow->update();
 
-  // Set up filterSortPanel
-  filterSortPanel->addWidget(new QLabel{"Filter: "});
-  auto filterInput = new QLineEdit{};
-  filterInput->setPlaceholderText("Write item name or #tag here");
-  filterSortPanel->addWidget(filterInput);
-  auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
-  connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
-    sortButton->setText(cycleSortMode());
-    updateRows();
-    qDebug() << "Changed sort mode!";
-  });
-  filterSortPanel->addWidget(sortButton);
+  initFilterSortPanel();
   layout->addWidget(filterSortPanel);
 
   // Set up item rows.
@@ -111,13 +88,26 @@ ItemsWindow::ItemsWindow(QWidget *parent)
           [this]() { confirmDeleteItem(); });
 }
 
-Container *ItemsWindow::getCurrentContainer() {
-  return currentContainer;
+void ItemsWindow::initFilterSortPanel() {
+  filterSortPanel->addWidget(new QLabel{"Filter: "});
+  filterInput = new QLineEdit{};
+  filterInput->setPlaceholderText("Write item name or #tag here");
+  filterSortPanel->addWidget(filterInput);
+  auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
+  connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
+    sortButton->setText(cycleSortMode());
+    updateRows();
+    qDebug() << "Changed sort mode!";
+  });
+  filterSortPanel->addWidget(sortButton);
+  connect(filterInput, &QLineEdit::textChanged, this, &ItemsWindow::refresh);
 }
 
-void ItemsWindow::selectItem(Item* item) {
+Container *ItemsWindow::getCurrentContainer() { return currentContainer; }
+
+void ItemsWindow::selectItem(Item *item) {
   for (auto &button : buttonGroup->buttons()) {
-    if (item == button->property("item").value<Item*>()) {
+    if (item == button->property("item").value<Item *>()) {
       button->setChecked(true);
     }
   }
@@ -130,9 +120,7 @@ void ItemsWindow::initEditButton() {
           [this]() { toggleEditing(); });
 }
 
-void ItemsWindow::refresh() {
-  updateRows();
-}
+void ItemsWindow::refresh() { updateRows(); }
 
 void ItemsWindow::toggleEditing() {
   editing = !editing;
@@ -140,7 +128,7 @@ void ItemsWindow::toggleEditing() {
   editNameLine->setVisible(editing);
 }
 
-void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
+void ItemsWindow::createRows(QVBoxLayout *rows) {
   // Creating dummy rows
   rows->setSpacing(0);
   buttonGroup = new QButtonGroup{this};
@@ -152,8 +140,15 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   static constexpr unsigned int minHeight = 40;
   static constexpr unsigned int maxHeight = minHeight * 2;
 
+  // Get sorted and filtered items
   auto items = currentContainer->getItems();
   std::sort(items.begin(), items.end(), ItemsWindow::comparators.at(sortMode));
+  auto it = new QMutableVectorIterator<Item *>(items);
+  while (it->hasNext()) {
+    if (!filterItem(it->next())) {
+      it->remove();
+    }
+  }
 
   for (auto const &item : items) {
     QPushButton *moveButton;
@@ -214,6 +209,13 @@ void ItemsWindow::createDummyRows(QVBoxLayout *rows) {
   }
 }
 
+bool ItemsWindow::filterItem(Item *item) {
+  return item->name.contains(filterInput->text(), Qt::CaseInsensitive) ||
+         item->tags.join(" ").contains(filterInput->text(),
+                                       Qt::CaseInsensitive) ||
+         item->description.contains(filterInput->text(), Qt::CaseInsensitive);
+}
+
 void ItemsWindow::updateRows() {
   if (itemRows->count() > 0) {
     QLayoutItem *item;
@@ -221,7 +223,7 @@ void ItemsWindow::updateRows() {
       item->widget()->deleteLater();
     }
   }
-  createDummyRows(itemRows);
+  createRows(itemRows);
   // New item button.
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
@@ -242,6 +244,7 @@ void ItemsWindow::closeButtonPushed() {
   }
   buttonGroup->setExclusive(true);
   currentContainer = nullptr;
+  filterInput->clear();
   emit itemsWindowClosed();
 }
 
@@ -271,6 +274,7 @@ void ItemsWindow::handleContainerSelected(Container *container) {
       QString("<b>%1</b>").arg((container) ? container->name : "null"));
   editNameLine->setText(container->name);
   updateRows();
+  filterInput->clear();
 }
 
 bool ItemsWindow::hasItemSelected() const {

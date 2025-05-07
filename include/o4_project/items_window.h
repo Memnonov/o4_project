@@ -11,13 +11,10 @@
 #include <QObject>
 #include <QScrollArea>
 #include <functional>
-#include <qboxlayout.h>
-#include <qbuttongroup.h>
-#include <qcontainerfwd.h>
-#include <qhash.h>
-#include <qlogging.h>
-#include <qpushbutton.h>
+#include <QButtonGroup>
+#include <QVBoxLayout>
 #include <qscrollarea.h>
+#include <QPushButton>
 #include <qtoolbar.h>
 #include <unordered_map>
 #include <QMessageBox>
@@ -72,6 +69,7 @@ private:
   QVBoxLayout *layout;
   QLabel *title;
   QToolBar *filterSortPanel;
+  QLineEdit *filterInput;
   QVBoxLayout *itemRows;
   QButtonGroup *buttonGroup;
   QScrollArea *scrollArea;
@@ -84,12 +82,14 @@ private:
   QLineEdit *editNameLine;
 
   void updateRows();
-  void createDummyRows(QVBoxLayout *rows);
+  void createRows(QVBoxLayout *rows);
   void initEditButton();
+  void initFilterSortPanel();
   QString cycleSortMode();
   void closeButtonPushed();
   void toggleEditing();
   void sortItems(QVector<Item*> &items);
+  bool filterItem(Item *item);
 
 signals:
   void itemSelected(Item *item, Container *container);
