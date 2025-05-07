@@ -129,7 +129,6 @@ void ItemsWindow::toggleEditing() {
 }
 
 void ItemsWindow::createRows(QVBoxLayout *rows) {
-  // Creating dummy rows
   rows->setSpacing(0);
   buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(!movingItems);

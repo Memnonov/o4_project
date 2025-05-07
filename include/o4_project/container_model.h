@@ -20,17 +20,21 @@ class ContainerModel : public QObject {
   friend class ContainerModelTests;
   friend class NewContainerCmd;
   friend class RemoveContainerCmd;
+  friend class SetItemFavouriteCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
  public:
   ContainerModel(QObject *parent = nullptr);
   void initDefaultInventory();
-  void newContainerRequest(const QString &name = "New Container");
-  void removeContainerRequest(Container *container);
   bool contains(Container *container);
   QString getStatusMessage() const;
   QStringList getContainerNames() const;
+  std::shared_ptr<Item> getItem(Item *item, Container *container) const;
+  
+  void newContainerRequest(const QString &name = "New Container");
+  void removeContainerRequest(Container *container);
+  void toggleFavouriteRequest(Item *item, Container *container);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
@@ -58,6 +62,7 @@ class ContainerModel : public QObject {
   // Implemented in commands.cpp
   class NewContainerCmd;
   class RemoveContainerCmd;
+  class ToggleItemFavouriteCmd;
   
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };

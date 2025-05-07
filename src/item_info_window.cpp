@@ -212,6 +212,8 @@ void ItemInfoWindow::refresh() {
 void ItemInfoWindow::initFavouriteButton() {
   favouriteButton->setIcon(QIcon{":/icons/star.svg"});
   favouriteButton->setFlat(true);
+  connect(favouriteButton, &QPushButton::clicked, this,
+          &ItemInfoWindow::handleFavouriteButtonClicked);
 }
 
 void ItemInfoWindow::updateFavouriteButton() {
@@ -222,5 +224,6 @@ void ItemInfoWindow::updateFavouriteButton() {
 
 void ItemInfoWindow::handleFavouriteButtonClicked() {
   qDebug() << "Clicked favourite button.";
+  emit favouriteButtonClicked(item, container);
   updateFavouriteButton();
 }

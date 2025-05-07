@@ -142,3 +142,20 @@ ContainerModel::removeContainer(Container *toRemove) {
   containers.erase(it);
   return removed;
 }
+
+std::shared_ptr<Item> ContainerModel::getItem(Item *item,
+                                              Container *container) const {
+  if (!item || !container) {
+    return nullptr;
+  }
+  auto items = container->getItemRefs();
+  auto it =
+      std::find_if(items.begin(), items.end(),
+                   [item, container](const std::shared_ptr<Item> &element) {
+                     return item == element.get();
+                   });
+  if (it == items.end()) {
+    return nullptr;
+  }
+  return *it;
+}

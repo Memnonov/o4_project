@@ -32,6 +32,8 @@ void BrowseWindow::initConnections() {
           &ItemsWindow::handleContainerSelected);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::handleItemSelected);
+  connect(infoWindow, &ItemInfoWindow::favouriteButtonClicked, model,
+          &ContainerModel::toggleFavouriteRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
@@ -52,7 +54,7 @@ void BrowseWindow::refresh() {
   }
 }
 
-void BrowseWindow::handleGoToItem(Item *item, Container* container) {
+void BrowseWindow::handleGoToItem(Item *item, Container *container) {
   if (!item || !container) {
     return;
   }

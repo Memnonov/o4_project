@@ -80,7 +80,8 @@ void MainWindow::initConnections() {
   connect(model, &ContainerModel::modelChanged, searchWindow,
           &SearchWindow::refresh);
 
-  connect(searchWindow, &SearchWindow::goToItemClicked, this, &MainWindow::handleGoToItem);
+  connect(searchWindow, &SearchWindow::goToItemClicked, this,
+          &MainWindow::handleGoToItem);
 }
 
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
@@ -109,7 +110,6 @@ void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
     break;
   }
 }
-
 
 void MainWindow::handleGoToItem(Item *item, Container *container) {
   browseWindow->handleGoToItem(item, container);

@@ -43,6 +43,7 @@ class ItemInfoWindow : public QFrame {
 
  signals:
   void goToItemClicked(Item* item, Container *container);
+  void favouriteButtonClicked(Item *item, Container *container);
 
  private:
   // State
