@@ -32,6 +32,7 @@ public:
   ~ItemsWindow() = default;
   void refresh();
   Container *getCurrentContainer();
+  void selectItem(Item* item);
   
   void setMovingItems(bool moving) {
     this->movingItems = moving;

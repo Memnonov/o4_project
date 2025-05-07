@@ -24,5 +24,6 @@
     <file>icons/redo.svg</file>
     <file>icons/star.svg</file>
     <file>icons/star-solid.svg</file>
+    <file>icons/doc-magnifying-glass.svg</file>
   </qresource>
 </RCC>

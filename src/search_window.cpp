@@ -1,4 +1,5 @@
 #include "../include/o4_project/search_window.h"
+#include "main_window.h"
 #include "search_proxy_model.h"
 #include <QHeaderView>
 #include <qabstractitemview.h>
@@ -16,11 +17,12 @@ SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(searchForm);
   layout->addWidget(table);
-  layout->setStretch(0, 2);
-  layout->setStretch(1, 6);
+  layout->setStretch(0, 1);
+  layout->setStretch(1, 2);
 
   initTable();
   initSearchForm();
+  initInfoWindow();
 }
 
 void SearchWindow::initTable() {
@@ -51,7 +53,6 @@ void SearchWindow::handleRowSelection(const QModelIndex &current,
   }
   auto sourceIndex = searchProxyModel->mapToSource(current);
   auto entry = searchModel->entryAt(sourceIndex.row());
-  qDebug() << "Row changed to: " << entry.item->name;
   infoWindow->handleItemSelected(entry.item, entry.container);
 }
 
@@ -78,8 +79,13 @@ void SearchWindow::initSearchForm() {
   vbox->addSpacing(10);
 
   searchForm->layout()->addWidget(infoWindow);
+}
+
+void SearchWindow::initInfoWindow() {
   infoWindow->setEditable(false);
   infoWindow->setFavouritable(false);
+  infoWindow->setGoToEnabled(true);
+  connect(infoWindow, &ItemInfoWindow::goToItemClicked, this, &SearchWindow::goToItemClicked);
 }
 
 void SearchWindow::updateContainerNames() {
@@ -92,6 +98,7 @@ void SearchWindow::refresh() {
   updateContainerNames();
   table->resizeRowsToContents();
   table->resizeColumnsToContents();
+  infoWindow->handleItemSelected(); // Set to null in case of changes.
 }
 
 void SearchWindow::connectFilters() {

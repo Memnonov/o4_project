@@ -15,6 +15,9 @@ class BrowseWindow : public ModeFrame {
   ~BrowseWindow() {}
 
   void refresh();
+  
+ public slots:
+  void handleGoToItem(Item *item, Container *container);
 
  private:
   ContainerModel *model;
@@ -32,7 +35,6 @@ class BrowseWindow : public ModeFrame {
  private slots:
   void handleContainerSelected(Container *container);
   void handleItemsWindowClosed();
-  
 };
 
 #endif // !BROWSE_WINDOW_H

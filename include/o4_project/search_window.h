@@ -15,6 +15,8 @@
 #include <container_model.h>
 
 class SearchWindow : public ModeFrame {
+  Q_OBJECT;
+  
  public:
   SearchWindow(ContainerModel *model, SearchModel *searchModel,
                SearchProxyModel *searchProxyModel, QWidget *parent = nullptr); 
@@ -23,6 +25,9 @@ class SearchWindow : public ModeFrame {
 
  public slots:
   void handleRowSelection(const QModelIndex &current, const QModelIndex &);
+
+ signals:
+  void goToItemClicked(Item *item, Container *container);
   
  private:
   ContainerModel *model;
@@ -41,6 +46,7 @@ class SearchWindow : public ModeFrame {
   virtual void dummyFunction() override {}
   void initSearchForm();
   void initTable();
+  void initInfoWindow();
   void connectFilters();
   void updateContainerNames();
 };

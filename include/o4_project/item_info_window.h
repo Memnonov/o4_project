@@ -32,11 +32,23 @@ class ItemInfoWindow : public QFrame {
   void setFavouritable(bool favouritable) {
     favouriteButton->setEnabled(favouritable);
   }
+  void setGoToEnabled(bool canGoTo) {
+    this->canGoTo = canGoTo;
+    goToItemButton->setVisible(canGoTo);
+  }
+  
+ public slots:
+  void handleItemSelected(Item *item = nullptr, Container *container = nullptr);
+  void handleFavouriteButtonClicked();
+
+ signals:
+  void goToItemClicked(Item* item, Container *container);
 
  private:
   // State
   bool editing = false;
   bool editable = true;
+  bool canGoTo = false;
   Item *item = nullptr;
   Container *container = nullptr;
   
@@ -46,6 +58,7 @@ class ItemInfoWindow : public QFrame {
   QVBoxLayout *layout;
   QPushButton *editButton;
   QPushButton *favouriteButton;
+  QPushButton *goToItemButton;
   
   // View mode.
   QWidget *viewFields;
@@ -64,6 +77,7 @@ class ItemInfoWindow : public QFrame {
   void initViewFields();
   void initEditFields();
   void initEditButton();
+  void initGoToItemButton();
   void initFavouriteButton();
   void refresh();
   void toggleEditing();
@@ -73,9 +87,6 @@ class ItemInfoWindow : public QFrame {
   void updateFavouriteButton();
   QScrollArea* makeDescriptionScrollArea();
 
- public slots:
-  void handleItemSelected(Item *item = nullptr, Container *container = nullptr);
-  void handleFavouriteButtonClicked();
 };
 
 #endif // !ITEM_INFO_WINDOW_H

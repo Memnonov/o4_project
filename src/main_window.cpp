@@ -76,6 +76,8 @@ void MainWindow::initConnections() {
           &MoveWindow::refresh);
   connect(model, &ContainerModel::modelChanged, statusBar,
           &StatusBar::updateStatus);
+
+  connect(searchWindow, &SearchWindow::goToItemClicked, this, &MainWindow::handleGoToItem);
 }
 
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
@@ -103,4 +105,10 @@ void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
   default:
     break;
   }
+}
+
+
+void MainWindow::handleGoToItem(Item *item, Container *container) {
+  browseWindow->handleGoToItem(item, container);
+  handleNavigation(NavigationPanel::NavAction::BrowseItems);
 }

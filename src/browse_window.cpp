@@ -35,7 +35,6 @@ void BrowseWindow::initConnections() {
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
-  qDebug() << "Selected container: " << container->name;
   leftStack->setCurrentWidget(itemsWindow);
 }
 
@@ -51,4 +50,14 @@ void BrowseWindow::refresh() {
     leftStack->setCurrentWidget(containerWindow);
     infoWindow->handleItemSelected();
   }
+}
+
+void BrowseWindow::handleGoToItem(Item *item, Container* container) {
+  if (!item || !container) {
+    return;
+  }
+  handleContainerSelected(container);
+  containerWindow->containerSelected(container);
+  itemsWindow->itemSelected(item, container);
+  itemsWindow->selectItem(item);
 }

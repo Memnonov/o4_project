@@ -5,28 +5,23 @@
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
-#include <qboxlayout.h>
-#include <qframe.h>
-#include <qlogging.h>
-#include <qnamespace.h>
-#include <qsizepolicy.h>
-#include <qtextedit.h>
-#include <qwidget.h>
+#include <qpushbutton.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
     : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}},
       tip{new QLabel{}}, topPanel{new QWidget}, editButton{new QPushButton},
       favouriteButton{new QPushButton}, viewFields{new QWidget},
-      viewNameLabel{new QLabel}, viewQuantityLabel{new QLabel},
-      viewTagsLabel{new QLabel}, viewDescriptionLabel{new QLabel},
-      editFields{new QWidget}, editNameLabel{new QLineEdit},
-      editQuantityBox{new QSpinBox}, editTagsLabel{new QLineEdit},
-      editDescriptionLabel(new QTextEdit) {
+      goToItemButton{new QPushButton}, viewNameLabel{new QLabel},
+      viewQuantityLabel{new QLabel}, viewTagsLabel{new QLabel},
+      viewDescriptionLabel{new QLabel}, editFields{new QWidget},
+      editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
+      editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
   layout->setAlignment(Qt::AlignTop);
   setFrameShape(StyledPanel);
 
   initFavouriteButton();
   initEditButton();
+  initGoToItemButton();
 
   tip->setAlignment(Qt::AlignCenter);
   tip->setText("Select a container from the left to browse items.");
@@ -37,6 +32,7 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   topPanelLayout->addWidget(title);
   topPanelLayout->addWidget(editButton, 0, Qt::AlignTop);
+  topPanelLayout->addWidget(goToItemButton, 0, Qt::AlignTop);
 
   layout->addWidget(topPanel);
   tip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -113,6 +109,18 @@ void ItemInfoWindow::initEditButton() {
           [this]() { toggleEditing(); });
 }
 
+void ItemInfoWindow::initGoToItemButton() {
+  goToItemButton->setIcon(QIcon{":/icons/doc-magnifying-glass.svg"});
+  goToItemButton->setFlat(true);
+  goToItemButton->setVisible(false);
+  goToItemButton->setText("Go to Item");
+  connect(goToItemButton, &QPushButton::clicked, this, [this]() {
+    if (item && container) {
+      emit goToItemClicked(item, container);
+    }
+  });
+}
+
 void ItemInfoWindow::toggleEditing() {
   qDebug() << "Toggled editing";
   editing = !editing;
@@ -142,6 +150,7 @@ void ItemInfoWindow::showViews() {
   tip->setVisible(false);
   editButton->setVisible(true && editable);
   favouriteButton->setVisible(true);
+  goToItemButton->setVisible(canGoTo);
 }
 
 void ItemInfoWindow::hideViews() {
@@ -150,6 +159,7 @@ void ItemInfoWindow::hideViews() {
   tip->setVisible(true);
   editButton->setVisible(false);
   favouriteButton->setVisible(false);
+  goToItemButton->setVisible(false);
 }
 
 // This is mostly for debugging use.
@@ -205,7 +215,8 @@ void ItemInfoWindow::initFavouriteButton() {
 }
 
 void ItemInfoWindow::updateFavouriteButton() {
-  auto icon = QString(":/icons/%1.svg").arg(item->favourite ? "star-solid" : "star");
+  auto icon =
+      QString(":/icons/%1.svg").arg(item->favourite ? "star-solid" : "star");
   favouriteButton->setIcon(QIcon{icon});
 }
 

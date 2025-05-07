@@ -115,6 +115,14 @@ Container *ItemsWindow::getCurrentContainer() {
   return currentContainer;
 }
 
+void ItemsWindow::selectItem(Item* item) {
+  for (auto &button : buttonGroup->buttons()) {
+    if (item == button->property("item").value<Item*>()) {
+      button->setChecked(true);
+    }
+  }
+}
+
 void ItemsWindow::initEditButton() {
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
   editButton->setFlat(true);
