@@ -36,6 +36,7 @@ void BrowseWindow::initConnections() {
           &ContainerModel::toggleFavouriteRequest);
   connect(itemsWindow, &ItemsWindow::addNewClicked, model, &ContainerModel::newItemRequest);
   connect(itemsWindow, &ItemsWindow::deleteItemClicked, model, &ContainerModel::removeItemRequest);
+  connect(itemsWindow, &ItemsWindow::setQuantityClicked, model, &ContainerModel::setItemQuantityRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {

@@ -136,6 +136,7 @@ void ItemsWindow::toggleEditing() {
   editNameLine->setVisible(editing);
 }
 
+// This is dumb dumb and long long. Gotta go fast.
 void ItemsWindow::createRows(QVBoxLayout *rows) {
   rows->setSpacing(0);
   buttonGroup = new QButtonGroup{this};
@@ -209,6 +210,13 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
                                  QSizePolicy::Expanding);
       box->addWidget(minusButton);
       box->addWidget(plusButton);
+      connect(plusButton, &QPushButton::clicked, this, [this, item] () {
+        emit setQuantityClicked(item, ++(item->quantity));
+      });
+      connect(minusButton, &QPushButton::clicked, this, [this, item] () {
+        emit setQuantityClicked(item, item->quantity == 0 ? 0 : --(item->quantity));
+      });
+      
     } else if (!isRightWindow) {
       box->addWidget(moveButton);
       moveButton->setIcon(QIcon(":/icons/fast-arrow-right"));

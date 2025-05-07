@@ -25,13 +25,15 @@ class ContainerModel : public QObject {
   class ToggleFavouriteCmd;
   class NewItemCmd;
   class RemoveItemCmd;
-  
+  class SetItemQuantityCmd;
+
   friend class ContainerModelTests;
   friend class NewContainerCmd;
   friend class RemoveContainerCmd;
   friend class SetItemFavouriteCmd;
   friend class NewItemCmd;
   friend class RemoveItemCmd;
+  friend class SetItemQuantityCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
@@ -49,6 +51,7 @@ class ContainerModel : public QObject {
   void toggleFavouriteRequest(Item *item, Container *container);
   void newItemRequest(Container *container, const QString &name);
   void removeItemRequest(Item *item, Container *container);
+  void setItemQuantityRequest(Item *item, unsigned int quantity);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   // These below ended up kinda useless ?

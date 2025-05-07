@@ -121,6 +121,30 @@ void ContainerModel::removeItemRequest(Item *item, Container *container) {
   undoStack.push(new RemoveItemCmd{this, item, container});
 }
 
+class ContainerModel::SetItemQuantityCmd : public QUndoCommand {
+public:
+  SetItemQuantityCmd(ContainerModel *model, Item *item, unsigned int quantity)
+      : model{model}, item{item} {
+    newQuantity = quantity;
+    oldQuantity = item->quantity;
+    setText(QString{"Set Item %1 quantity to × %2"}.arg(item->name).arg(newQuantity));
+  }
+  void redo() override { item->quantity = newQuantity; };
+  void undo() override { item->quantity = oldQuantity; };
+
+private:
+  ContainerModel *model;
+  Item *item;
+  unsigned int newQuantity;
+  unsigned int oldQuantity;
+};
+
+void ContainerModel::setItemQuantityRequest(Item *item, unsigned int quantity) {
+  if (!item) {
+    return;
+  }
+  undoStack.push(new SetItemQuantityCmd{this, item, quantity});
+}
 
 // // A lil template, if you will
 // class ContainerModel::CMD : public QUndoCommand {

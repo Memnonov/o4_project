@@ -55,6 +55,7 @@ class ItemsWindow : public QFrame {
   void itemSelected(Item *item, Container *container);
   void itemsWindowClosed();
   void deleteItemClicked(Item *item, Container *container);
+  void setQuantityClicked(Item *item, unsigned int quantity);
 
 
  private:
