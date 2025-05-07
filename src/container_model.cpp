@@ -49,12 +49,7 @@ void ContainerModel::addContainer(std::shared_ptr<Container> container) {
 }
 
 void ContainerModel::removeContainer(std::shared_ptr<Container> container) {
-  if (containers.contains(container)) {
-    qDebug() << "Removing container.";
-  }
-  containers.removeAll(container);
-  QMetaObject::invokeMethod(
-      this, [this]() { emit this->modelChanged(this->getStatusMessage()); });
+  removeContainer(container.get());
 }
 
 QString ContainerModel::getStatusMessage() const {
@@ -131,4 +126,19 @@ ContainerModel::getContainer(unsigned int index) const {
     return containers[index];
   }
   return nullptr;
+}
+
+std::shared_ptr<Container>
+ContainerModel::removeContainer(Container *toRemove) {
+  auto it =
+      std::find_if(containers.begin(), containers.end(),
+                   [toRemove](const std::shared_ptr<Container> &container) {
+                     return toRemove == container.get();
+                   });
+  if (it == containers.end()) {
+    return nullptr;
+  }
+  auto removed = *it;
+  containers.erase(it);
+  return removed;
 }

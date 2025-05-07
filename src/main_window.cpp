@@ -70,12 +70,15 @@ void MainWindow::initConnections() {
           &ContainerModel::handleUndo);
   connect(statusBar, &StatusBar::redoClicked, model,
           &ContainerModel::handleRedo);
+
   connect(model, &ContainerModel::modelChanged, browseWindow,
           &BrowseWindow::refresh);
   connect(model, &ContainerModel::modelChanged, moveWindow,
           &MoveWindow::refresh);
   connect(model, &ContainerModel::modelChanged, statusBar,
           &StatusBar::updateStatus);
+  connect(model, &ContainerModel::modelChanged, searchWindow,
+          &SearchWindow::refresh);
 
   connect(searchWindow, &SearchWindow::goToItemClicked, this, &MainWindow::handleGoToItem);
 }

@@ -19,6 +19,7 @@ class ContainerModel;
 class ContainerModel : public QObject {
   friend class ContainerModelTests;
   friend class NewContainerCmd;
+  friend class RemoveContainerCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
@@ -26,6 +27,7 @@ class ContainerModel : public QObject {
   ContainerModel(QObject *parent = nullptr);
   void initDefaultInventory();
   void newContainerRequest(const QString &name = "New Container");
+  void removeContainerRequest(Container *container);
   bool contains(Container *container);
   QString getStatusMessage() const;
   QStringList getContainerNames() const;
@@ -50,6 +52,7 @@ class ContainerModel : public QObject {
   QUndoStack undoStack;
   void addContainer(std::shared_ptr<Container>);
   void removeContainer(std::shared_ptr<Container>);
+  std::shared_ptr<Container> removeContainer(Container *container);
 
   // ----------UndoCommands----------------------
   // Implemented in commands.cpp

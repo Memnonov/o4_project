@@ -1,4 +1,5 @@
 #include "../include/o4_project/container_model.h"
+#include <qlogging.h>
 
 class ContainerModel::NewContainerCmd : public QUndoCommand {
 public:
@@ -21,4 +22,26 @@ private:
 
 void ContainerModel::newContainerRequest(const QString &name) {
   undoStack.push(new NewContainerCmd(this, name));
+}
+
+class ContainerModel::RemoveContainerCmd : public QUndoCommand {
+public:
+  RemoveContainerCmd(ContainerModel *model, Container *toRemove)
+      : model{model}, removed{nullptr} {
+    this->removed = model->removeContainer(toRemove);
+  }
+  void redo() override { model->removeContainer(removed); }
+  void undo() override { model->addContainer(removed); }
+
+private:
+  ContainerModel *model;
+  std::shared_ptr<Container> removed;
+};
+
+void ContainerModel::removeContainerRequest(Container *container) {
+  if (!container) {
+    return;
+  }
+  qDebug() << "Requested removal of: " << container->name;
+  undoStack.push(new RemoveContainerCmd(this, container));
 }

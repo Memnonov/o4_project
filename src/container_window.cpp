@@ -127,4 +127,7 @@ void ContainerWindow::confirmDelete(Container *container) {
   messageBox.setDefaultButton(QMessageBox::Cancel);
   messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
   auto choice = messageBox.exec();
+  if (choice == QMessageBox::Yes) {
+    model->removeContainerRequest(container);
+  }
 }

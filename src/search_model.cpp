@@ -2,6 +2,7 @@
 #include <qcontainerfwd.h>
 #include <qlogging.h>
 #include <qnamespace.h>
+#include <strings.h>
 
 SearchModel::SearchModel(ContainerModel *model, QObject *parent)
     : QAbstractTableModel{parent}, model{model} {
@@ -24,6 +25,10 @@ QVariant SearchModel::data(const QModelIndex &index, int role) const {
     return {};
   }
   const auto &entry = items.at(index.row());
+  if (!entry.item || !entry.container) {
+    qDebug() << "Invalid item or container at row" << index.row();
+    return {};
+  }
   switch (index.column()) {
     case NAME:
     return entry.item->name;
@@ -70,8 +75,8 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
   QVector<ItemEntry> entries;
   auto containers = model->getContainers();
   for (auto const &container : containers) {
-    for (auto const &item : container->getItems()) {
-      entries << ItemEntry{item, container.get()};
+    for (auto const &item : container->getItemRefs()) {
+      entries << ItemEntry{item, container};
     }
   }
   return entries;
@@ -79,9 +84,9 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
 
 void SearchModel::refresh() {
   beginResetModel();
-  // TODO: Filterint to be implemented in the proxy model?
   items = getItemsFromModel();
   endResetModel();
+  emit refreshProxy();
 }
 
 const SearchModel::ItemEntry &SearchModel::entryAt(int row) const {

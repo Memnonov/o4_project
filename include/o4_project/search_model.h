@@ -4,6 +4,7 @@
 #include "container_model.h"
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
+#include <memory>
 
 class SearchModel : public QAbstractTableModel {
   Q_OBJECT;
@@ -13,8 +14,8 @@ class SearchModel : public QAbstractTableModel {
   ~SearchModel() = default;
   
   struct ItemEntry {
-    Item *item;
-    Container *container;
+    std::shared_ptr<Item> item;
+    std::shared_ptr<Container> container;
   };
 
   enum Columns {
@@ -31,6 +32,9 @@ class SearchModel : public QAbstractTableModel {
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
   const ItemEntry &entryAt(int row) const;
+
+ signals:
+  void refreshProxy();
   
  private:
   ContainerModel *model;

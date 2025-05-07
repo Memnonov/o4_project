@@ -17,6 +17,7 @@ class Container {
  public:
   QString name = "New Container";
   QVector<Item*> getItems() const;
+  const QVector<std::shared_ptr<Item>> &getItemRefs() const;
 
   explicit Container(const QString& name = "New Container") : name{name} {}
 

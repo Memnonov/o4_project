@@ -2,6 +2,7 @@
 
 #include "../include/o4_project/search_proxy_model.h"
 #include "search_model.h"
+#include <qlogging.h>
 #include <qnamespace.h>
 
 void SearchProxyModel::resetFilters() {
@@ -33,3 +34,9 @@ bool SearchProxyModel::filterAcceptsRow(int sourceRow,
          container.contains(containerFilter, Qt::CaseInsensitive) &&
          description.contains(descriptionFilter, Qt::CaseInsensitive);
 }
+
+void SearchProxyModel::refresh() {
+  qDebug() << "Refreshed proxy.";
+  invalidate();
+}
+

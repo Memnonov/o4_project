@@ -16,6 +16,10 @@ QVector<Item*> Container::getItems() const {
   return items;
 }
 
+const QVector<std::shared_ptr<Item>> &Container::getItemRefs() const {
+  return items;
+}
+
 void Container::addItem(std::shared_ptr<Item> item) {
   items.push_back(std::move(item));
 }

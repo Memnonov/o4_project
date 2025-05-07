@@ -41,6 +41,8 @@ void SearchWindow::initTable() {
   table->setSortingEnabled(true);
   connect(table->selectionModel(), &QItemSelectionModel::currentRowChanged,
           this, &SearchWindow::handleRowSelection);
+  connect(searchModel, &SearchModel::refreshProxy, searchProxyModel,
+          &SearchProxyModel::refresh);
 
   table->show();
   connectFilters();
@@ -53,7 +55,7 @@ void SearchWindow::handleRowSelection(const QModelIndex &current,
   }
   auto sourceIndex = searchProxyModel->mapToSource(current);
   auto entry = searchModel->entryAt(sourceIndex.row());
-  infoWindow->handleItemSelected(entry.item, entry.container);
+  infoWindow->handleItemSelected(entry.item.get(), entry.container.get());
 }
 
 void SearchWindow::initSearchForm() {
@@ -85,7 +87,8 @@ void SearchWindow::initInfoWindow() {
   infoWindow->setEditable(false);
   infoWindow->setFavouritable(false);
   infoWindow->setGoToEnabled(true);
-  connect(infoWindow, &ItemInfoWindow::goToItemClicked, this, &SearchWindow::goToItemClicked);
+  connect(infoWindow, &ItemInfoWindow::goToItemClicked, this,
+          &SearchWindow::goToItemClicked);
 }
 
 void SearchWindow::updateContainerNames() {

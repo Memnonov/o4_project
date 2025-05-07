@@ -210,6 +210,9 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
 }
 
 bool ItemsWindow::filterItem(Item *item) {
+  if (!item) {
+    return false;
+  }
   return item->name.contains(filterInput->text(), Qt::CaseInsensitive) ||
          item->tags.join(" ").contains(filterInput->text(),
                                        Qt::CaseInsensitive) ||

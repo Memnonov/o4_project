@@ -13,6 +13,7 @@ class SearchProxyModel : public QSortFilterProxyModel {
     resetFilters();
   }
   ~SearchProxyModel() = default;
+  void refresh();
 
   void setNameFilter(const QString &nameFilter) {
     this->nameFilter = nameFilter;
