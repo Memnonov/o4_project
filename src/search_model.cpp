@@ -83,3 +83,7 @@ void SearchModel::refresh() {
   items = getItemsFromModel();
   endResetModel();
 }
+
+const SearchModel::ItemEntry &SearchModel::entryAt(int row) const {
+  return items.at(row);
+}

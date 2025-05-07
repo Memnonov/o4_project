@@ -10,12 +10,12 @@ SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
     : ModeFrame{parent}, model{model}, searchModel{searchModel},
       searchProxyModel{searchProxyModel},
       placeholder(new QLabel{"Search window here!"}), searchForm{new QFrame},
-      tableFilter{new QTableView}, nameFilter{new QLineEdit},
+      table{new QTableView}, nameFilter{new QLineEdit},
       tagsFilter{new QLineEdit}, descriptionFilter{new QLineEdit},
       containersFilter{new QComboBox} {
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(searchForm);
-  layout->addWidget(tableFilter);
+  layout->addWidget(table);
   layout->setStretch(0, 2);
   layout->setStretch(1, 4);
 
@@ -27,20 +27,31 @@ void SearchWindow::initTable() {
   searchProxyModel->setSourceModel(searchModel);
   searchProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-  tableFilter->setModel(searchProxyModel);
-  tableFilter->horizontalHeader()->setSectionResizeMode(
-      QHeaderView::Interactive);
-  tableFilter->horizontalHeader()->setStretchLastSection(true);
-  tableFilter->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-  tableFilter->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-  tableFilter->setSelectionBehavior(QAbstractItemView::SelectRows);
-  tableFilter->setSelectionMode(QAbstractItemView::SingleSelection);
-  tableFilter->horizontalHeader()->setSectionsMovable(true);
+  table->setModel(searchProxyModel);
+  table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+  table->horizontalHeader()->setStretchLastSection(true);
+  table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+  table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  table->setSelectionBehavior(QAbstractItemView::SelectRows);
+  table->setSelectionMode(QAbstractItemView::SingleSelection);
+  table->horizontalHeader()->setSectionsMovable(true);
 
-  tableFilter->setSortingEnabled(true);
-
-  tableFilter->show();
+  table->setSortingEnabled(true);
+  connect(table->selectionModel(), &QItemSelectionModel::currentRowChanged,
+          this, &SearchWindow::handleRowSelection);
+  
+  table->show();
   connectFilters();
+}
+
+void SearchWindow::handleRowSelection(const QModelIndex &current,
+                                      const QModelIndex &) {
+  if (!current.isValid()) {
+    return;
+  }
+  auto sourceIndex = searchProxyModel->mapToSource(current);
+  auto entry = searchModel->entryAt(sourceIndex.row());
+  qDebug() << "Row changed to: " << entry.item->name;
 }
 
 void SearchWindow::initSearchForm() {
@@ -79,8 +90,8 @@ void SearchWindow::updateContainerNames() {
 
 void SearchWindow::refresh() {
   updateContainerNames();
-  tableFilter->resizeRowsToContents();
-  tableFilter->resizeColumnsToContents();
+  table->resizeRowsToContents();
+  table->resizeColumnsToContents();
 }
 
 void SearchWindow::connectFilters() {
@@ -90,8 +101,8 @@ void SearchWindow::connectFilters() {
           &SearchProxyModel::setTagsFilter);
   connect(descriptionFilter, &QLineEdit::textChanged, searchProxyModel,
           &SearchProxyModel::setDescriptionFilter);
-  connect(containersFilter, &QComboBox::currentTextChanged, this, [this] (const QString &text) {
-
-    searchProxyModel->setContainerFilter(text == "Any" ? "" : text);
-  });
+  connect(containersFilter, &QComboBox::currentTextChanged, this,
+          [this](const QString &text) {
+            searchProxyModel->setContainerFilter(text == "Any" ? "" : text);
+          });
 }

@@ -20,13 +20,16 @@ class SearchWindow : public ModeFrame {
   ~SearchWindow() override = default;
   void refresh();
 
+ public slots:
+  void handleRowSelection(const QModelIndex &current, const QModelIndex &);
+  
  private:
   ContainerModel *model;
   SearchModel *searchModel;
   SearchProxyModel *searchProxyModel;
   QLabel *placeholder;
   QFrame *searchForm;
-  QTableView *tableFilter;
+  QTableView *table;
   QLineEdit *nameFilter;
   QLineEdit *tagsFilter;
   QLineEdit *descriptionFilter;
