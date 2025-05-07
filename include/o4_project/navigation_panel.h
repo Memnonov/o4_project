@@ -32,6 +32,7 @@ class NavigationPanel : public QFrame {
   explicit NavigationPanel(QWidget *parent = nullptr);
   ~NavigationPanel() = default;
 
+  void setSelection(NavAction selection);
 
  private:
   QVBoxLayout *layout;

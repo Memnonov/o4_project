@@ -5,6 +5,8 @@
 #include <QSizePolicy>
 #include <QtLogging>
 #include <qicon.h>
+#include <qlogging.h>
+#include <qpushbutton.h>
 
 const QMap<NavigationPanel::NavAction, QString>
     NavigationPanel::navActionMap = {
@@ -45,12 +47,21 @@ void NavigationPanel::initButtons() {
   }
 }
 
+void NavigationPanel::setSelection(NavigationPanel::NavAction action) {
+  using NavAction = NavigationPanel::NavAction;
+  auto button = this->findChild<QPushButton*>(navActionToString(action));
+  if (button) {
+    button->setChecked(true);
+  }
+}
+
 void NavigationPanel::createButton(NavAction action) {
   auto button = new QPushButton(navActionToString(action));
   buttons->addButton(button);
   button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   button->setCheckable(true);
   button->setIcon(getNavIcon(action));
+  button->setObjectName(navActionToString(action));
   if (action == NavigationPanel::NavAction::BrowseItems) {
     button->setChecked(true);
   }

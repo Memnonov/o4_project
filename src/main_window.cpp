@@ -111,4 +111,5 @@ void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
 void MainWindow::handleGoToItem(Item *item, Container *container) {
   browseWindow->handleGoToItem(item, container);
   handleNavigation(NavigationPanel::NavAction::BrowseItems);
+  navigationPanel->setSelection(NavigationPanel::NavAction::BrowseItems);
 }
