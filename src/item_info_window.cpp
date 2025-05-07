@@ -140,7 +140,7 @@ void ItemInfoWindow::showViews() {
   viewFields->setVisible(!editing);
   editFields->setVisible(editing);
   tip->setVisible(false);
-  editButton->setVisible(true);
+  editButton->setVisible(true && editable);
   favouriteButton->setVisible(true);
 }
 

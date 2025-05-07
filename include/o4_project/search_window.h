@@ -3,6 +3,7 @@
 #ifndef SEARCH_WINDOW_H
 #define SEARCH_WINDOW_H
 
+#include "item_info_window.h"
 #include "mode_frame.h"
 #include "search_model.h"
 #include "search_proxy_model.h"
@@ -27,6 +28,7 @@ class SearchWindow : public ModeFrame {
   ContainerModel *model;
   SearchModel *searchModel;
   SearchProxyModel *searchProxyModel;
+  ItemInfoWindow *infoWindow;
   QLabel *placeholder;
   QFrame *searchForm;
   QTableView *table;

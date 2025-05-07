@@ -16,6 +16,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QString>
+#include <qlogging.h>
 #include "item.h"
 #include "container.h"
 
@@ -25,10 +26,17 @@ class ItemInfoWindow : public QFrame {
  public:
   explicit ItemInfoWindow(QWidget *parent = nullptr);
   ~ItemInfoWindow() = default;
+  void setEditable(bool editable) {
+    this->editable = editable;
+  }
+  void setFavouritable(bool favouritable) {
+    favouriteButton->setEnabled(favouritable);
+  }
 
  private:
   // State
   bool editing = false;
+  bool editable = true;
   Item *item = nullptr;
   Container *container = nullptr;
   

@@ -8,7 +8,7 @@
 SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
                            SearchProxyModel *searchProxyModel, QWidget *parent)
     : ModeFrame{parent}, model{model}, searchModel{searchModel},
-      searchProxyModel{searchProxyModel},
+      searchProxyModel{searchProxyModel}, infoWindow{new ItemInfoWindow},
       placeholder(new QLabel{"Search window here!"}), searchForm{new QFrame},
       table{new QTableView}, nameFilter{new QLineEdit},
       tagsFilter{new QLineEdit}, descriptionFilter{new QLineEdit},
@@ -17,7 +17,7 @@ SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
   layout->addWidget(searchForm);
   layout->addWidget(table);
   layout->setStretch(0, 2);
-  layout->setStretch(1, 4);
+  layout->setStretch(1, 6);
 
   initTable();
   initSearchForm();
@@ -39,7 +39,7 @@ void SearchWindow::initTable() {
   table->setSortingEnabled(true);
   connect(table->selectionModel(), &QItemSelectionModel::currentRowChanged,
           this, &SearchWindow::handleRowSelection);
-  
+
   table->show();
   connectFilters();
 }
@@ -52,6 +52,7 @@ void SearchWindow::handleRowSelection(const QModelIndex &current,
   auto sourceIndex = searchProxyModel->mapToSource(current);
   auto entry = searchModel->entryAt(sourceIndex.row());
   qDebug() << "Row changed to: " << entry.item->name;
+  infoWindow->handleItemSelected(entry.item, entry.container);
 }
 
 void SearchWindow::initSearchForm() {
@@ -75,11 +76,10 @@ void SearchWindow::initSearchForm() {
   vbox->addWidget(new QLabel{"Description:"});
   vbox->addWidget(descriptionFilter);
   vbox->addSpacing(10);
-  auto tipBox = new QLabel{"<b>Help</b><br>Some help here."};
 
-  tipBox->setAlignment(Qt::AlignCenter);
-
-  searchForm->layout()->addWidget(tipBox);
+  searchForm->layout()->addWidget(infoWindow);
+  infoWindow->setEditable(false);
+  infoWindow->setFavouritable(false);
 }
 
 void SearchWindow::updateContainerNames() {
