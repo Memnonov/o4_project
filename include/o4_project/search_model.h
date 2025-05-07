@@ -34,8 +34,7 @@ class SearchModel : public QAbstractTableModel {
     Container *container;
   };
 
-  QVector<ItemEntry> allItems;
-  QVector<ItemEntry> filteredItems;
+  QVector<ItemEntry> items;
   QVector<ItemEntry> getItemsFromModel();
 };
 

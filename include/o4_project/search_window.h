@@ -26,16 +26,17 @@ class SearchWindow : public ModeFrame {
   SearchProxyModel *searchProxyModel;
   QLabel *placeholder;
   QFrame *searchForm;
-  QTableView *table;
-  QLineEdit *name;
-  QLineEdit *tags;
-  QLineEdit *description;
-  QComboBox *containersBox;
+  QTableView *tableFilter;
+  QLineEdit *nameFilter;
+  QLineEdit *tagsFilter;
+  QLineEdit *descriptionFilter;
+  QComboBox *containersFilter;
   
   // Makes this concrete.
   virtual void dummyFunction() override {}
   void initSearchForm();
   void initTable();
+  void connectFilters();
   void updateContainerNames();
 };
 

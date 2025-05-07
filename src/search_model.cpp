@@ -10,7 +10,7 @@ SearchModel::SearchModel(ContainerModel *model, QObject *parent)
 
 // TODO: Implement these stubs.
 int SearchModel::rowCount(const QModelIndex &parent) const {
-  return filteredItems.size();
+  return items.size();
 }
 int SearchModel::columnCount(const QModelIndex &parent) const {
   return 5;
@@ -23,7 +23,7 @@ QVariant SearchModel::data(const QModelIndex &index, int role) const {
     }
     return {};
   }
-  const auto &entry = filteredItems.at(index.row());
+  const auto &entry = items.at(index.row());
   switch (index.column()) {
     case NAME:
     return entry.item->name;
@@ -48,7 +48,7 @@ QVariant SearchModel::headerData(int section, Qt::Orientation orientation,
       case 0:
         return "Name";
       case 1:
-        return "Quantity";
+        return "#";
       case 2:
         return "Tags";
       case 3:
@@ -80,6 +80,6 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
 void SearchModel::refresh() {
   beginResetModel();
   // TODO: Filterint to be implemented in the proxy model?
-  filteredItems = getItemsFromModel();
+  items = getItemsFromModel();
   endResetModel();
 }

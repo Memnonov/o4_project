@@ -7,13 +7,15 @@
 
 SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
                            SearchProxyModel *searchProxyModel, QWidget *parent)
-    : ModeFrame{parent}, model{model}, searchModel{searchModel}, searchProxyModel{searchProxyModel},
+    : ModeFrame{parent}, model{model}, searchModel{searchModel},
+      searchProxyModel{searchProxyModel},
       placeholder(new QLabel{"Search window here!"}), searchForm{new QFrame},
-      table{new QTableView}, name{new QLineEdit}, tags{new QLineEdit},
-      description{new QLineEdit}, containersBox{new QComboBox} {
+      tableFilter{new QTableView}, nameFilter{new QLineEdit},
+      tagsFilter{new QLineEdit}, descriptionFilter{new QLineEdit},
+      containersFilter{new QComboBox} {
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(searchForm);
-  layout->addWidget(table);
+  layout->addWidget(tableFilter);
   layout->setStretch(0, 2);
   layout->setStretch(1, 4);
 
@@ -25,18 +27,20 @@ void SearchWindow::initTable() {
   searchProxyModel->setSourceModel(searchModel);
   searchProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-  table->setModel(searchProxyModel);
-  table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-  table->horizontalHeader()->setStretchLastSection(true);
-  table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-  table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-  table->setSelectionBehavior(QAbstractItemView::SelectRows);
-  table->setSelectionMode(QAbstractItemView::SingleSelection);
-  table->horizontalHeader()->setSectionsMovable(true);
+  tableFilter->setModel(searchProxyModel);
+  tableFilter->horizontalHeader()->setSectionResizeMode(
+      QHeaderView::Interactive);
+  tableFilter->horizontalHeader()->setStretchLastSection(true);
+  tableFilter->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+  tableFilter->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  tableFilter->setSelectionBehavior(QAbstractItemView::SelectRows);
+  tableFilter->setSelectionMode(QAbstractItemView::SingleSelection);
+  tableFilter->horizontalHeader()->setSectionsMovable(true);
 
-  table->setSortingEnabled(true);
+  tableFilter->setSortingEnabled(true);
 
-  table->show();
+  tableFilter->show();
+  connectFilters();
 }
 
 void SearchWindow::initSearchForm() {
@@ -45,16 +49,20 @@ void SearchWindow::initSearchForm() {
   searchForm->setLayout(vbox);
   vbox->setAlignment(Qt::AlignTop);
 
+  nameFilter->setPlaceholderText("e.g. sword, iron rations");
+  tagsFilter->setPlaceholderText("e.g. weapon, healing");
+  descriptionFilter->setPlaceholderText("e.g. damage +1, cursed");
+
   vbox->addWidget(new QLabel{"<b>Search Items</b>"});
   vbox->addSpacing(10);
   vbox->addWidget(new QLabel{"Container:"});
-  vbox->addWidget(containersBox), vbox->addWidget(new QLabel{"Item name:"});
+  vbox->addWidget(containersFilter), vbox->addWidget(new QLabel{"Item name:"});
   updateContainerNames();
-  vbox->addWidget(name);
-  vbox->addWidget(new QLabel{"Tags:"});
-  vbox->addWidget(tags);
+  vbox->addWidget(nameFilter);
+  vbox->addWidget(new QLabel{"Tag:"});
+  vbox->addWidget(tagsFilter);
   vbox->addWidget(new QLabel{"Description:"});
-  vbox->addWidget(description);
+  vbox->addWidget(descriptionFilter);
   vbox->addSpacing(10);
   auto tipBox = new QLabel{"<b>Help</b><br>Some help here."};
 
@@ -64,13 +72,26 @@ void SearchWindow::initSearchForm() {
 }
 
 void SearchWindow::updateContainerNames() {
-  containersBox->clear();
-  containersBox->addItem("Any");
-  containersBox->addItems(model->getContainerNames());
+  containersFilter->clear();
+  containersFilter->addItem("Any");
+  containersFilter->addItems(model->getContainerNames());
 }
 
 void SearchWindow::refresh() {
   updateContainerNames();
-  table->resizeRowsToContents();
-  table->resizeColumnsToContents();
+  tableFilter->resizeRowsToContents();
+  tableFilter->resizeColumnsToContents();
+}
+
+void SearchWindow::connectFilters() {
+  connect(nameFilter, &QLineEdit::textChanged, searchProxyModel,
+          &SearchProxyModel::setNameFilter);
+  connect(tagsFilter, &QLineEdit::textChanged, searchProxyModel,
+          &SearchProxyModel::setTagsFilter);
+  connect(descriptionFilter, &QLineEdit::textChanged, searchProxyModel,
+          &SearchProxyModel::setDescriptionFilter);
+  connect(containersFilter, &QComboBox::currentTextChanged, this, [this] (const QString &text) {
+
+    searchProxyModel->setContainerFilter(text == "Any" ? "" : text);
+  });
 }
