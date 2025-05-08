@@ -4,10 +4,10 @@
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
-  // Testing testing...
   QApplication app(argc, argv);
   MainWindow mainWindow;
   mainWindow.show();
 
-  return app.exec();
+  int ret =  app.exec();
+  return ret;
 }

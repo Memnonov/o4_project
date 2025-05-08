@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <functional>
+#include <memory>
 #include <qcontainerfwd.h>
 #include <qscrollarea.h>
 #include <qtoolbar.h>
@@ -86,6 +87,7 @@ private:
   QLineEdit *filterInput;
   QVBoxLayout *itemRows;
   QButtonGroup *buttonGroup;
+  QPushButton *newButton = nullptr;
   QScrollArea *scrollArea;
   QPushButton *closeButton;
   QPushButton *editButton;

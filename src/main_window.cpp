@@ -16,6 +16,7 @@
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
 #include <qstackedwidget.h>
+#include <qtmetamacros.h>
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)

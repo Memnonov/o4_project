@@ -6,8 +6,12 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <algorithm>
+#include <memory>
+#include <qbuttongroup.h>
+#include <qlogging.h>
 #include <qmessagebox.h>
 #include <qnamespace.h>
+#include <qpushbutton.h>
 #include <qtmetamacros.h>
 #include <qvector.h>
 
@@ -15,9 +19,9 @@ ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
-      editButton{new QPushButton}, sortMode{ItemsWindow::SortMode::AtoZ},
-      itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton},
-      editNameLine{new QLineEdit} {
+      buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
+      sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
+      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit} {
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -54,7 +58,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   layout->addWidget(filterSortPanel);
 
   // Set up item rows.
-  auto rowsWidget = new QWidget;
+  auto rowsWidget = new QWidget{this};
   updateRows();
   rowsWidget->setLayout(itemRows);
   itemRows->setAlignment(Qt::AlignTop);
@@ -128,10 +132,7 @@ void ItemsWindow::initEditButton() {
           [this]() { toggleEditing(); });
 }
 
-void ItemsWindow::refresh() {
-  updateRows();
-  qDebug() << "refresh: itemsWindow";
-}
+void ItemsWindow::refresh() { updateRows(); }
 
 void ItemsWindow::toggleEditing() {
   editing = !editing;
@@ -142,7 +143,7 @@ void ItemsWindow::toggleEditing() {
 // This is dumb dumb and long long. Gotta go fast.
 void ItemsWindow::createRows(QVBoxLayout *rows) {
   rows->setSpacing(0);
-  buttonGroup = new QButtonGroup{this};
+  // buttonGroup = new QButtonGroup{this};
   buttonGroup->setExclusive(!movingItems);
   // TODO(mikko): Fix asset paths.
   if (!currentContainer) {
@@ -246,20 +247,32 @@ void ItemsWindow::updateRows() {
     QLayoutItem *item;
     while ((item = itemRows->takeAt(0)) != nullptr) {
       item->widget()->deleteLater();
+      delete item;
     }
   }
+  if (buttonGroup) {
+    for (auto button : buttonGroup->buttons()) {
+      buttonGroup->removeButton(button);
+      button->deleteLater();
+    }
+  }
+
   createRows(itemRows);
-  if (!movingItems) {  // No use keeping selection when moving stuff.
+  if (!movingItems) { // No use keeping selection when moving stuff.
     selectItem(currentItem);
   }
 
   // New item button. Also dumb to remake it like this. No time to fix...
-  QPushButton *newButton = new QPushButton{"Add New"};
+  if (newButton) {
+    newButton->disconnect(newButton, &QPushButton::clicked, this, &ItemsWindow::handleAddNewClicked);
+  };
+  newButton = new QPushButton{"Add New", this};
   QIcon plusIcon{":/icons/plus.svg"};
   newButton->setIcon(plusIcon);
-  newButton->setFlat(true), newButton->setMinimumHeight(40);
+  newButton->setFlat(true);
   newButton->setMinimumHeight(40);
   itemRows->addWidget(newButton);
+  qDebug() << "NewButton parent: " << newButton->parent();
   connect(newButton, &QPushButton::clicked, this,
           &ItemsWindow::handleAddNewClicked);
 }

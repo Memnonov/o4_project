@@ -32,7 +32,6 @@ class ContainerWindow : public QFrame {
   QVBoxLayout *layout;
   QScrollArea *scrollArea;
   QPushButton *newContainerButton;
-  QLineEdit *editNameLine;
 
   void initLabel();
   void initNewContainerButton();
