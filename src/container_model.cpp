@@ -84,10 +84,17 @@ void ContainerModel::moveItem(unsigned int itemIndex, unsigned int from,
 }
 
 void ContainerModel::moveItem(Item *item, Container *from, Container *to) {
-  qDebug() << "@moveItem: {item, from, to} = " << item->name << ", " << from->name << ", " << to->name;
+  if (from == to) {
+    return;
+  }
   to->addItem(from->removeItem(item));
 }
 
+void ContainerModel::moveItems(QVector<Item *> items, Container *from, Container *to) {
+
+}
+
+// Quite unnecessary in the end. 
 void ContainerModel::moveItems(unsigned int indexA, unsigned int indexB,
                                QVector<unsigned int> itemsA,
                                QVector<unsigned int> itemsB) {

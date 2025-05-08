@@ -1,6 +1,7 @@
 #include "../include/o4_project/container_model.h"
 #include "../include/o4_project/item.h"
 #include <exception>
+#include <qcontainerfwd.h>
 #include <qlogging.h>
 
 class ContainerModel::NewContainerCmd : public QUndoCommand {
@@ -187,25 +188,41 @@ private:
   Container *to;
 };
 
-void ContainerModel::moveItemRequest(Item *item, Container *from, Container *to) {
+void ContainerModel::moveItemRequest(Item *item, Container *from,
+                                     Container *to) {
   if (!item || !from || !to) {
     return;
   }
   undoStack.push(new MoveItemCmd{this, item, from, to});
 }
 
-// // A lil template, if you will
-// class ContainerModel::CMD : public QUndoCommand {
-//  public:
-//   CMD(ContainerModel *model) : model{model} {
-//     // ctor
-//   }
-//   void redo() override {
-//     // redo
-//   };
-//   void undo() override {
-//     // undo
-//   };
-//  private:
-//   ContainerModel *model;
-// };
+class ContainerModel::BatchMoveCmd : public QUndoCommand {
+public:
+  BatchMoveCmd(ContainerModel *model, QVector<Item *> items, Container *from,
+               Container *to)
+      : model{model}, items{items}, from{from}, to{to} {
+    setText(QString{"Moved %1 Item(s) from <b>%2</b> to <b>%3</b>"}
+                .arg(items.size())
+                .arg(from->name)
+                .arg(to->name));
+  }
+  void redo() override { to->addItems(from->removeItems(items)); };
+  void undo() override { from->addItems(to->removeItems(items)); };
+
+private:
+  ContainerModel *model;
+  QVector<Item *> items;
+  Container *from;
+  Container *to;
+};
+
+void ContainerModel::batchMoveRequest(QVector<Item *> items, Container *from,
+                                      Container *to) {
+  if (!from || !to) {
+    return;
+  }
+  if (from == to) {
+    return;
+  }
+  undoStack.push(new BatchMoveCmd{this, items, from, to});
+}

@@ -70,6 +70,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   moveItemsButton->setVisible(false);
   moveItemsButton->setIcon(QIcon(":/icons/arrow-separate"));
   moveItemsButton->setText("Move items");
+  connect(moveItemsButton, &QPushButton::clicked, this,
+          [this]() { emit moveItemsClicked(getSelectedItems()); });
   layout->addWidget(moveWidget);
 
   // auto bottomRow = new QWidget;
@@ -77,8 +79,9 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   addDeleteWidget->setLayout(bottomRowLayout);
   auto bottomAddButton = new QPushButton{"Add"};
   bottomAddButton->setIcon(QIcon(":/icons/plus.svg"));
-  connect(bottomAddButton, &QPushButton::clicked, this, &ItemsWindow::handleAddNewClicked);
-  
+  connect(bottomAddButton, &QPushButton::clicked, this,
+          &ItemsWindow::handleAddNewClicked);
+
   bottomRowLayout->addWidget(bottomAddButton);
   bottomDeleteButton = new QPushButton{"Delete"};
   bottomDeleteButton->setEnabled(false);
@@ -164,9 +167,8 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-      connect(moveButton, &QPushButton::clicked, this, [this, item] {
-        emit moveItemClicked(item);
-      });
+      connect(moveButton, &QPushButton::clicked, this,
+              [this, item] { emit moveItemClicked(item); });
     }
 
     QWidget *row = new QWidget;
@@ -214,13 +216,14 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
                                  QSizePolicy::Expanding);
       box->addWidget(minusButton);
       box->addWidget(plusButton);
-      connect(plusButton, &QPushButton::clicked, this, [this, item] () {
+      connect(plusButton, &QPushButton::clicked, this, [this, item]() {
         emit setQuantityClicked(item, ++(item->quantity));
       });
-      connect(minusButton, &QPushButton::clicked, this, [this, item] () {
-        emit setQuantityClicked(item, item->quantity == 0 ? 0 : --(item->quantity));
+      connect(minusButton, &QPushButton::clicked, this, [this, item]() {
+        emit setQuantityClicked(item,
+                                item->quantity == 0 ? 0 : --(item->quantity));
       });
-      
+
     } else if (!isRightWindow) {
       box->addWidget(moveButton);
       moveButton->setIcon(QIcon(":/icons/fast-arrow-right"));
@@ -246,8 +249,10 @@ void ItemsWindow::updateRows() {
     }
   }
   createRows(itemRows);
-  selectItem(currentItem);
-  
+  if (!movingItems) {  // No use keeping selection when moving stuff.
+    selectItem(currentItem);
+  }
+
   // New item button. Also dumb to remake it like this. No time to fix...
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
@@ -325,8 +330,7 @@ void ItemsWindow::confirmDeleteItem() {
 
   auto item = getSelectedItems().at(0);
 
-  messageBox.setText(
-      QString{"Delete items:<br>%1"}.arg(item->name));
+  messageBox.setText(QString{"Delete items:<br>%1"}.arg(item->name));
   messageBox.setDefaultButton(QMessageBox::Cancel);
   messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
   auto choice = messageBox.exec();

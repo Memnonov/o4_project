@@ -30,9 +30,11 @@ class Container {
   Container& operator=(const Container& other) = delete;
 
   void addItem(std::shared_ptr<Item> item);
+  void addItems(const QVector<std::shared_ptr<Item>> &items);
   std::shared_ptr<Item> removeItem(unsigned int index);
   std::shared_ptr<Item> removeItem(std::shared_ptr<Item> item);
   std::shared_ptr<Item> removeItem(Item *);
+  QVector<std::shared_ptr<Item>> removeItems(const QVector<Item*> &items);
   void moveItem(unsigned int index, std::shared_ptr<Container> other);
   unsigned int size() const;
 

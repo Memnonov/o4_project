@@ -4,18 +4,18 @@
 #define CONTAINER_MODEL
 
 #include "./container.h"
-#include <QObject>
-#include <memory>
-#include <QUndoStack>
-#include <QUndoCommand>
 #include "item.h"
+#include <QObject>
+#include <QUndoCommand>
+#include <QUndoStack>
+#include <memory>
 
 class ContainerModel;
 
 class ContainerModel : public QObject {
-  Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
-  
- public:
+  Q_OBJECT; // semicolon not needed, but makes syntax highlighting behave.
+
+public:
   ContainerModel(QObject *parent = nullptr);
   void initDefaultInventory();
   bool contains(Container *container);
@@ -24,7 +24,7 @@ class ContainerModel : public QObject {
   QStringList getContainerNames() const;
   std::shared_ptr<Item> getItem(Item *item, Container *container) const;
 
-  const QVector<std::shared_ptr<Container>>& getContainers() const;
+  const QVector<std::shared_ptr<Container>> &getContainers() const;
   // These below ended up kinda useless ?
   void addItem(std::shared_ptr<Item> item, unsigned int contIndex);
   void removeItem(unsigned int itemIndex, unsigned int container);
@@ -32,6 +32,7 @@ class ContainerModel : public QObject {
   void moveItem(Item *item, Container *from, Container *to);
   void moveItems(unsigned int contA, unsigned int contB,
                  QVector<unsigned int> itemsA, QVector<unsigned int> itemsB);
+  void moveItems(QVector<Item *> items, Container *from, Container *to);
 
   // Changes to the model are made through these requests
   void newContainerRequest(const QString &name = "New Container");
@@ -42,15 +43,16 @@ class ContainerModel : public QObject {
   void setItemQuantityRequest(Item *item, unsigned int quantity);
   void updateItemRequest(Item *item, Item::ItemData data);
   void moveItemRequest(Item *item, Container *from, Container *to);
+  void batchMoveRequest(QVector<Item *> items, Container *from, Container *to);
 
- public slots:
+public slots:
   void handleUndo() { undoStack.undo(); }
   void handleRedo() { undoStack.redo(); }
 
- signals:
+signals:
   void modelChanged(QString message);
 
- private:
+private:
   // ----------UndoCommands----------------------
   // Implemented in commands.cpp
   class NewContainerCmd;
@@ -61,6 +63,7 @@ class ContainerModel : public QObject {
   class SetItemQuantityCmd;
   class UpdateItemCmd;
   class MoveItemCmd;
+  class BatchMoveCmd;
 
   friend class ContainerModelTests;
   friend class NewContainerCmd;
@@ -71,15 +74,15 @@ class ContainerModel : public QObject {
   friend class SetItemQuantityCmd;
   friend class UpdateItemCmd;
   friend class MoveItemCmd;
-  
+  friend class BatchMoveCmd;
+
   QVector<std::shared_ptr<Container>> containers;
   QUndoStack undoStack;
   void addContainer(std::shared_ptr<Container>);
   void removeContainer(std::shared_ptr<Container>);
   std::shared_ptr<Container> removeContainer(Container *container);
 
-  
   std::shared_ptr<Container> getContainer(unsigned int index) const;
 };
 
-#endif  // !CONTAINER_MODEL
+#endif // !CONTAINER_MODEL

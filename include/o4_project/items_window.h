@@ -3,35 +3,36 @@
 #ifndef ITEMS_WINDOW_H
 #define ITEMS_WINDOW_H
 
-#include "item.h"
 #include "container.h"
-#include <QLineEdit>
-#include <QLabel>
-#include <QFrame>
-#include <QObject>
-#include <QScrollArea>
-#include <functional>
+#include "item.h"
 #include <QButtonGroup>
-#include <QVBoxLayout>
-#include <qscrollarea.h>
+#include <QFrame>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QObject>
 #include <QPushButton>
+#include <QScrollArea>
+#include <QStringList>
+#include <QVBoxLayout>
+#include <QVector>
+#include <functional>
+#include <qcontainerfwd.h>
+#include <qscrollarea.h>
 #include <qtoolbar.h>
 #include <unordered_map>
-#include <QMessageBox>
-#include <QVector>
-#include <QStringList>
 
 class ItemsWindow : public QFrame {
   Q_OBJECT;
 
- public:
+public:
   explicit ItemsWindow(QWidget *parent = nullptr);
   ~ItemsWindow() = default;
   void refresh();
   Container *getCurrentContainer();
-  void selectItem(Item* item);
+  void selectItem(Item *item);
   Item *currentItem = nullptr;
-  
+
   void setMovingItems(bool moving) {
     this->movingItems = moving;
     moveItemsButton->setVisible(moving);
@@ -43,39 +44,39 @@ class ItemsWindow : public QFrame {
     this->isRightWindow = isRightWindow;
   }
 
-  bool hasContainerSelected() const {
-    return currentContainer != nullptr;
-  }
-  
+  bool hasContainerSelected() const { return currentContainer != nullptr; }
+
   bool hasItemSelected() const;
 
-  QVector<Item*> getSelectedItems() const;
+  QVector<Item *> getSelectedItems() const;
 
- signals:
+signals:
   void addNewClicked(Container *container, const QString &name);
   void itemSelected(Item *item, Container *container);
   void itemsWindowClosed();
   void deleteItemClicked(Item *item, Container *container);
   void setQuantityClicked(Item *item, unsigned int quantity);
   void moveItemClicked(Item *item);
+  void moveItemsClicked(QVector<Item *>);
 
-
- private:
+private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
   QHash<SortMode, QString> sortModeToString{
       {ItemsWindow::SortMode::AtoZ, "A-Z"},
       {ItemsWindow::SortMode::ZtoA, "Z-A"},
       {ItemsWindow::SortMode::Quantity, "#"},
   };
-  
-  static const std::unordered_map<SortMode, std::function<bool(const Item*, const Item*)>> comparators;
+
+  static const std::unordered_map<
+      SortMode, std::function<bool(const Item *, const Item *)>>
+      comparators;
 
   bool movingItems = false;
   bool isRightWindow = false;
   bool editing = false;
   SortMode sortMode = SortMode::AtoZ;
-  
-  Container* currentContainer = nullptr;
+
+  Container *currentContainer = nullptr;
   QVBoxLayout *layout;
   QLabel *title;
   QToolBar *filterSortPanel;
@@ -98,11 +99,11 @@ class ItemsWindow : public QFrame {
   QString cycleSortMode();
   void closeButtonPushed();
   void toggleEditing();
-  void sortItems(QVector<Item*> &items);
+  void sortItems(QVector<Item *> &items);
   bool filterItem(Item *item);
   void handleAddNewClicked();
 
- public slots:
+public slots:
   void handleContainerSelected(Container *container);
   void setCanMoveItems(bool canMove);
   void confirmDeleteItem();

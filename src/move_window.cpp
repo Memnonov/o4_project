@@ -61,6 +61,17 @@ void MoveWindow::initConnections() {
             moveItem(item, rightItems->getCurrentContainer(),
                      leftItems->getCurrentContainer());
           });
+  // Batch moving
+  connect(leftItems, &ItemsWindow::moveItemsClicked, this,
+          [this](const auto &items) {
+            model->batchMoveRequest(items, leftItems->getCurrentContainer(),
+                                    rightItems->getCurrentContainer());
+          });
+  connect(rightItems, &ItemsWindow::moveItemsClicked, this,
+          [this](const auto &items) {
+            model->batchMoveRequest(items, rightItems->getCurrentContainer(),
+                                    leftItems->getCurrentContainer());
+          });
 
   // Toggling the batch move button
   connect(leftContainer, &ContainerWindow::containerSelected, this,

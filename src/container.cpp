@@ -27,8 +27,13 @@ void Container::addItem(std::shared_ptr<Item> item) {
   if (!item) {
     return;
   }
-  qDebug() << "Adding item: " << item->name;
   items.push_back(std::move(item));
+}
+
+void Container::addItems(const QVector<std::shared_ptr<Item>> &items) {
+  for (auto const &item : items) {
+    this->items.push_back(std::move(item));
+  }
 }
 
 std::shared_ptr<Item> Container::getItem(Item *item) {
@@ -68,6 +73,14 @@ std::shared_ptr<Item> Container::removeItem(Item *item) {
     }
   }
   return nullptr;
+}
+
+QVector<std::shared_ptr<Item>> Container::removeItems(const QVector<Item*> &toRemove) {
+  QVector<std::shared_ptr<Item>> removed;
+  for (const auto &item : toRemove) {
+    removed.push_back(removeItem(item));
+  }
+  return removed;
 }
 
 void Container::moveItem(unsigned int index, std::shared_ptr<Container> other) {
