@@ -10,12 +10,12 @@
 #include "container_model.h"
 
 class MoveWindow : public ModeFrame {
-public:
+ public:
   MoveWindow(ContainerModel *model, QWidget *parent = nullptr);
   ~MoveWindow() {}
   void refresh();
-
-private:
+  
+ private:
   enum class Stack { right, left };
 
 
@@ -32,9 +32,10 @@ private:
   // Makes this concrete.
   virtual void dummyFunction() {}
   void initConnections();
+  QWidget* getMiddlePanel();
+  void moveItem(Item *item, Container *from, Container *to);
 
 private slots:
-  QWidget* getMiddlePanel();
   void handleContainerSelected(Stack stack);
   void handleContainerClosed(Stack stack);
   void updateMoveButtons();

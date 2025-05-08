@@ -32,6 +32,7 @@ class Container {
   void addItem(std::shared_ptr<Item> item);
   std::shared_ptr<Item> removeItem(unsigned int index);
   std::shared_ptr<Item> removeItem(std::shared_ptr<Item> item);
+  std::shared_ptr<Item> removeItem(Item *);
   void moveItem(unsigned int index, std::shared_ptr<Container> other);
   unsigned int size() const;
 

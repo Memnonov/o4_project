@@ -36,8 +36,8 @@ inline void ContainerTests::testRemoveItem() {
       Item("Testing Item A", 1, "Test description...", QStringList{})));
   container.addItem(std::make_shared<Item>(
       Item("Testing Item B", 1, "Test description...", QStringList{})));
-  container.removeItem(1);
-  container.removeItem(0);
+  container.removeItem((unsigned int) 1); // meh
+  container.removeItem((unsigned int) 0);
   container.addItem(std::make_shared<Item>(
       Item("Testing Item C", 1, "Test description...", QStringList{})));
   container.removeItem(666);

@@ -50,6 +50,18 @@ void MoveWindow::initConnections() {
   connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
           &ItemsWindow::handleContainerSelected);
 
+  // Single item move
+  connect(leftItems, &ItemsWindow::moveItemClicked, this,
+          [this](const auto &item) {
+            moveItem(item, leftItems->getCurrentContainer(),
+                     rightItems->getCurrentContainer());
+          });
+  connect(rightItems, &ItemsWindow::moveItemClicked, this,
+          [this](const auto &item) {
+            moveItem(item, rightItems->getCurrentContainer(),
+                     leftItems->getCurrentContainer());
+          });
+
   // Toggling the batch move button
   connect(leftContainer, &ContainerWindow::containerSelected, this,
           &MoveWindow::updateMoveButtons);
@@ -69,7 +81,8 @@ void MoveWindow::initConnections() {
   connect(rightItems, &ItemsWindow::itemsWindowClosed, this,
           [this]() { handleContainerClosed(Stack::right); });
   for (const auto &items : {leftItems, rightItems}) {
-    connect(items, &ItemsWindow::addNewClicked, model, &ContainerModel::newItemRequest);
+    connect(items, &ItemsWindow::addNewClicked, model,
+            &ContainerModel::newItemRequest);
   }
 }
 
@@ -134,4 +147,8 @@ void MoveWindow::updateMoveButtons() {
   leftItems->setCanMoveItems(leftCanMove);
   rightItems->setCanMoveItems(rightCanMove);
   moveSelectedButton->setEnabled(leftCanMove | rightCanMove);
+}
+
+void MoveWindow::moveItem(Item *item, Container *from, Container *to) {
+  model->moveItemRequest(item, from, to);
 }

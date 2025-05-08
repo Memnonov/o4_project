@@ -152,7 +152,7 @@ class ContainerModel::UpdateItemCmd : public QUndoCommand {
 public:
   UpdateItemCmd(ContainerModel *model, Item *item, const Item::ItemData data)
       : model{model}, item{item}, newData{data}, oldData{item->getData()} {
-    setText(QString{"Modified Item: "}.arg(item->name));
+    setText(QString{"Modified Item: "}.arg(data.name));
   }
   void redo() override { item->setData(newData); };
   void undo() override { item->setData(oldData); };
@@ -166,6 +166,32 @@ private:
 
 void ContainerModel::updateItemRequest(Item *item, Item::ItemData data) {
   undoStack.push(new UpdateItemCmd{this, item, data});
+}
+
+class ContainerModel::MoveItemCmd : public QUndoCommand {
+public:
+  MoveItemCmd(ContainerModel *model, Item *item, Container *from, Container *to)
+      : model{model}, item{item}, from{from}, to{to} {
+    setText(QString{"Moved %1 from %2 to %3"}
+                .arg(item->name)
+                .arg(from->name)
+                .arg(to->name));
+  }
+  void redo() override { model->moveItem(item, from, to); };
+  void undo() override { model->moveItem(item, to, from); };
+
+private:
+  ContainerModel *model;
+  Item *item;
+  Container *from;
+  Container *to;
+};
+
+void ContainerModel::moveItemRequest(Item *item, Container *from, Container *to) {
+  if (!item || !from || !to) {
+    return;
+  }
+  undoStack.push(new MoveItemCmd{this, item, from, to});
 }
 
 // // A lil template, if you will

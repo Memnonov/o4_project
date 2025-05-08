@@ -40,7 +40,7 @@ inline void JsonTests::testParseJsonDocument() {
   auto container = result.at(0);
   QVERIFY(container);
   QCOMPARE(container->name, "container");
-  auto item = container->removeItem(0);
+  auto item = container->removeItem((unsigned int) 0);
   QCOMPARE(item->name, "name");
   QCOMPARE(item->quantity, 1);
   QCOMPARE(item->tags.at(0), "tag");

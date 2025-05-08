@@ -8,6 +8,7 @@
 #include <memory>
 #include <qlogging.h>
 #include <qundostack.h>
+#include <qvector.h>
 #include <utility>
 
 void ContainerModel::initDefaultInventory() {
@@ -80,6 +81,11 @@ void ContainerModel::moveItem(unsigned int itemIndex, unsigned int from,
   if (fromCont && toCont) {
     fromCont->moveItem(itemIndex, toCont);
   }
+}
+
+void ContainerModel::moveItem(Item *item, Container *from, Container *to) {
+  qDebug() << "@moveItem: {item, from, to} = " << item->name << ", " << from->name << ", " << to->name;
+  to->addItem(from->removeItem(item));
 }
 
 void ContainerModel::moveItems(unsigned int indexA, unsigned int indexB,

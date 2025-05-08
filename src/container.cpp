@@ -7,6 +7,7 @@
 #include <memory>
 #include <qdebug.h>
 #include <QtLogging>
+#include <qlogging.h>
 #include <qvector.h>
 #include <utility>
 
@@ -54,6 +55,19 @@ std::shared_ptr<Item> Container::removeItem(std::shared_ptr<Item> item) {
   auto temp = *it;
   items.erase(it);
   return temp;
+}
+
+std::shared_ptr<Item> Container::removeItem(Item *item) {
+  auto it = QMutableVectorIterator<std::shared_ptr<Item>>(items);
+  while (it.hasNext()) {
+    if (it.next().get() == item) {
+      auto temp = it.value();
+      it.remove();
+      qDebug() << "removeItem (Item *item) found item: " << temp->name;
+      return temp;
+    }
+  }
+  return nullptr;
 }
 
 void Container::moveItem(unsigned int index, std::shared_ptr<Container> other) {

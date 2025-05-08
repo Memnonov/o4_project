@@ -164,6 +164,9 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+      connect(moveButton, &QPushButton::clicked, this, [this, item] {
+        emit moveItemClicked(item);
+      });
     }
 
     QWidget *row = new QWidget;
