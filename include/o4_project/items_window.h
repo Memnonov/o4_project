@@ -30,6 +30,7 @@ class ItemsWindow : public QFrame {
   void refresh();
   Container *getCurrentContainer();
   void selectItem(Item* item);
+  Item *currentItem = nullptr;
   
   void setMovingItems(bool moving) {
     this->movingItems = moving;

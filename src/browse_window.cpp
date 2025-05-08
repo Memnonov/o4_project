@@ -33,6 +33,8 @@ void BrowseWindow::initConnections() {
           &ItemsWindow::handleContainerSelected);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::handleItemSelected);
+  connect(itemsWindow, &ItemsWindow::deleteItemClicked, infoWindow,
+          &ItemInfoWindow::clearSelection);
 
   // External connections
   connect(infoWindow, &ItemInfoWindow::favouriteButtonClicked, model,
@@ -43,7 +45,8 @@ void BrowseWindow::initConnections() {
           &ContainerModel::removeItemRequest);
   connect(itemsWindow, &ItemsWindow::setQuantityClicked, model,
           &ContainerModel::setItemQuantityRequest);
-  connect(infoWindow, &ItemInfoWindow::itemUpdated, model, &ContainerModel::updateItemRequest);
+  connect(infoWindow, &ItemInfoWindow::itemUpdated, model,
+          &ContainerModel::updateItemRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
@@ -61,8 +64,10 @@ void BrowseWindow::refresh() {
   if (!model->contains(itemsWindow->getCurrentContainer())) {
     leftStack->setCurrentWidget(containerWindow);
     infoWindow->handleItemSelected();
+    infoWindow->clearSelection();
   }
   itemsWindow->refresh();
+  infoWindow->refresh();
 }
 
 void BrowseWindow::handleGoToItem(Item *item, Container *container) {

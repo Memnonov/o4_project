@@ -188,6 +188,7 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
       qDebug() << "Clicked on item: "
                << button->property("item").value<Item *>()->name;
       bottomDeleteButton->setEnabled(true);
+      currentItem = button->property("item").value<Item *>();
     });
 
     row->setLayout(box);
@@ -242,6 +243,8 @@ void ItemsWindow::updateRows() {
     }
   }
   createRows(itemRows);
+  selectItem(currentItem);
+  
   // New item button. Also dumb to remake it like this. No time to fix...
   QPushButton *newButton = new QPushButton{"Add New"};
   QIcon plusIcon{":/icons/plus.svg"};
@@ -277,6 +280,9 @@ QString ItemsWindow::cycleSortMode() {
 
 QVector<Item *> ItemsWindow::getSelectedItems() const {
   QVector<Item *> items;
+  if (!buttonGroup) {
+    return {};
+  }
   for (auto button : buttonGroup->buttons()) {
     if (button->isChecked()) {
       items.push_back(button->property("item").value<Item *>());

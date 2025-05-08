@@ -37,9 +37,12 @@ class ItemInfoWindow : public QFrame {
     goToItemButton->setVisible(canGoTo);
   }
   
+  void refresh();
+  
  public slots:
   void handleItemSelected(Item *item = nullptr, Container *container = nullptr);
   void handleFavouriteButtonClicked();
+  void clearSelection();
 
  signals:
   void goToItemClicked(Item* item, Container *container);
@@ -81,7 +84,6 @@ class ItemInfoWindow : public QFrame {
   void initEditButton();
   void initGoToItemButton();
   void initFavouriteButton();
-  void refresh();
   void toggleEditing();
   void showViews();
   void hideViews();

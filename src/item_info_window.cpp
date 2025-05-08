@@ -5,6 +5,7 @@
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
+#include <qlogging.h>
 #include <qpushbutton.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
@@ -135,15 +136,7 @@ void ItemInfoWindow::handleItemSelected(Item *selectedItem,
                                         Container *container) {
   this->item = selectedItem;
   this->container = container;
-
-  if (!item || !container) {
-    title->setText("<b>Item info</b>");
-    title->setAlignment(Qt::AlignVCenter);
-    hideViews();
-    return;
-  }
   refresh();
-  showViews();
 }
 
 // TODO: Combine this and the one below? : D
@@ -188,9 +181,13 @@ QScrollArea *ItemInfoWindow::makeDescriptionScrollArea() {
 }
 
 void ItemInfoWindow::refresh() {
-  if (!item) {
+  if (!item || !container) {
+    title->setText("<b>Item info</b>");
+    title->setAlignment(Qt::AlignVCenter);
+    hideViews();
     return;
   }
+  
   title->setText(
       QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
 
@@ -210,6 +207,8 @@ void ItemInfoWindow::refresh() {
   viewDescriptionLabel->setText(description);
   editDescriptionLabel->setText(description);
   updateFavouriteButton();
+  showViews();
+  qDebug() << "ItemIndoWindow after refresh, item: " << item->name;
 }
 
 void ItemInfoWindow::initFavouriteButton() {
@@ -246,4 +245,9 @@ void ItemInfoWindow::handleItemUpdated() {
                            editTagsLabel->text().split(", "), item->favourite};
     emit itemUpdated(item, itemData);
   }
+}
+
+void ItemInfoWindow::clearSelection() {
+  item = nullptr;
+  refresh();
 }
