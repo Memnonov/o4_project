@@ -6,13 +6,8 @@
 #include "./container.h"
 #include <QObject>
 #include <memory>
-#include <qcontainerfwd.h>
-#include <qlogging.h>
-#include <qtextdocument.h>
-#include <qtmetamacros.h>
 #include <QUndoStack>
 #include <QUndoCommand>
-#include <qundostack.h>
 #include "item.h"
 
 class ContainerModel;
@@ -26,6 +21,7 @@ class ContainerModel : public QObject {
   class NewItemCmd;
   class RemoveItemCmd;
   class SetItemQuantityCmd;
+  class UpdateItemCmd;
 
   friend class ContainerModelTests;
   friend class NewContainerCmd;
@@ -34,6 +30,7 @@ class ContainerModel : public QObject {
   friend class NewItemCmd;
   friend class RemoveItemCmd;
   friend class SetItemQuantityCmd;
+  friend class UpdateItemCmd;
 
   Q_OBJECT;  // semicolon not needed, but makes syntax highlighting behave.
 
@@ -46,12 +43,14 @@ class ContainerModel : public QObject {
   QStringList getContainerNames() const;
   std::shared_ptr<Item> getItem(Item *item, Container *container) const;
   
+  // Changes to the model are made through these requests
   void newContainerRequest(const QString &name = "New Container");
   void removeContainerRequest(Container *container);
   void toggleFavouriteRequest(Item *item, Container *container);
   void newItemRequest(Container *container, const QString &name);
   void removeItemRequest(Item *item, Container *container);
   void setItemQuantityRequest(Item *item, unsigned int quantity);
+  void updateItemRequest(Item *item, Item::ItemData data);
 
   const QVector<std::shared_ptr<Container>>& getContainers() const;
   // These below ended up kinda useless ?

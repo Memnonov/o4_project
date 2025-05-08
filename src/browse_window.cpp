@@ -22,6 +22,7 @@ BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
 }
 
 void BrowseWindow::initConnections() {
+  // Internal connections
   connect(containerWindow, &ContainerWindow::containerSelected, this,
           &BrowseWindow::handleContainerSelected);
   connect(itemsWindow, &ItemsWindow::itemsWindowClosed, this,
@@ -32,11 +33,17 @@ void BrowseWindow::initConnections() {
           &ItemsWindow::handleContainerSelected);
   connect(itemsWindow, &ItemsWindow::itemSelected, infoWindow,
           &ItemInfoWindow::handleItemSelected);
+
+  // External connections
   connect(infoWindow, &ItemInfoWindow::favouriteButtonClicked, model,
           &ContainerModel::toggleFavouriteRequest);
-  connect(itemsWindow, &ItemsWindow::addNewClicked, model, &ContainerModel::newItemRequest);
-  connect(itemsWindow, &ItemsWindow::deleteItemClicked, model, &ContainerModel::removeItemRequest);
-  connect(itemsWindow, &ItemsWindow::setQuantityClicked, model, &ContainerModel::setItemQuantityRequest);
+  connect(itemsWindow, &ItemsWindow::addNewClicked, model,
+          &ContainerModel::newItemRequest);
+  connect(itemsWindow, &ItemsWindow::deleteItemClicked, model,
+          &ContainerModel::removeItemRequest);
+  connect(itemsWindow, &ItemsWindow::setQuantityClicked, model,
+          &ContainerModel::setItemQuantityRequest);
+  connect(infoWindow, &ItemInfoWindow::itemUpdated, model, &ContainerModel::updateItemRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {

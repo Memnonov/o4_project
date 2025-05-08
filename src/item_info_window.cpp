@@ -126,6 +126,9 @@ void ItemInfoWindow::toggleEditing() {
   editing = !editing;
   editFields->setVisible(editing);
   viewFields->setVisible(!editing);
+  if (!editing) {
+    handleItemUpdated();
+  }
 }
 
 void ItemInfoWindow::handleItemSelected(Item *selectedItem,
@@ -226,4 +229,21 @@ void ItemInfoWindow::handleFavouriteButtonClicked() {
   qDebug() << "Clicked favourite button.";
   emit favouriteButtonClicked(item, container);
   updateFavouriteButton();
+}
+
+bool ItemInfoWindow::hasChanges() {
+  return editNameLabel->text() != item->name ||
+         editQuantityBox->value() != item->quantity ||
+         editTagsLabel->text() != item->tags.join(", ") ||
+         editDescriptionLabel->toPlainText() != item->description;
+}
+
+void ItemInfoWindow::handleItemUpdated() {
+  if (hasChanges() && item) {
+    Item::ItemData itemData = {editNameLabel->text(),
+                           static_cast<unsigned int>(editQuantityBox->value()),
+                           editDescriptionLabel->toPlainText(),
+                           editTagsLabel->text().split(", "), item->favourite};
+    emit itemUpdated(item, itemData);
+  }
 }

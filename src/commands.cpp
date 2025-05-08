@@ -1,5 +1,6 @@
 #include "../include/o4_project/container_model.h"
 #include "../include/o4_project/item.h"
+#include <exception>
 #include <qlogging.h>
 
 class ContainerModel::NewContainerCmd : public QUndoCommand {
@@ -44,7 +45,6 @@ void ContainerModel::removeContainerRequest(Container *container) {
   if (!container) {
     return;
   }
-  qDebug() << "Requested removal of: " << container->name;
   undoStack.push(new RemoveContainerCmd(this, container));
 }
 
@@ -127,7 +127,9 @@ public:
       : model{model}, item{item} {
     newQuantity = quantity;
     oldQuantity = item->quantity;
-    setText(QString{"Set Item %1 quantity to × %2"}.arg(item->name).arg(newQuantity));
+    setText(QString{"Set Item %1 quantity to × %2"}
+                .arg(item->name)
+                .arg(newQuantity));
   }
   void redo() override { item->quantity = newQuantity; };
   void undo() override { item->quantity = oldQuantity; };
@@ -144,6 +146,26 @@ void ContainerModel::setItemQuantityRequest(Item *item, unsigned int quantity) {
     return;
   }
   undoStack.push(new SetItemQuantityCmd{this, item, quantity});
+}
+
+class ContainerModel::UpdateItemCmd : public QUndoCommand {
+public:
+  UpdateItemCmd(ContainerModel *model, Item *item, const Item::ItemData data)
+      : model{model}, item{item}, newData{data}, oldData{item->getData()} {
+    setText(QString{"Modified Item: "}.arg(item->name));
+  }
+  void redo() override { item->setData(newData); };
+  void undo() override { item->setData(oldData); };
+
+private:
+  ContainerModel *model;
+  Item *item;
+  Item::ItemData newData;
+  Item::ItemData oldData;
+};
+
+void ContainerModel::updateItemRequest(Item *item, Item::ItemData data) {
+  undoStack.push(new UpdateItemCmd{this, item, data});
 }
 
 // // A lil template, if you will

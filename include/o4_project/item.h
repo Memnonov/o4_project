@@ -25,8 +25,28 @@ public:
         favourite{favourite} {}
 
   explicit Item(const QString name) : Item(name, 1, "", {}) {}
+
+  struct ItemData {
+    QString name;
+    unsigned int quantity;
+    QString description;
+    QStringList tags;
+    bool favourite;
+  };
+
+  ItemData getData() const {
+    return {name, quantity, description, tags, favourite};
+  }
+
+  void setData(ItemData data) {
+    name = data.name;
+    quantity = data.quantity;
+    description = data.description;
+    tags = data.tags;
+    favourite = data.favourite;
+  }
 };
 
-Q_DECLARE_METATYPE(Item*);
+Q_DECLARE_METATYPE(Item *);
 
 #endif // !ITEM_H

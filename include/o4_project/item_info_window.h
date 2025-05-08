@@ -44,6 +44,7 @@ class ItemInfoWindow : public QFrame {
  signals:
   void goToItemClicked(Item* item, Container *container);
   void favouriteButtonClicked(Item *item, Container *container);
+  void itemUpdated(Item *item, Item::ItemData data);
 
  private:
   // State
@@ -87,6 +88,8 @@ class ItemInfoWindow : public QFrame {
   void setFieldsNull();
   void updateFavouriteButton();
   QScrollArea* makeDescriptionScrollArea();
+  bool hasChanges();
+  void handleItemUpdated();
 
 };
 
