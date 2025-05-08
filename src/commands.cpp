@@ -1,6 +1,7 @@
 #include "../include/o4_project/container_model.h"
 #include "../include/o4_project/item.h"
 #include <exception>
+#include <memory>
 #include <qcontainerfwd.h>
 #include <qlogging.h>
 
@@ -225,4 +226,39 @@ void ContainerModel::batchMoveRequest(QVector<Item *> items, Container *from,
     return;
   }
   undoStack.push(new BatchMoveCmd{this, items, from, to});
+}
+
+class ContainerModel::MoveAllCmd : public QUndoCommand {
+public:
+  MoveAllCmd(ContainerModel *model, QVector<Item *> itemsA, Container *contA,
+             QVector<Item *> itemsB, Container *contB)
+      : model{model} {
+    commands.push_back(
+        std::make_shared<BatchMoveCmd>(model, itemsA, contA, contB));
+    commands.push_back(
+        std::make_shared<BatchMoveCmd>(model, itemsB, contB, contA));
+    setText(QString{"Moved %1 Item(s) between <b>%2</b> and <b>%3</b>"}
+                .arg(itemsA.size() + itemsB.size())
+                .arg(contA->name)
+                .arg(contB->name));
+  }
+  void redo() override {
+    for (const auto &command : commands) {
+      command->redo();
+    }
+  };
+  void undo() override {
+    for (const auto &command : commands) {
+      command->undo();
+    }
+  };
+
+private:
+  ContainerModel *model;
+  QVector<std::shared_ptr<BatchMoveCmd>> commands;
+};
+
+void ContainerModel::moveAllRequest(QVector<Item *> itemsA, Container *contA,
+                      QVector<Item *> itemsB, Container *contB) {
+  undoStack.push(new MoveAllCmd{this, itemsA, contA, itemsB, contB});
 }

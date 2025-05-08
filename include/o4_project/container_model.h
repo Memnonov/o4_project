@@ -44,6 +44,8 @@ public:
   void updateItemRequest(Item *item, Item::ItemData data);
   void moveItemRequest(Item *item, Container *from, Container *to);
   void batchMoveRequest(QVector<Item *> items, Container *from, Container *to);
+  void moveAllRequest(QVector<Item *> itemsA, Container *contA,
+                      QVector<Item *> itemsB, Container *contB);
 
 public slots:
   void handleUndo() { undoStack.undo(); }
@@ -64,6 +66,7 @@ private:
   class UpdateItemCmd;
   class MoveItemCmd;
   class BatchMoveCmd;
+  class MoveAllCmd;
 
   friend class ContainerModelTests;
   friend class NewContainerCmd;
@@ -75,6 +78,7 @@ private:
   friend class UpdateItemCmd;
   friend class MoveItemCmd;
   friend class BatchMoveCmd;
+  friend class MoveAllCmd;
 
   QVector<std::shared_ptr<Container>> containers;
   QUndoStack undoStack;

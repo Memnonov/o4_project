@@ -72,6 +72,13 @@ void MoveWindow::initConnections() {
             model->batchMoveRequest(items, rightItems->getCurrentContainer(),
                                     leftItems->getCurrentContainer());
           });
+  connect(moveSelectedButton, &QPushButton::clicked, this, [this] {
+    auto itemsLeft = leftItems->getSelectedItems();
+    auto itemsRight = rightItems->getSelectedItems();
+    auto contLeft = leftItems->getCurrentContainer();
+    auto contRight = rightItems->getCurrentContainer();
+    model->moveAllRequest(itemsLeft, contLeft, itemsRight, contRight);
+  });
 
   // Toggling the batch move button
   connect(leftContainer, &ContainerWindow::containerSelected, this,
