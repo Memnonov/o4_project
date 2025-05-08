@@ -20,7 +20,7 @@ int SearchModel::columnCount(const QModelIndex &parent) const {
 QVariant SearchModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid() || role != Qt::DisplayRole) {
     if (role == Qt::TextAlignmentRole) {
-      return Qt::AlignCenter;
+      return Qt::AlignLeft;
     }
     return {};
   }

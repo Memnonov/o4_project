@@ -32,6 +32,9 @@ public:
   Container *getCurrentContainer();
   void selectItem(Item *item);
   Item *currentItem = nullptr;
+  void setDeleteEnabled(bool canDelete) {
+    bottomDeleteButton->setEnabled(true);
+  }
 
   void setMovingItems(bool moving) {
     this->movingItems = moving;

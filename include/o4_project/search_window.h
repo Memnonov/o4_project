@@ -13,6 +13,7 @@
 #include <QTableView>
 #include <QComboBox>
 #include <container_model.h>
+#include <QResizeEvent>
 
 class SearchWindow : public ModeFrame {
   Q_OBJECT;
@@ -22,6 +23,12 @@ class SearchWindow : public ModeFrame {
                SearchProxyModel *searchProxyModel, QWidget *parent = nullptr); 
   ~SearchWindow() override = default;
   void refresh();
+  void refit();
+  
+  void resizeEvent(QResizeEvent *event) override {
+    QWidget::resizeEvent(event);
+    refit();
+  }
 
  public slots:
   void handleRowSelection(const QModelIndex &current, const QModelIndex &);

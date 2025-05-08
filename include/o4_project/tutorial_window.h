@@ -11,7 +11,7 @@ class TutorialWindow : public ModeFrame {
   ~TutorialWindow() {}
 
  private:
-  QLabel *placeholder;
+  QLabel *text;
 
   // Makes this concrete.
   virtual void dummyFunction() {}

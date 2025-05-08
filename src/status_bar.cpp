@@ -17,7 +17,7 @@ StatusBar::StatusBar(QWidget *parent)
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setAlignment(Qt::AlignRight);
   statusMessage->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-  statusMessage->setText("<i>This here is gonna be a status bar</i>");
+  statusMessage->setText("Checking out your loot");
 
   layout->addStretch();
   layout->addWidget(statusMessage);

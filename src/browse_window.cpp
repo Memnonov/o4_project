@@ -78,4 +78,5 @@ void BrowseWindow::handleGoToItem(Item *item, Container *container) {
   containerWindow->containerSelected(container);
   itemsWindow->itemSelected(item, container);
   itemsWindow->selectItem(item);
+  itemsWindow->setDeleteEnabled(true);
 }

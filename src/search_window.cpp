@@ -32,8 +32,8 @@ void SearchWindow::initTable() {
   table->setModel(searchProxyModel);
   table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   table->horizontalHeader()->setStretchLastSection(true);
-  table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-  table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  // table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+  // table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   table->setSelectionBehavior(QAbstractItemView::SelectRows);
   table->setSelectionMode(QAbstractItemView::SingleSelection);
   table->horizontalHeader()->setSectionsMovable(true);
@@ -99,10 +99,14 @@ void SearchWindow::updateContainerNames() {
 
 void SearchWindow::refresh() {
   updateContainerNames();
-  table->resizeRowsToContents();
-  table->resizeColumnsToContents();
   infoWindow->handleItemSelected(); // Set to null in case of changes.
   searchModel->refresh();
+  refit();
+}
+
+void SearchWindow::refit() {
+  table->resizeColumnsToContents();
+  table->resizeRowsToContents();
 }
 
 void SearchWindow::connectFilters() {

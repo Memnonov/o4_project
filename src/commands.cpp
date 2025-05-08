@@ -81,7 +81,7 @@ public:
     // Now this is kinda hacky. No regrets. (Actually yes regrets)
     container = model->getContainer(toContainer);
     item = std::make_shared<Item>(name);
-    setText(QString{"Created Item: %1"}.arg(item->name));
+    setText(QString{"Created Item: <b>%1</b>"}.arg(item->name));
   }
   void redo() override { container->addItem(item); }
   void undo() override { container->removeItem(item); }
@@ -96,7 +96,7 @@ void ContainerModel::newItemRequest(Container *container, const QString &name) {
   if (!container) {
     return;
   }
-  undoStack.push(new NewItemCmd{this, container, name});
+  undoStack.push(new NewItemCmd{this, container, name.length() == 0 ? "New Item" : name});
 }
 
 class ContainerModel::RemoveItemCmd : public QUndoCommand {

@@ -94,6 +94,7 @@ void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
     break;
   case NavAction::SearchItems:
     mainStack->setCurrentWidget(searchWindow);
+    searchWindow->refit();
     break;
   case NavAction::MoveItems:
     mainStack->setCurrentWidget(moveWindow);
