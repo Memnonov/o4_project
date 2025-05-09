@@ -36,7 +36,8 @@ cmake --build build
 
 ## Käyttäminen Windowsilla
 Näin lähtee ainakin omalla Windowsilla.
-Käytä Qt:n asennuksen mukana tulevaa MinGW-komentoriviä! (MinGW Command Prompt)
+Käytä Qt:n asennuksen mukana tulevaa komentoriviä.
+Käynnistä valikosta löytyy jotain: "Qt 6.9.0 (MinGW 13.1.0 64-bit)".
 
 1. Aloita juuresta, luo kansio build ja siirry sinne.
 ```
