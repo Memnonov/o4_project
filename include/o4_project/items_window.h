@@ -95,6 +95,7 @@ private:
   QPushButton *selectedItemButton;
   QPushButton *bottomDeleteButton;
   QPushButton *moveItemsButton;
+  QPushButton *addNewButton;
   QWidget *addDeleteWidget;
   QLineEdit *editNameLine;
   QObjectCleanupHandler *rowsCleaner;
@@ -106,6 +107,7 @@ private:
   void initTopRow();
   void initEditButton();
   void initFilterSortPanel();
+  void initAddNewButton();
   QString cycleSortMode();
   void closeButtonPushed();
   void toggleEditing();

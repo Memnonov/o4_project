@@ -23,13 +23,14 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
       moveItemsButton{new QPushButton}, editNameLine{new QLineEdit},
-      rowsCleaner(new QObjectCleanupHandler) {
+      rowsCleaner(new QObjectCleanupHandler), addNewButton(new QPushButton) {
   setObjectName("ItemsWindow");
   itemRows->setObjectName("ItemRows");
   itemRows->setSpacing(0);
   rowsCleaner->setParent(this);
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  initAddNewButton();
 
   initFilterSortPanel();
   layout->addWidget(filterSortPanel);
@@ -78,6 +79,17 @@ ItemsWindow::ItemsWindow(QWidget *parent)
           [this]() { confirmDeleteItem(); });
 
   dumpParents();
+}
+
+void ItemsWindow::initAddNewButton() {
+  addNewButton->setText("Add New");
+  QIcon plusIcon{":/icons/plus.svg"};
+  addNewButton->setIcon(plusIcon);
+  addNewButton->setFlat(true);
+  addNewButton->setMinimumHeight(40);
+  itemRows->addWidget(addNewButton);
+  connect(addNewButton, &QPushButton::clicked, this,
+          &ItemsWindow::handleAddNewClicked);
 }
 
 void ItemsWindow::initFilterSortPanel() {
@@ -143,20 +155,17 @@ void ItemsWindow::createRows() {
               [this, item] { emit moveItemClicked(item); });
     }
 
+    rowsCleaner->add(row);
+
     // A holding box layout for the row
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
     row->setLayout(box);
     row->setMinimumHeight(minHeight);
     row->setMaximumHeight(maxHeight);
-
-    // if (movingItems && isRightWindow) {
-    //   box->addWidget(moveButton);
-    //   moveButton->setIcon(QIcon(":/icons/fast-arrow-left"));
-    // }
-    
-    box->addWidget(button);
     itemRows->addWidget(row);
+
+    box->addWidget(button);
 
     if (!movingItems) {
       QIcon plusIcon{":/icons/plus-noborder.svg"};
@@ -177,9 +186,11 @@ void ItemsWindow::createRows() {
         emit setQuantityClicked(item,
                                 item->quantity == 0 ? 0 : --(item->quantity));
       });
-
+      qDebug() << "Parent of plus: " << plusButton->parent();
+      qDebug() << "Parent of minus: " << minusButton->parent();
     } else {
-      auto icon = isRightWindow ? "./icons/fast-arrow-left" : "./icons/fast-arrow-right";
+      auto icon = isRightWindow ? ":/icons/fast-arrow-left"
+                                : ":/icons/fast-arrow-right";
       unsigned int index = isRightWindow ? 0 : box->count();
       moveButton->setIcon(QIcon(icon));
       box->insertWidget(index, moveButton);
@@ -192,6 +203,7 @@ void ItemsWindow::createRows() {
       qDebug() << "Parent of moveButton: " << itemRows->parent();
     }
   }
+  itemRows->insertWidget(itemRows->count(), addNewButton);
 }
 
 QPushButton *ItemsWindow::createItemButton(Item *item) {
@@ -237,38 +249,13 @@ bool ItemsWindow::filterItem(Item *item) {
 }
 
 void ItemsWindow::updateRows() {
-  // if (itemRows->count() > 0) {
-  //   QLayoutItem *item;
-  //   while ((item = itemRows->takeAt(0)) != nullptr) {
-  //     item->widget()->deleteLater();
-  //     delete item;
-  //   }
-  // }
-  // if (buttonGroup) {
-  //   for (auto button : buttonGroup->buttons()) {
-  //     buttonGroup->removeButton(button);
-  //     button->deleteLater();
-  //   }
-  // }
-
+  rowsCleaner->clear();
   createRows();
   if (!movingItems) { // No use keeping selection when moving stuff.
     selectItem(currentItem);
   }
 
   // New item button. Also dumb to remake it like this. No time to fix...
-  if (newButton) {
-    newButton->disconnect(newButton, &QPushButton::clicked, this,
-                          &ItemsWindow::handleAddNewClicked);
-  };
-  newButton = new QPushButton{"Add New", this};
-  QIcon plusIcon{":/icons/plus.svg"};
-  newButton->setIcon(plusIcon);
-  newButton->setFlat(true);
-  newButton->setMinimumHeight(40);
-  itemRows->addWidget(newButton);
-  connect(newButton, &QPushButton::clicked, this,
-          &ItemsWindow::handleAddNewClicked);
   qDebug() << "After update";
   dumpParents();
 }
