@@ -14,6 +14,7 @@
 #include <qpushbutton.h>
 #include <qtmetamacros.h>
 #include <qvector.h>
+#include <strings.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel{this}},
@@ -21,8 +22,11 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
-      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit}, rowsCleaner(new QObjectCleanupHandler) {
+      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit},
+      rowsCleaner(new QObjectCleanupHandler) {
   setObjectName("ItemsWindow");
+  itemRows->setObjectName("ItemRows");
+  itemRows->setSpacing(0);
   rowsCleaner->setParent(this);
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -81,7 +85,8 @@ void ItemsWindow::initFilterSortPanel() {
   filterInput = new QLineEdit{filterSortPanel};
   filterInput->setPlaceholderText("Filter by item name, tag or decription");
   filterSortPanel->addWidget(filterInput);
-  auto sortButton = new QPushButton{sortModeToString.value(sortMode), filterSortPanel};
+  auto sortButton =
+      new QPushButton{sortModeToString.value(sortMode), filterSortPanel};
   connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
     sortButton->setText(cycleSortMode());
     updateRows();
@@ -115,31 +120,22 @@ void ItemsWindow::toggleEditing() {
   editNameLine->setVisible(editing);
 }
 
-// This is dumb dumb and long long. Gotta go fast.
-void ItemsWindow::createRows(QVBoxLayout *rows) {
-  rows->setSpacing(0);
-  // buttonGroup = new QButtonGroup{this};
-  buttonGroup->setExclusive(!movingItems);
-  // TODO(mikko): Fix asset paths.
-  if (!currentContainer) {
-    return;
-  }
+void ItemsWindow::createRows() {
+  // TODO(mikko): maybe fix magic numbers?
   static constexpr unsigned int minHeight = 40;
   static constexpr unsigned int maxHeight = minHeight * 2;
 
-  // Get sorted and filtered items
-  auto items = currentContainer->getItems();
-  std::sort(items.begin(), items.end(), ItemsWindow::comparators.at(sortMode));
-  auto it = new QMutableVectorIterator<Item *>(items);
-  while (it->hasNext()) {
-    if (!filterItem(it->next())) {
-      it->remove();
-    }
+  if (!currentContainer) {
+    return;
   }
 
-  for (auto const &item : items) {
-    QPushButton *moveButton;
+  buttonGroup->setExclusive(!movingItems);
 
+  for (auto const &item : getSortedFilteredItems()) {
+    QWidget *row = new QWidget;
+    QPushButton *button = createItemButton(item);
+    QHBoxLayout *box = new QHBoxLayout;
+    QPushButton *moveButton;
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -147,36 +143,20 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
               [this, item] { emit moveItemClicked(item); });
     }
 
-    QWidget *row = new QWidget;
-    row->setMinimumHeight(minHeight); // TODO(mikko): fix magic numbers?
-    row->setMaximumHeight(maxHeight);
-    QHBoxLayout *box = new QHBoxLayout;
+    // A holding box layout for the row
     box->setContentsMargins(0, 0, 4, 4);
     box->setSpacing(0);
-
-    QPushButton *button =
-        new QPushButton{QString("%1 × %2").arg(item->name).arg(item->quantity)};
-    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    button->setCheckable(true);
-    button->setProperty("item", QVariant::fromValue(item));
-    buttonGroup->addButton(button);
-    if (item->favourite) {
-      button->setIcon(QIcon{":/icons/star-solid.svg"});
-    }
-
-    connect(button, &QPushButton::clicked, this, [this, item, button]() {
-      emit itemSelected(item, currentContainer);
-      bottomDeleteButton->setEnabled(true);
-      currentItem = button->property("item").value<Item *>();
-    });
-
     row->setLayout(box);
-    if (movingItems && isRightWindow) {
-      box->addWidget(moveButton);
-      moveButton->setIcon(QIcon(":/icons/fast-arrow-left"));
-    }
+    row->setMinimumHeight(minHeight);
+    row->setMaximumHeight(maxHeight);
+
+    // if (movingItems && isRightWindow) {
+    //   box->addWidget(moveButton);
+    //   moveButton->setIcon(QIcon(":/icons/fast-arrow-left"));
+    // }
+    
     box->addWidget(button);
-    rows->addWidget(row);
+    itemRows->addWidget(row);
 
     if (!movingItems) {
       QIcon plusIcon{":/icons/plus-noborder.svg"};
@@ -198,11 +178,52 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
                                 item->quantity == 0 ? 0 : --(item->quantity));
       });
 
-    } else if (!isRightWindow) {
-      box->addWidget(moveButton);
-      moveButton->setIcon(QIcon(":/icons/fast-arrow-right"));
+    } else {
+      auto icon = isRightWindow ? "./icons/fast-arrow-left" : "./icons/fast-arrow-right";
+      unsigned int index = isRightWindow ? 0 : box->count();
+      moveButton->setIcon(QIcon(icon));
+      box->insertWidget(index, moveButton);
+    }
+    qDebug() << "Parent of row: " << row->parent();
+    qDebug() << "Parent of button: " << button->parent();
+    qDebug() << "Parent of itemRows: " << itemRows->parent();
+    qDebug() << "Parent of box: " << box->parent();
+    if (moveButton) {
+      qDebug() << "Parent of moveButton: " << itemRows->parent();
     }
   }
+}
+
+QPushButton *ItemsWindow::createItemButton(Item *item) {
+  auto button =
+      new QPushButton{QString("%1 × %2").arg(item->name).arg(item->quantity)};
+  button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  button->setCheckable(true);
+  button->setProperty("item", QVariant::fromValue(item));
+  buttonGroup->addButton(button);
+  if (item->favourite) {
+    button->setIcon(QIcon{":/icons/star-solid.svg"});
+  }
+
+  connect(button, &QPushButton::clicked, this, [this, item, button]() {
+    emit itemSelected(item, currentContainer);
+    bottomDeleteButton->setEnabled(true);
+    currentItem = button->property("item").value<Item *>();
+  });
+  return button;
+}
+
+QVector<Item *> ItemsWindow::getSortedFilteredItems() {
+  // Get sorted and filtered items
+  auto items = currentContainer->getItems();
+  std::sort(items.begin(), items.end(), ItemsWindow::comparators.at(sortMode));
+  auto it = new QMutableVectorIterator<Item *>(items);
+  while (it->hasNext()) {
+    if (!filterItem(it->next())) {
+      it->remove();
+    }
+  }
+  return items;
 }
 
 bool ItemsWindow::filterItem(Item *item) {
@@ -216,21 +237,21 @@ bool ItemsWindow::filterItem(Item *item) {
 }
 
 void ItemsWindow::updateRows() {
-  if (itemRows->count() > 0) {
-    QLayoutItem *item;
-    while ((item = itemRows->takeAt(0)) != nullptr) {
-      item->widget()->deleteLater();
-      delete item;
-    }
-  }
-  if (buttonGroup) {
-    for (auto button : buttonGroup->buttons()) {
-      buttonGroup->removeButton(button);
-      button->deleteLater();
-    }
-  }
+  // if (itemRows->count() > 0) {
+  //   QLayoutItem *item;
+  //   while ((item = itemRows->takeAt(0)) != nullptr) {
+  //     item->widget()->deleteLater();
+  //     delete item;
+  //   }
+  // }
+  // if (buttonGroup) {
+  //   for (auto button : buttonGroup->buttons()) {
+  //     buttonGroup->removeButton(button);
+  //     button->deleteLater();
+  //   }
+  // }
 
-  createRows(itemRows);
+  createRows();
   if (!movingItems) { // No use keeping selection when moving stuff.
     selectItem(currentItem);
   }
@@ -381,10 +402,10 @@ void ItemsWindow::initTopRow() {
   topRowLayout->addWidget(closeButton);
   layout->addWidget(topRow);
   editNameLine->setVisible(false);
-  
+
   connect(closeButton, &QPushButton::clicked, this,
           &ItemsWindow::closeButtonPushed);
-  
+
   topRow->update();
 }
 

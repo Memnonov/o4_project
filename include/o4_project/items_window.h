@@ -100,7 +100,9 @@ private:
   QObjectCleanupHandler *rowsCleaner;
 
   void updateRows();
-  void createRows(QVBoxLayout *rows);
+  QVector<Item *> getSortedFilteredItems();
+  void createRows();
+  QPushButton *createItemButton(Item *item);
   void initTopRow();
   void initEditButton();
   void initFilterSortPanel();
