@@ -54,6 +54,6 @@ mingw32-make
 3. Siirry takaisun juureen ja aja ohjelma.
 ```
 cd ..
-./build/o4_project
+.\build\o4_project
 ```
 
