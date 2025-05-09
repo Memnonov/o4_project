@@ -7,10 +7,12 @@ AboutWindow::AboutWindow(QWidget *parent)
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(placeholder);
   placeholder->setAlignment(Qt::AlignCenter);
-  placeholder->setText(R"(
-                       Should be a good enough tabletop rpg inventory management app.
-                       Made by Auli Jussila & Mikko Memonen for the course Ohjelmointi 4, 2025.
-                       Made with Qt6.
-                       Icons from iconoir.com
-                       )");
+  QString text(R"(
+<b>Treasure Hoard</b><br><br>
+Should be a good enough tabletop rpg inventory management app.<br>
+Made by Auli Jussila & Mikko Memonen for the course Ohjelmointi 4, 2025.<br>
+Made with Qt6.<br><br>
+Icons from iconoir.com
+   )");
+  placeholder->setText(text);
 }
