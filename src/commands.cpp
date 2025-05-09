@@ -1,6 +1,6 @@
 #include "../include/o4_project/container_model.h"
 #include "../include/o4_project/item.h"
-#include <exception>
+#include "container.h"
 #include <memory>
 #include <qcontainerfwd.h>
 #include <qlogging.h>
@@ -96,7 +96,8 @@ void ContainerModel::newItemRequest(Container *container, const QString &name) {
   if (!container) {
     return;
   }
-  undoStack.push(new NewItemCmd{this, container, name.length() == 0 ? "New Item" : name});
+  undoStack.push(
+      new NewItemCmd{this, container, name.length() == 0 ? "New Item" : name});
 }
 
 class ContainerModel::RemoveItemCmd : public QUndoCommand {
@@ -259,6 +260,27 @@ private:
 };
 
 void ContainerModel::moveAllRequest(QVector<Item *> itemsA, Container *contA,
-                      QVector<Item *> itemsB, Container *contB) {
+                                    QVector<Item *> itemsB, Container *contB) {
   undoStack.push(new MoveAllCmd{this, itemsA, contA, itemsB, contB});
+}
+
+class ContainerModel::RenameContainerCmd : public QUndoCommand {
+public:
+  RenameContainerCmd(ContainerModel *model, Container *container,
+                     const QString &name)
+      : model{model}, container{container}, newName{name} {
+    oldName = name;
+  }
+  void redo() override { container->name = newName; };
+  void undo() override { container->name = oldName; };
+
+private:
+  ContainerModel *model;
+  Container *container;
+  QString oldName;
+  QString newName;
+};
+
+void ContainerModel::renameContainerRequest(Container *container, const QString &name) {
+  undoStack.push(new RenameContainerCmd{this, container, name});
 }

@@ -34,6 +34,7 @@ public:
   void selectItem(Item *item);
   void dumpParents();
   Item *currentItem = nullptr;
+  
   void setDeleteEnabled(bool canDelete) {
     bottomDeleteButton->setEnabled(true);
   }
@@ -63,6 +64,7 @@ signals:
   void setQuantityClicked(Item *item, unsigned int quantity);
   void moveItemClicked(Item *item);
   void moveItemsClicked(QVector<Item *>);
+  void containerRenamed(Container *container, const QString &name);
 
 private:
   enum class SortMode { AtoZ, ZtoA, Quantity };
@@ -92,6 +94,8 @@ private:
   QScrollArea *scrollArea;
   QPushButton *closeButton;
   QPushButton *editButton;
+  QPushButton *saveButton;
+  QPushButton *cancelButton;
   QPushButton *selectedItemButton;
   QPushButton *bottomDeleteButton;
   QPushButton *moveItemsButton;
@@ -105,12 +109,12 @@ private:
   void createRows();
   QPushButton *createItemButton(Item *item);
   void initTopRow();
-  void initEditButton();
+  void initEditButtons();
   void initFilterSortPanel();
   void initAddNewButton();
   QString cycleSortMode();
   void closeButtonPushed();
-  void toggleEditing();
+  void toggleEditing(bool saveChanges);
   void sortItems(QVector<Item *> &items);
   bool filterItem(Item *item);
   void handleAddNewClicked();

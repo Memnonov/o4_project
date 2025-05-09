@@ -121,7 +121,7 @@ void ItemInfoWindow::initEditButtons() {
           [this]() { toggleEditing(true); });
 
   cancelEditButton->setFlat(true);
-  cancelEditButton->setIcon(QIcon(":/icons/xmark.svg"));
+  cancelEditButton->setIcon(QIcon(":/icons/xmark-circle.svg"));
   cancelEditButton->setVisible(false);
   connect(cancelEditButton, &QPushButton::clicked, this,
           [this]() { toggleEditing(false); });

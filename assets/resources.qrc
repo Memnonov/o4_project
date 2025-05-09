@@ -26,5 +26,7 @@
     <file>icons/star-solid.svg</file>
     <file>icons/doc-magnifying-glass.svg</file>
     <file>icons/floppy-disk.svg</file>
+    <file>icons/xmark-square-solid.svg</file>
+    <file>icons/xmark-circle.svg</file>
   </qresource>
 </RCC>

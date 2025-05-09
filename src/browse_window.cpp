@@ -46,6 +46,7 @@ void BrowseWindow::initConnections() {
           &ContainerModel::setItemQuantityRequest);
   connect(infoWindow, &ItemInfoWindow::itemUpdated, model,
           &ContainerModel::updateItemRequest);
+  connect(itemsWindow, &ItemsWindow::containerRenamed, model, &ContainerModel::renameContainerRequest);
 }
 
 void BrowseWindow::handleContainerSelected(Container *container) {
@@ -78,4 +79,5 @@ void BrowseWindow::handleGoToItem(Item *item, Container *container) {
   itemsWindow->itemSelected(item, container);
   itemsWindow->selectItem(item);
   itemsWindow->setDeleteEnabled(true);
+  itemsWindow->refresh();
 }

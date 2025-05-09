@@ -11,15 +11,13 @@
 #include <qmessagebox.h>
 #include <qnamespace.h>
 #include <qobjectcleanuphandler.h>
-#include <qpushbutton.h>
 #include <qtmetamacros.h>
-#include <qvector.h>
-#include <strings.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel{this}},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
+      saveButton{new QPushButton}, cancelButton{new QPushButton},
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
       moveItemsButton{new QPushButton}, editNameLine{new QLineEdit},
@@ -117,19 +115,44 @@ void ItemsWindow::selectItem(Item *item) {
   }
 }
 
-void ItemsWindow::initEditButton() {
+void ItemsWindow::initEditButtons() {
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
-  editButton->setFlat(true);
-  connect(editButton, &QPushButton::clicked, this,
-          [this]() { toggleEditing(); });
+  saveButton->setIcon(QIcon(":/icons/floppy-disk.svg"));
+  cancelButton->setIcon(QIcon(":/icons/xmark-circle.svg"));
+  saveButton->setVisible(false);
+  cancelButton->setVisible(false);
+
+  for (const auto &button : {editButton, saveButton, cancelButton}) {
+    button->setFlat(true);
+  }
+
+  connect(editButton, &QPushButton::clicked, this, [this]() { toggleEditing(false); });
+  connect(saveButton, &QPushButton::clicked, this, [this]() { toggleEditing(true); });
+  connect(cancelButton, &QPushButton::clicked, this, [this]() { toggleEditing(false); });
 }
 
-void ItemsWindow::refresh() { updateRows(); }
+void ItemsWindow::refresh() { 
+  updateRows();
+  if (editing) {
+    toggleEditing(false);
+  }
+}
 
-void ItemsWindow::toggleEditing() {
+void ItemsWindow::toggleEditing(bool saveChanges) {
   editing = !editing;
+  qDebug() << "Set editing: " << editing;
   title->setVisible(!editing);
   editNameLine->setVisible(editing);
+  editButton->setVisible(!editing);
+  saveButton->setVisible(editing);
+  cancelButton->setVisible(editing);
+  closeButton->setVisible(!editing);
+  if (saveChanges) {
+    emit containerRenamed(currentContainer, editNameLine->text());
+    title->setText(QString{"<b>%1</b>"}.arg(currentContainer->name));
+  } else {
+    editNameLine->setText(currentContainer->name);
+  }
 }
 
 void ItemsWindow::createRows() {
@@ -354,7 +377,7 @@ const std::unordered_map<ItemsWindow::SortMode,
 
 void ItemsWindow::initTopRow() {
   constexpr unsigned int nameLimit = 32;
-  
+
   auto topRow = new QWidget{this};
   auto topRowLayout = new QHBoxLayout{topRow};
 
@@ -371,11 +394,13 @@ void ItemsWindow::initTopRow() {
 
   editNameLine->setPlaceholderText("Container Name");
   editNameLine->setMaxLength(nameLimit);
-  initEditButton();
+  initEditButtons();
 
   topRowLayout->addWidget(title);
   topRowLayout->addWidget(editNameLine);
   topRowLayout->addWidget(editButton);
+  topRowLayout->addWidget(saveButton);
+  topRowLayout->addWidget(cancelButton);
   topRowLayout->addWidget(closeButton);
   layout->addWidget(topRow);
   editNameLine->setVisible(false);
