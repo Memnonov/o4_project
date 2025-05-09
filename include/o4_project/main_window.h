@@ -12,13 +12,10 @@
 #include <qwidget.h>
 #include "navigation_panel.h"
 #include "container_window.h"
-#include "items_window.h"
-#include "item_info_window.h"
 #include "search_model.h"
 #include "search_window.h"
 #include "move_window.h"
 #include "browse_window.h"
-#include "items_window.h"
 #include "search_proxy_model.h"
 #include "status_bar.h"
 #include "tutorial_window.h"
@@ -48,9 +45,6 @@ class MainWindow : public QMainWindow {
   
   NavigationPanel *navigationPanel;
   ContainerWindow *containerWindow;
-  ItemsWindow *itemsWindow;
-  ItemInfoWindow *infoWindow;
-  
   QFrame* leftWindowFrame;
   QFrame* rightWindowFrame;
 

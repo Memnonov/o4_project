@@ -28,8 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
       tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
       browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
       navigationPanel{new NavigationPanel},
-      containerWindow{new ContainerWindow{model}}, itemsWindow{new ItemsWindow},
-      infoWindow{new ItemInfoWindow},
+      containerWindow{new ContainerWindow{model}},
       searchWindow{new SearchWindow{model, searchModel, searchProxyModel}} {
   qRegisterMetaType<Item *>("Item*");
   setCentralWidget(centralWidget);
@@ -131,11 +130,9 @@ void MainWindow::setParents() {
 // For debugging.
 void MainWindow::dumpParents() {
   qDebug() << "Dumping parents of MainWindow objects:\n";
-  QVector<QObject *> objects = {
-      model,           searchProxyModel, searchModel,    centralWidget,
-      containerWindow, itemsWindow,      infoWindow,     searchWindow,
-      navigationPanel, mainArea,         tutorialWindow, aboutWindow,
-      mainStack};
+  QVector<QObject *> objects = {model,          searchProxyModel, searchModel,
+                                centralWidget,  navigationPanel,  mainArea,
+                                tutorialWindow, aboutWindow,      mainStack};
   for (auto object : objects) {
     if (!object) {
       return;

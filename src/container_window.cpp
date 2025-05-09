@@ -13,6 +13,7 @@
 #include <qmessagebox.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectcleanuphandler.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
 #include <qsharedpointer.h>
@@ -21,9 +22,11 @@
 
 ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea}, rows{new QVBoxLayout}, rowsWidget{new QWidget{this}},
+      scrollArea{new QScrollArea{this}}, rows{new QVBoxLayout},
+      rowsCleaner{new QObjectCleanupHandler}, rowsWidget{new QWidget{this}},
       newContainerButton(new QPushButton) {
   setFrameShape(StyledPanel);
+  rowsCleaner->setParent(this);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   setNames();
   initLabel();
@@ -42,7 +45,7 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
 }
 
 void ContainerWindow::initLabel() {
-  QLabel *containersLabel = new QLabel{"<b>Containers</b>"};
+  containersLabel = new QLabel{"<b>Containers</b>", this};
   containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   layout->addWidget(containersLabel);
   layout->addSpacing(20);
@@ -77,8 +80,10 @@ void ContainerWindow::updateRows() {
   }
 
   auto containers = model->getContainers();
+  int i = 0;
   for (auto const &container : containers) {
     QWidget *row = new QWidget;
+    row->setObjectName(QString{"row #%1"}.arg(i++));
     row->setMinimumHeight(minRowHeight); // TODO: fix magic numbers?
     row->setMaximumHeight(maxRowHeight);
     QHBoxLayout *box = new QHBoxLayout;
@@ -100,8 +105,15 @@ void ContainerWindow::updateRows() {
     box->addWidget(button);
     box->addWidget(deleteButton);
     rows->addWidget(row);
+
+    qDebug() << "Parent of a box: " << box->parentWidget();
+    qDebug() << "  Parent of a row: " << row->parentWidget();
+    qDebug() << "  Parent of a button: " << button->parentWidget();
+    qDebug() << "  Parent of a deleteButton: " << deleteButton->parentWidget();
   }
   rows->addWidget(newContainerButton);
+  qDebug() << "Parent of a ROWS: " << rows->parentWidget();
+  qDebug() << "Parent of a newContainerButton: " << newContainerButton->parentWidget() << "\n";
 }
 
 void ContainerWindow::clearRows() {
@@ -133,8 +145,8 @@ void ContainerWindow::confirmDelete(Container *container) {
 void ContainerWindow::dumpParents() {
   qDebug() << "\n---------Dumping objects and parents of "
            << this->objectName();
-  QVector<QObject *> objects = {this, layout,     scrollArea,
-                                rows, rowsWidget, newContainerButton};
+  QVector<QObject *> objects = {rows, rowsWidget, newContainerButton,
+                                rowsCleaner, scrollArea};
   for (auto object : objects) {
     if (!object) {
       qDebug() << "An object is null!";
@@ -147,6 +159,8 @@ void ContainerWindow::dumpParents() {
 }
 
 void ContainerWindow::setNames() {
+  scrollArea->setObjectName("ScrollArea");
+  rowsCleaner->setObjectName("RowsCleaner");
   layout->setObjectName("Layout");
   this->setObjectName("ContainerWindow");
   rowsWidget->setObjectName("RowsWidget");

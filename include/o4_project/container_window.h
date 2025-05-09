@@ -13,9 +13,12 @@
 #include <memory>
 #include <qboxlayout.h>
 #include <qcontainerfwd.h>
+#include <qobject.h>
+#include <qobjectcleanuphandler.h>
 #include <qpushbutton.h>
 #include <qscrollarea.h>
 #include <QMessageBox>
+#include <QObjectCleanupHandler>
 
 class ContainerWindow : public QFrame {
   Q_OBJECT;
@@ -33,6 +36,8 @@ class ContainerWindow : public QFrame {
   QScrollArea *scrollArea;
   QPushButton *newContainerButton;
   QWidget *rowsWidget;
+  QLabel *containersLabel;
+  QObjectCleanupHandler *rowsCleaner;
 
   void initLabel();
   void initNewContainerButton();
