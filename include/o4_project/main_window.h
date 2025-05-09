@@ -37,6 +37,7 @@ class MainWindow : public QMainWindow {
   SearchModel *searchModel;
   SearchProxyModel *searchProxyModel;
   QWidget *mainArea;
+  QWidget *centralWidget;
   QStackedWidget *mainStack;
   BrowseWindow *browseWindow;
   SearchWindow *searchWindow;
@@ -50,9 +51,6 @@ class MainWindow : public QMainWindow {
   ItemsWindow *itemsWindow;
   ItemInfoWindow *infoWindow;
   
-  QStackedWidget *leftStack;
-  QStackedWidget *rightStack;
-  
   QFrame* leftWindowFrame;
   QFrame* rightWindowFrame;
 
@@ -62,6 +60,9 @@ class MainWindow : public QMainWindow {
   void handleNavigation(NavigationPanel::NavAction action);
   void initConnections();
   void handleGoToItem(Item *item, Container *container);
+  void setNames();
+  void setParents();
+  void dumpParents();
 };
 
 #endif  // !MAIN_WINDOW_H

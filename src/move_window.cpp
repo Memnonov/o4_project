@@ -14,6 +14,7 @@ MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
       rightContainer{new ContainerWindow{model}},
       leftContainer{new ContainerWindow{model}}, leftItems{new ItemsWindow},
       rightItems{new ItemsWindow} {
+  setObjectName("MoveWindow");
   leftStack->addWidget(leftContainer);
   leftStack->addWidget(leftItems);
   leftItems->setMovingItems(true);

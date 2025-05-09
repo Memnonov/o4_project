@@ -17,6 +17,7 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
       viewDescriptionLabel{new QLabel}, editFields{new QWidget},
       editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
       editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
+  setObjectName("ItemInfoWindow");
   layout->setAlignment(Qt::AlignTop);
   setFrameShape(StyledPanel);
 

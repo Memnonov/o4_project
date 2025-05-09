@@ -8,6 +8,7 @@ BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
       containerWindow{new ContainerWindow{model}}, itemsWindow{new ItemsWindow},
       infoWindow{new ItemInfoWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget} {
+  setObjectName("BrowseWindow");
   if (model) {
     qDebug() << "Browse window has a model.";
   }
@@ -20,6 +21,7 @@ BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
   layout->setStretch(1, 1);
   initConnections();
 }
+
 
 void BrowseWindow::initConnections() {
   // Internal connections

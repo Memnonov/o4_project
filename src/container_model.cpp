@@ -17,6 +17,7 @@ void ContainerModel::initDefaultInventory() {
 }
 
 ContainerModel::ContainerModel(QObject *parent) : QObject{parent} {
+  setObjectName("ContainerModel");
   connect(&undoStack, &QUndoStack::indexChanged, this,
           [this]() { emit modelChanged(getStatusMessage()); });
   undoStack.setUndoLimit(100);

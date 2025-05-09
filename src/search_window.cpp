@@ -1,5 +1,4 @@
 #include "../include/o4_project/search_window.h"
-#include "main_window.h"
 #include "search_proxy_model.h"
 #include <QHeaderView>
 #include <qabstractitemview.h>
@@ -14,6 +13,8 @@ SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
       table{new QTableView}, nameFilter{new QLineEdit},
       tagsFilter{new QLineEdit}, descriptionFilter{new QLineEdit},
       containersFilter{new QComboBox} {
+  setObjectName("name");
+  setObjectName("SearchWindow");
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(searchForm);
   layout->addWidget(table);

@@ -9,6 +9,7 @@
 StatusBar::StatusBar(QWidget *parent)
     : QWidget(parent), statusMessage{new QLabel}, undoButton{new QPushButton},
       redoButton{new QPushButton} {
+  setObjectName("StatusBar");
   setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   setContentsMargins(0, 0, 0, 0);
   auto layout = new QHBoxLayout{this};

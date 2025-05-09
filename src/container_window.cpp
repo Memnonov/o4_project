@@ -23,6 +23,7 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea}, rows{new QVBoxLayout},
       newContainerButton(new QPushButton) {
+  setObjectName("ContainerWindow");
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initLabel();
@@ -38,6 +39,7 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
   // qDebug() << "QLineEdits parent: " << editNameLine->parent() << "----------------------------";
+  updateRows();
 }
 
 void ContainerWindow::initLabel() {

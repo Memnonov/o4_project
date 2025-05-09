@@ -3,6 +3,7 @@
 
 TutorialWindow::TutorialWindow(QWidget *parent)
     : ModeFrame{parent} {
+  setObjectName("TutorialWindow");
   layout->setAlignment(Qt::AlignCenter);
   auto scrollArea = new QScrollArea;
   layout->addWidget(scrollArea);

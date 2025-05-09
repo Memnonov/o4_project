@@ -6,6 +6,7 @@
 
 SearchModel::SearchModel(ContainerModel *model, QObject *parent)
     : QAbstractTableModel{parent}, model{model} {
+  setObjectName("SearchModel");
   refresh();
 }
 

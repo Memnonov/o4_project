@@ -20,41 +20,39 @@
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow{parent}, model{new ContainerModel{this}},
+    : QMainWindow{parent}, centralWidget(new QWidget{this}),
+      model{new ContainerModel{this}},
       searchProxyModel{new SearchProxyModel{this}},
       searchModel{new SearchModel{model, this}}, statusBar{new StatusBar},
       mainStack{new QStackedWidget}, aboutWindow{new AboutWindow},
       tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
       browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
       navigationPanel{new NavigationPanel},
-      containerWindow{new ContainerWindow{model}},
-      leftStack{new QStackedWidget}, rightStack{new QStackedWidget},
-      itemsWindow{new ItemsWindow}, infoWindow{new ItemInfoWindow},
+      containerWindow{new ContainerWindow{model}}, itemsWindow{new ItemsWindow},
+      infoWindow{new ItemInfoWindow},
       searchWindow{new SearchWindow{model, searchModel, searchProxyModel}} {
   qRegisterMetaType<Item *>("Item*");
-
+  setCentralWidget(centralWidget);
+  auto *layout = new QHBoxLayout(centralWidget);
   model->initDefaultInventory();
+  layout->addWidget(navigationPanel);
+
+  initMainArea();
+  layout->addWidget(mainArea);
+  layout->setStretch(0, 1);
+  layout->setStretch(1, 4);
+
+  initConnections();
   browseWindow->refresh();
   moveWindow->refresh();
   searchModel->refresh();
   searchWindow->refresh();
-
-  auto *central = new QWidget(this);
-  auto *layout = new QHBoxLayout(central);
-  setCentralWidget(central);
-
-  initConnections();
-  layout->addWidget(navigationPanel);
-  initMainArea();
-
-  layout->addWidget(mainArea);
-
-  layout->setStretch(0, 1);
-  layout->setStretch(1, 4);
+  setNames();
+  dumpParents();
 }
 
 void MainWindow::initMainArea() {
-  mainArea->setLayout(new QVBoxLayout);
+  mainArea->setLayout(new QVBoxLayout{mainArea});
   mainArea->layout()->addWidget(statusBar);
   mainArea->layout()->addWidget(mainStack);
   mainStack->addWidget(browseWindow);
@@ -117,4 +115,33 @@ void MainWindow::handleGoToItem(Item *item, Container *container) {
   browseWindow->handleGoToItem(item, container);
   handleNavigation(NavigationPanel::NavAction::BrowseItems);
   navigationPanel->setSelection(NavigationPanel::NavAction::BrowseItems);
+}
+
+void MainWindow::setNames() {
+  setObjectName("MainWindow");
+  centralWidget->setObjectName("CentralWidget");
+  mainStack->setObjectName("MainStack");
+  mainArea->setObjectName("MainArea");
+}
+
+// Ensure hierarchy
+void MainWindow::setParents() {
+  statusBar->setParent(mainArea);
+  mainStack->setParent(mainArea);
+}
+
+// For debugging.
+void MainWindow::dumpParents() {
+  QVector<QObject *> objects = {
+      model,           searchProxyModel, searchModel,    centralWidget,
+      containerWindow, itemsWindow,      infoWindow,     searchWindow,
+      navigationPanel, mainArea,         tutorialWindow, aboutWindow,
+      mainStack};
+  for (auto object : objects) {
+    if (!object) {
+      return;
+    }
+    qDebug() << "Name:" << object->objectName() << " : Parent:"
+             << (object->parent() ? object->parent()->objectName() : "null");
+  }
 }

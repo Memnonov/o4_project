@@ -3,6 +3,7 @@
 
 AboutWindow::AboutWindow(QWidget *parent)
     : ModeFrame{parent}, placeholder(new QLabel{"Something about the app."}) {
+  setObjectName("AboutWindow");
   layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(placeholder);
   placeholder->setAlignment(Qt::AlignCenter);

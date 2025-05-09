@@ -22,6 +22,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
       moveItemsButton{new QPushButton}, editNameLine{new QLineEdit} {
+  setObjectName("ItemsWindow");
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 

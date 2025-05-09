@@ -20,7 +20,7 @@ const QMap<NavigationPanel::NavAction, QString>
 NavigationPanel::NavigationPanel(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, logo(new QLabel),
       buttons{new QButtonGroup{this}} {
-  setObjectName("NavigationWindow");
+  setObjectName("NavigationPanel");
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
   layout->setSpacing(24); // TODO(mikko): separate styling to qss?
 

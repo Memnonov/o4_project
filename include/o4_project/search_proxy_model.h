@@ -10,6 +10,7 @@ class SearchProxyModel : public QSortFilterProxyModel {
   
  public:
   SearchProxyModel(QObject *parent = nullptr) : QSortFilterProxyModel{parent} {
+    setObjectName("SearchProxyModel");
     resetFilters();
   }
   ~SearchProxyModel() = default;
