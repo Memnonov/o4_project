@@ -96,8 +96,7 @@ private:
   QPushButton *editButton;
   QPushButton *saveButton;
   QPushButton *cancelButton;
-  QPushButton *selectedItemButton;
-  QPushButton *bottomDeleteButton;
+  QPushButton *bottomDleteButton;
   QPushButton *moveItemsButton;
   QPushButton *addNewButton;
   QWidget *addDeleteWidget;

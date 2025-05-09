@@ -51,6 +51,9 @@ void MoveWindow::initConnections() {
           [this]() { handleContainerSelected(Stack::right); });
   connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
           &ItemsWindow::handleContainerSelected);
+  for (const auto items : {leftItems, rightItems}) {
+    connect(items, &ItemsWindow::containerRenamed, model, &ContainerModel::renameContainerRequest);
+  }
 
   // Single item move
   connect(leftItems, &ItemsWindow::moveItemClicked, this,

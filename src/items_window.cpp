@@ -16,7 +16,7 @@
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel{this}},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
-      selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
+      filterSortPanel{new QToolBar},
       saveButton{new QPushButton}, cancelButton{new QPushButton},
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
@@ -32,10 +32,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   initAddNewButton();
 
+  initTopRow();
   initFilterSortPanel();
   layout->addWidget(filterSortPanel);
-  initTopRow();
-
+  
   // Set up rows
   auto rowsWidget = new QWidget{this};
   updateRows();
@@ -147,6 +147,9 @@ void ItemsWindow::toggleEditing(bool saveChanges) {
   saveButton->setVisible(editing);
   cancelButton->setVisible(editing);
   closeButton->setVisible(!editing);
+  if (editing) {
+    editNameLine->setFocus();
+  }
   if (saveChanges) {
     emit containerRenamed(currentContainer, editNameLine->text());
     title->setText(QString{"<b>%1</b>"}.arg(currentContainer->name));
@@ -402,12 +405,12 @@ void ItemsWindow::initTopRow() {
   topRowLayout->addWidget(saveButton);
   topRowLayout->addWidget(cancelButton);
   topRowLayout->addWidget(closeButton);
-  layout->addWidget(topRow);
   editNameLine->setVisible(false);
 
   connect(closeButton, &QPushButton::clicked, this,
           &ItemsWindow::closeButtonPushed);
 
+  layout->addWidget(topRow);
   topRow->update();
 }
 
@@ -424,7 +427,7 @@ void ItemsWindow::dumpParents() {
   qDebug() << "\n---------Dumping objects and parents of "
            << this->objectName();
   QVector<QObject *> objects = {
-      title,           addDeleteWidget, scrollArea, selectedItemButton,
+      title,           addDeleteWidget, scrollArea,
       filterSortPanel, buttonGroup,     editButton, itemRows,
       moveItemsButton, editNameLine};
   qDebug() << "dumpParents has objects: #" << objects.size();
