@@ -57,6 +57,7 @@ void SearchWindow::handleRowSelection(const QModelIndex &current,
 }
 
 void SearchWindow::initSearchForm() {
+  constexpr unsigned int limit = 32;
   searchForm->setFrameShape(StyledPanel);
   auto vbox = new QVBoxLayout;
   searchForm->setLayout(vbox);
@@ -65,6 +66,10 @@ void SearchWindow::initSearchForm() {
   nameFilter->setPlaceholderText("e.g. sword, iron rations");
   tagsFilter->setPlaceholderText("e.g. weapon, healing");
   descriptionFilter->setPlaceholderText("e.g. damage +1, cursed");
+
+  nameFilter->setMaxLength(limit);
+  tagsFilter->setMaxLength(limit);
+  descriptionFilter->setMaxLength(limit);
 
   vbox->addWidget(new QLabel{"<b>Search Items</b>"});
   vbox->addSpacing(10);
