@@ -229,10 +229,10 @@ QVector<Item *> ItemsWindow::getSortedFilteredItems() {
   // Get sorted and filtered items
   auto items = currentContainer->getItems();
   std::sort(items.begin(), items.end(), ItemsWindow::comparators.at(sortMode));
-  auto it = new QMutableVectorIterator<Item *>(items);
-  while (it->hasNext()) {
-    if (!filterItem(it->next())) {
-      it->remove();
+  QMutableVectorIterator<Item *> it{items};
+  while (it.hasNext()) {
+    if (!filterItem(it.next())) {
+      it.remove();
     }
   }
   return items;
