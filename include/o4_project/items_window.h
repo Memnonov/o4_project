@@ -33,6 +33,7 @@ public:
   Container *getCurrentContainer();
   void selectItem(Item *item);
   void dumpParents();
+  void deselectItems();
   Item *currentItem = nullptr;
   
   void setDeleteEnabled(bool canDelete) {
@@ -96,7 +97,7 @@ private:
   QPushButton *editButton;
   QPushButton *saveButton;
   QPushButton *cancelButton;
-  QPushButton *bottomDleteButton;
+  QPushButton *bottomDeleteButton;
   QPushButton *moveItemsButton;
   QPushButton *addNewButton;
   QWidget *addDeleteWidget;

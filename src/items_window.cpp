@@ -16,12 +16,12 @@
 ItemsWindow::ItemsWindow(QWidget *parent)
     : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel{this}},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
-      filterSortPanel{new QToolBar},
-      saveButton{new QPushButton}, cancelButton{new QPushButton},
-      buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
-      sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
-      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit},
-      rowsCleaner(new QObjectCleanupHandler), addNewButton(new QPushButton) {
+      filterSortPanel{new QToolBar}, saveButton{new QPushButton},
+      cancelButton{new QPushButton}, buttonGroup{new QButtonGroup{this}},
+      editButton{new QPushButton}, sortMode{ItemsWindow::SortMode::AtoZ},
+      itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton},
+      editNameLine{new QLineEdit}, rowsCleaner(new QObjectCleanupHandler),
+      addNewButton(new QPushButton) {
   // Constructor is a bit messy : D
   // Could be chopped up but no time now...
   setObjectName("ItemsWindow");
@@ -35,7 +35,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   initTopRow();
   initFilterSortPanel();
   layout->addWidget(filterSortPanel);
-  
+
   // Set up rows
   auto rowsWidget = new QWidget{this};
   updateRows();
@@ -54,8 +54,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   moveItemsButton->setVisible(false);
   moveItemsButton->setIcon(QIcon(":/icons/arrow-separate"));
   moveItemsButton->setText("Move items");
-  connect(moveItemsButton, &QPushButton::clicked, this,
-          [this]() { emit moveItemsClicked(getSelectedItems()); });
+  connect(moveItemsButton, &QPushButton::clicked, this, [this]() {
+    emit moveItemsClicked(getSelectedItems());
+    deselectItems();
+  });
   layout->addWidget(moveWidget);
 
   // Bottom row stuff
@@ -126,12 +128,15 @@ void ItemsWindow::initEditButtons() {
     button->setFlat(true);
   }
 
-  connect(editButton, &QPushButton::clicked, this, [this]() { toggleEditing(false); });
-  connect(saveButton, &QPushButton::clicked, this, [this]() { toggleEditing(true); });
-  connect(cancelButton, &QPushButton::clicked, this, [this]() { toggleEditing(false); });
+  connect(editButton, &QPushButton::clicked, this,
+          [this]() { toggleEditing(false); });
+  connect(saveButton, &QPushButton::clicked, this,
+          [this]() { toggleEditing(true); });
+  connect(cancelButton, &QPushButton::clicked, this,
+          [this]() { toggleEditing(false); });
 }
 
-void ItemsWindow::refresh() { 
+void ItemsWindow::refresh() {
   updateRows();
   if (editing) {
     toggleEditing(false);
@@ -177,8 +182,10 @@ void ItemsWindow::createRows() {
     if (movingItems) {
       moveButton = new QPushButton;
       moveButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-      connect(moveButton, &QPushButton::clicked, this,
-              [this, item] { emit moveItemClicked(item); });
+      connect(moveButton, &QPushButton::clicked, this, [this, item] {
+        emit moveItemClicked(item);
+        deselectItems();
+      });
     }
 
     rowsCleaner->add(row);
@@ -426,10 +433,9 @@ void ItemsWindow::handleAddNewClicked() {
 void ItemsWindow::dumpParents() {
   qDebug() << "\n---------Dumping objects and parents of "
            << this->objectName();
-  QVector<QObject *> objects = {
-      title,           addDeleteWidget, scrollArea,
-      filterSortPanel, buttonGroup,     editButton, itemRows,
-      moveItemsButton, editNameLine};
+  QVector<QObject *> objects = {title,           addDeleteWidget, scrollArea,
+                                filterSortPanel, buttonGroup,     editButton,
+                                itemRows,        moveItemsButton, editNameLine};
   qDebug() << "dumpParents has objects: #" << objects.size();
   for (auto object : objects) {
     if (!object) {
@@ -440,4 +446,9 @@ void ItemsWindow::dumpParents() {
              << (object->parent() ? object->parent()->objectName() : "null");
   }
   qDebug() << "\n";
+}
+
+void ItemsWindow::deselectItems() {
+  buttonGroup->setExclusive(true);
+  buttonGroup->setExclusive(false);
 }

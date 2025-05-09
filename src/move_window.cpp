@@ -11,7 +11,8 @@
 MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
     : ModeFrame{parent}, model{model}, leftStack{new QStackedWidget{this}},
       middlePanel{new QWidget{this}}, moveSelectedButton{new QPushButton{this}},
-      rightStack{new QStackedWidget{this}}, rightItems{new ItemsWindow{rightStack}},
+      rightStack{new QStackedWidget{this}},
+      rightItems{new ItemsWindow{rightStack}},
       rightContainer{new ContainerWindow{model, rightStack}},
       leftContainer{new ContainerWindow{model, leftStack}},
       leftItems{new ItemsWindow{leftStack}} {
@@ -52,7 +53,8 @@ void MoveWindow::initConnections() {
   connect(rightContainer, &ContainerWindow::containerSelected, rightItems,
           &ItemsWindow::handleContainerSelected);
   for (const auto items : {leftItems, rightItems}) {
-    connect(items, &ItemsWindow::containerRenamed, model, &ContainerModel::renameContainerRequest);
+    connect(items, &ItemsWindow::containerRenamed, model,
+            &ContainerModel::renameContainerRequest);
   }
 
   // Single item move
@@ -71,11 +73,13 @@ void MoveWindow::initConnections() {
           [this](const auto &items) {
             model->batchMoveRequest(items, leftItems->getCurrentContainer(),
                                     rightItems->getCurrentContainer());
+            moveSelectedButton->setEnabled(false);
           });
   connect(rightItems, &ItemsWindow::moveItemsClicked, this,
           [this](const auto &items) {
             model->batchMoveRequest(items, rightItems->getCurrentContainer(),
                                     leftItems->getCurrentContainer());
+            moveSelectedButton->setEnabled(false);
           });
   connect(moveSelectedButton, &QPushButton::clicked, this, [this] {
     auto itemsLeft = leftItems->getSelectedItems();
@@ -83,15 +87,17 @@ void MoveWindow::initConnections() {
     auto contLeft = leftItems->getCurrentContainer();
     auto contRight = rightItems->getCurrentContainer();
     model->moveAllRequest(itemsLeft, contLeft, itemsRight, contRight);
+    moveSelectedButton->setEnabled(false);
   });
 
-  // Toggling the batch move button
+  // Toggling the batch move buttons
   connect(leftContainer, &ContainerWindow::containerSelected, this,
           &MoveWindow::updateMoveButtons);
   connect(leftItems, &ItemsWindow::itemSelected, this,
           &MoveWindow::updateMoveButtons);
   connect(leftItems, &ItemsWindow::itemsWindowClosed, this,
           &MoveWindow::updateMoveButtons);
+
   connect(rightContainer, &ContainerWindow::containerSelected, this,
           &MoveWindow::updateMoveButtons);
   connect(rightItems, &ItemsWindow::itemSelected, this,
@@ -168,7 +174,8 @@ void MoveWindow::updateMoveButtons() {
 
   bool leftCanMove = leftItems->hasItemSelected();
   bool rightCanMove = rightItems->hasItemSelected();
-  qDebug() << "rightCanMove: " << rightCanMove << " | " << "leftCanMove: " << leftCanMove;
+  qDebug() << "rightCanMove: " << rightCanMove << " | "
+           << "leftCanMove: " << leftCanMove;
 
   leftItems->setCanMoveItems(leftCanMove);
   rightItems->setCanMoveItems(rightCanMove);
@@ -177,4 +184,5 @@ void MoveWindow::updateMoveButtons() {
 
 void MoveWindow::moveItem(Item *item, Container *from, Container *to) {
   model->moveItemRequest(item, from, to);
+  moveSelectedButton->setEnabled(false);
 }
