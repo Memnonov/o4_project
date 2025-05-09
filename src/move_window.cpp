@@ -162,13 +162,11 @@ QWidget *MoveWindow::getMiddlePanel() {
 }
 
 void MoveWindow::updateMoveButtons() {
-  qDebug() << "@updateMoveButtons()";
   if (!leftItems->hasContainerSelected() ||
       !rightItems->hasContainerSelected()) {
     moveSelectedButton->setEnabled(false);
     leftItems->setCanMoveItems(false);
     rightItems->setCanMoveItems(false);
-    qDebug() << "No 2 containers open";
     return;
   }
   leftItems->setCanMoveItems(true);
@@ -176,8 +174,6 @@ void MoveWindow::updateMoveButtons() {
 
   bool leftCanMove = leftItems->hasItemSelected();
   bool rightCanMove = rightItems->hasItemSelected();
-  qDebug() << "rightCanMove: " << rightCanMove << " | "
-           << "leftCanMove: " << leftCanMove;
   moveSelectedButton->setEnabled(leftCanMove | rightCanMove);
 }
 

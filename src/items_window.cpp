@@ -146,7 +146,6 @@ void ItemsWindow::refresh() {
 
 void ItemsWindow::toggleEditing(bool saveChanges) {
   editing = !editing;
-  qDebug() << "Set editing: " << editing;
   title->setVisible(!editing);
   editNameLine->setVisible(editing);
   editButton->setVisible(!editing);

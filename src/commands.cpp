@@ -14,7 +14,7 @@ public:
     } else {
       container = std::make_shared<Container>(name);
     }
-    setText(QString{"Created new Container: %1"}.arg(name));
+    setText(QString{"Created new Container: <b>%1</b>"}.arg(name));
   }
   void undo() override { model->removeContainer(container); }
   void redo() override { model->addContainer(container); }
@@ -33,7 +33,7 @@ public:
   RemoveContainerCmd(ContainerModel *model, Container *toRemove)
       : model{model}, removed{nullptr} {
     this->removed = model->removeContainer(toRemove);
-    setText(QString{"Removed Container: %1"}.arg(removed->name));
+    setText(QString{"Removed Container: <b>%1</b>"}.arg(removed->name));
   }
   void redo() override { model->removeContainer(removed); }
   void undo() override { model->addContainer(removed); }
@@ -57,7 +57,7 @@ public:
       : model{model}, item{model->getItem(toFavourite, container)} {}
   void redo() override {
     item->favourite = !item->favourite;
-    setText(QString{"Marked Item %1 %2."}
+    setText(QString{"Marked Item <b>%1</b> %2."}
                 .arg(item->name)
                 .arg(item->favourite ? "favourite" : "not favourite"));
   };
@@ -108,7 +108,7 @@ public:
       return;
     }
     item = container->getItem(toRemove);
-    setText(QString{"Removed Item: %1"}.arg(item->name));
+    setText(QString{"Removed Item: <b>%1</b>"}.arg(item->name));
   }
   void redo() override { container->removeItem(item); };
   void undo() override { container->addItem(item); };
@@ -130,7 +130,7 @@ public:
       : model{model}, item{item} {
     newQuantity = quantity;
     oldQuantity = item->quantity;
-    setText(QString{"Set Item %1 quantity to × %2"}
+    setText(QString{"Set Item <b>%1</b> quantity to × %2"}
                 .arg(item->name)
                 .arg(newQuantity));
   }
@@ -175,7 +175,7 @@ class ContainerModel::MoveItemCmd : public QUndoCommand {
 public:
   MoveItemCmd(ContainerModel *model, Item *item, Container *from, Container *to)
       : model{model}, item{item}, from{from}, to{to} {
-    setText(QString{"Moved %1 from %2 to %3"}
+    setText(QString{"Moved <b>%1</b> from <b>%2</b> to <b>%3</b>"}
                 .arg(item->name)
                 .arg(from->name)
                 .arg(to->name));
