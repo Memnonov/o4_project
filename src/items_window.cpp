@@ -10,6 +10,7 @@
 #include <qlogging.h>
 #include <qmessagebox.h>
 #include <qnamespace.h>
+#include <qobjectcleanuphandler.h>
 #include <qpushbutton.h>
 #include <qtmetamacros.h>
 #include <qvector.h>
@@ -20,8 +21,9 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
-      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit} {
+      moveItemsButton{new QPushButton}, editNameLine{new QLineEdit}, rowsCleaner(new QObjectCleanupHandler) {
   setObjectName("ItemsWindow");
+  rowsCleaner->setParent(this);
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -76,10 +78,10 @@ ItemsWindow::ItemsWindow(QWidget *parent)
 
 void ItemsWindow::initFilterSortPanel() {
   filterSortPanel->addWidget(new QLabel{"Filter: "});
-  filterInput = new QLineEdit{};
+  filterInput = new QLineEdit{filterSortPanel};
   filterInput->setPlaceholderText("Filter by item name, tag or decription");
   filterSortPanel->addWidget(filterInput);
-  auto sortButton = new QPushButton{sortModeToString.value(sortMode)};
+  auto sortButton = new QPushButton{sortModeToString.value(sortMode), filterSortPanel};
   connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
     sortButton->setText(cycleSortMode());
     updateRows();

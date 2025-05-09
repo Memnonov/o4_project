@@ -21,6 +21,7 @@
 #include <qscrollarea.h>
 #include <qtoolbar.h>
 #include <unordered_map>
+#include <QObjectCleanupHandler>
 
 class ItemsWindow : public QFrame {
   Q_OBJECT;
@@ -96,6 +97,7 @@ private:
   QPushButton *moveItemsButton;
   QWidget *addDeleteWidget;
   QLineEdit *editNameLine;
+  QObjectCleanupHandler *rowsCleaner;
 
   void updateRows();
   void createRows(QVBoxLayout *rows);
