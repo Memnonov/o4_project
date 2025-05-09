@@ -12,17 +12,18 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
     : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}},
       tip{new QLabel{}}, topPanel{new QWidget}, editButton{new QPushButton},
       favouriteButton{new QPushButton}, viewFields{new QWidget},
-      goToItemButton{new QPushButton}, viewNameLabel{new QLabel},
-      viewQuantityLabel{new QLabel}, viewTagsLabel{new QLabel},
-      viewDescriptionLabel{new QLabel}, editFields{new QWidget},
-      editNameLabel{new QLineEdit}, editQuantityBox{new QSpinBox},
-      editTagsLabel{new QLineEdit}, editDescriptionLabel(new QTextEdit) {
+      cancelEditButton(new QPushButton), goToItemButton{new QPushButton},
+      viewNameLabel{new QLabel}, viewQuantityLabel{new QLabel},
+      viewTagsLabel{new QLabel}, viewDescriptionLabel{new QLabel},
+      editFields{new QWidget}, editNameLabel{new QLineEdit},
+      editQuantityBox{new QSpinBox}, editTagsLabel{new QLineEdit},
+      editDescriptionLabel(new QTextEdit) {
   setObjectName("ItemInfoWindow");
   layout->setAlignment(Qt::AlignTop);
   setFrameShape(StyledPanel);
 
   initFavouriteButton();
-  initEditButton();
+  initEditButtons();
   initGoToItemButton();
 
   tip->setAlignment(Qt::AlignCenter);
@@ -103,11 +104,13 @@ void ItemInfoWindow::initEditFields() {
   layout->addWidget(editFields);
 }
 
-void ItemInfoWindow::initEditButton() {
+void ItemInfoWindow::initEditButtons() {
   editButton->setFlat(true);
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
   connect(editButton, &QPushButton::clicked, this,
           [this]() { toggleEditing(); });
+  cancelEditButton->setFlat(true);
+  editButton->setIcon(QIcon(":/icons/x-mark.svg"));
 }
 
 void ItemInfoWindow::initGoToItemButton() {
@@ -136,121 +139,121 @@ void ItemInfoWindow::toggleEditing() {
   }
 }
 
-  void ItemInfoWindow::handleItemSelected(Item * selectedItem,
-                                          Container * container) {
-    this->item = selectedItem;
-    this->container = container;
-    refresh();
+void ItemInfoWindow::handleItemSelected(Item *selectedItem,
+                                        Container *container) {
+  this->item = selectedItem;
+  this->container = container;
+  refresh();
+}
+
+// TODO: Combine this and the one below? : D
+void ItemInfoWindow::showViews() {
+  viewFields->setVisible(!editing);
+  editFields->setVisible(editing);
+  tip->setVisible(false);
+  editButton->setVisible(true && editable);
+  favouriteButton->setVisible(true);
+  goToItemButton->setVisible(canGoTo);
+}
+
+void ItemInfoWindow::hideViews() {
+  viewFields->setVisible(false);
+  editFields->setVisible(false);
+  tip->setVisible(true);
+  editButton->setVisible(false);
+  favouriteButton->setVisible(false);
+  goToItemButton->setVisible(false);
+}
+
+// This is mostly for debugging use.
+// You shouldn't see nulls in the app anymore.
+void ItemInfoWindow::setFieldsNull() {
+  for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel,
+                     viewDescriptionLabel}) {
+    label->setText("null");
+  }
+  for (auto lineEdit : {editNameLabel, editTagsLabel}) {
+    lineEdit->setText("null");
+  }
+  editQuantityBox->setValue(0);
+  editDescriptionLabel->setText("null");
+}
+
+QScrollArea *ItemInfoWindow::makeDescriptionScrollArea() {
+  auto scrollArea = new QScrollArea;
+  scrollArea->setWidgetResizable(true);
+  scrollArea->setAlignment(Qt::AlignTop);
+  scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+  return scrollArea;
+}
+
+void ItemInfoWindow::refresh() {
+  if (!item || !container) {
+    title->setText("<b>Item info</b>");
+    title->setAlignment(Qt::AlignVCenter);
+    hideViews();
+    return;
   }
 
-  // TODO: Combine this and the one below? : D
-  void ItemInfoWindow::showViews() {
-    viewFields->setVisible(!editing);
-    editFields->setVisible(editing);
-    tip->setVisible(false);
-    editButton->setVisible(true && editable);
-    favouriteButton->setVisible(true);
-    goToItemButton->setVisible(canGoTo);
+  title->setText(
+      QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
+
+  QString name{item->name};
+  viewNameLabel->setText(name);
+  editNameLabel->setText(name);
+
+  unsigned int quantity = item->quantity;
+  viewQuantityLabel->setText(QString::number(quantity));
+  editQuantityBox->setValue(quantity);
+
+  QString tags{QStringList::fromVector(item->tags).join(", ")};
+  viewTagsLabel->setText(tags);
+  editTagsLabel->setText(tags);
+
+  QString description = item->description;
+  viewDescriptionLabel->setText(description);
+  editDescriptionLabel->setText(description);
+  updateFavouriteButton();
+  showViews();
+}
+
+void ItemInfoWindow::initFavouriteButton() {
+  favouriteButton->setIcon(QIcon{":/icons/star.svg"});
+  favouriteButton->setFlat(true);
+  connect(favouriteButton, &QPushButton::clicked, this,
+          &ItemInfoWindow::handleFavouriteButtonClicked);
+}
+
+void ItemInfoWindow::updateFavouriteButton() {
+  auto icon =
+      QString(":/icons/%1.svg").arg(item->favourite ? "star-solid" : "star");
+  favouriteButton->setIcon(QIcon{icon});
+}
+
+void ItemInfoWindow::handleFavouriteButtonClicked() {
+  emit favouriteButtonClicked(item, container);
+  updateFavouriteButton();
+}
+
+bool ItemInfoWindow::hasChanges() {
+  return editNameLabel->text() != item->name ||
+         editQuantityBox->value() != item->quantity ||
+         editTagsLabel->text() != item->tags.join(", ") ||
+         editDescriptionLabel->toPlainText() != item->description;
+}
+
+void ItemInfoWindow::handleItemUpdated() {
+  if (hasChanges() && item) {
+    Item::ItemData itemData = {
+        editNameLabel->text(),
+        static_cast<unsigned int>(editQuantityBox->value()),
+        editDescriptionLabel->toPlainText(), editTagsLabel->text().split(", "),
+        item->favourite};
+    emit itemUpdated(item, itemData);
   }
+}
 
-  void ItemInfoWindow::hideViews() {
-    viewFields->setVisible(false);
-    editFields->setVisible(false);
-    tip->setVisible(true);
-    editButton->setVisible(false);
-    favouriteButton->setVisible(false);
-    goToItemButton->setVisible(false);
-  }
-
-  // This is mostly for debugging use.
-  // You shouldn't see nulls in the app anymore.
-  void ItemInfoWindow::setFieldsNull() {
-    for (auto label : {viewNameLabel, viewQuantityLabel, viewTagsLabel,
-                       viewDescriptionLabel}) {
-      label->setText("null");
-    }
-    for (auto lineEdit : {editNameLabel, editTagsLabel}) {
-      lineEdit->setText("null");
-    }
-    editQuantityBox->setValue(0);
-    editDescriptionLabel->setText("null");
-  }
-
-  QScrollArea *ItemInfoWindow::makeDescriptionScrollArea() {
-    auto scrollArea = new QScrollArea;
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setAlignment(Qt::AlignTop);
-    scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    return scrollArea;
-  }
-
-  void ItemInfoWindow::refresh() {
-    if (!item || !container) {
-      title->setText("<b>Item info</b>");
-      title->setAlignment(Qt::AlignVCenter);
-      hideViews();
-      return;
-    }
-
-    title->setText(
-        QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
-
-    QString name{item->name};
-    viewNameLabel->setText(name);
-    editNameLabel->setText(name);
-
-    unsigned int quantity = item->quantity;
-    viewQuantityLabel->setText(QString::number(quantity));
-    editQuantityBox->setValue(quantity);
-
-    QString tags{QStringList::fromVector(item->tags).join(", ")};
-    viewTagsLabel->setText(tags);
-    editTagsLabel->setText(tags);
-
-    QString description = item->description;
-    viewDescriptionLabel->setText(description);
-    editDescriptionLabel->setText(description);
-    updateFavouriteButton();
-    showViews();
-  }
-
-  void ItemInfoWindow::initFavouriteButton() {
-    favouriteButton->setIcon(QIcon{":/icons/star.svg"});
-    favouriteButton->setFlat(true);
-    connect(favouriteButton, &QPushButton::clicked, this,
-            &ItemInfoWindow::handleFavouriteButtonClicked);
-  }
-
-  void ItemInfoWindow::updateFavouriteButton() {
-    auto icon =
-        QString(":/icons/%1.svg").arg(item->favourite ? "star-solid" : "star");
-    favouriteButton->setIcon(QIcon{icon});
-  }
-
-  void ItemInfoWindow::handleFavouriteButtonClicked() {
-    emit favouriteButtonClicked(item, container);
-    updateFavouriteButton();
-  }
-
-  bool ItemInfoWindow::hasChanges() {
-    return editNameLabel->text() != item->name ||
-           editQuantityBox->value() != item->quantity ||
-           editTagsLabel->text() != item->tags.join(", ") ||
-           editDescriptionLabel->toPlainText() != item->description;
-  }
-
-  void ItemInfoWindow::handleItemUpdated() {
-    if (hasChanges() && item) {
-      Item::ItemData itemData = {
-          editNameLabel->text(),
-          static_cast<unsigned int>(editQuantityBox->value()),
-          editDescriptionLabel->toPlainText(),
-          editTagsLabel->text().split(", "), item->favourite};
-      emit itemUpdated(item, itemData);
-    }
-  }
-
-  void ItemInfoWindow::clearSelection() {
-    item = nullptr;
-    refresh();
-  }
+void ItemInfoWindow::clearSelection() {
+  item = nullptr;
+  refresh();
+}

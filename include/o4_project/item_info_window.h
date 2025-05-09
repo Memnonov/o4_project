@@ -62,6 +62,7 @@ class ItemInfoWindow : public QFrame {
   QWidget *topPanel;
   QVBoxLayout *layout;
   QPushButton *editButton;
+  QPushButton *cancelEditButton;
   QPushButton *favouriteButton;
   QPushButton *goToItemButton;
   
@@ -81,7 +82,7 @@ class ItemInfoWindow : public QFrame {
   
   void initViewFields();
   void initEditFields();
-  void initEditButton();
+  void initEditButtons();
   void initGoToItemButton();
   void initFavouriteButton();
   void toggleEditing();

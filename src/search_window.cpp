@@ -31,9 +31,7 @@ void SearchWindow::initTable() {
 
   table->setModel(searchProxyModel);
   table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-  table->horizontalHeader()->setStretchLastSection(true);
-  // table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-  // table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  // table->horizontalHeader()->setStretchLastSection(true);
   table->setSelectionBehavior(QAbstractItemView::SelectRows);
   table->setSelectionMode(QAbstractItemView::SingleSelection);
   table->horizontalHeader()->setSectionsMovable(true);
