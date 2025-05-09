@@ -25,5 +25,6 @@
     <file>icons/star.svg</file>
     <file>icons/star-solid.svg</file>
     <file>icons/doc-magnifying-glass.svg</file>
+    <file>icons/floppy-disk.svg</file>
   </qresource>
 </RCC>
