@@ -27,7 +27,6 @@ QVariant SearchModel::data(const QModelIndex &index, int role) const {
   }
   const auto &entry = items.at(index.row());
   if (!entry.item || !entry.container) {
-    qDebug() << "Invalid item or container at row" << index.row();
     return {};
   }
   switch (index.column()) {
@@ -77,12 +76,10 @@ QVector<SearchModel::ItemEntry> SearchModel::getItemsFromModel() {
       entries << ItemEntry{item, container};
     }
   }
-  qDebug() << "SearchModel got entries: " << entries.size();
   return entries;
 }
 
 void SearchModel::refresh() {
-  qDebug() << "Refresh search model.";
   beginResetModel();
   items = getItemsFromModel();
   endResetModel();

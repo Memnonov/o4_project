@@ -21,14 +21,13 @@
 
 ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
-      scrollArea{new QScrollArea}, rows{new QVBoxLayout},
+      scrollArea{new QScrollArea}, rows{new QVBoxLayout}, rowsWidget{new QWidget{this}},
       newContainerButton(new QPushButton) {
-  setObjectName("ContainerWindow");
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  setNames();
   initLabel();
 
-  auto *rowsWidget = new QWidget;
   rowsWidget->setLayout(rows);
   rows->setSpacing(0);
   rows->setAlignment(Qt::AlignTop);
@@ -38,8 +37,8 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
   scrollArea->setWidgetResizable(true);
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
-  // qDebug() << "QLineEdits parent: " << editNameLine->parent() << "----------------------------";
   updateRows();
+  dumpParents();
 }
 
 void ContainerWindow::initLabel() {
@@ -69,9 +68,6 @@ void ContainerWindow::initNewContainerButton() {
 
 void ContainerWindow::updateRows() {
   clearRows();
-  qDebug() << "Creating real rows!";
-  // Creating dummy rows
-  // TODO(mikko): Fix asset paths.
   const QIcon deleteIcon{":/icons/trash.svg"};
   static constexpr unsigned int minRowHeight = 40;
   static constexpr unsigned int maxRowHeight = minRowHeight * 2;
@@ -83,7 +79,7 @@ void ContainerWindow::updateRows() {
   auto containers = model->getContainers();
   for (auto const &container : containers) {
     QWidget *row = new QWidget;
-    row->setMinimumHeight(minRowHeight); // TODO(mikko): fix magic numbers?
+    row->setMinimumHeight(minRowHeight); // TODO: fix magic numbers?
     row->setMaximumHeight(maxRowHeight);
     QHBoxLayout *box = new QHBoxLayout;
     box->setContentsMargins(0, 0, 4, 4);
@@ -91,9 +87,8 @@ void ContainerWindow::updateRows() {
 
     QPushButton *button = new QPushButton{container->name};
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    connect(button, &QPushButton::clicked, this, [this, container]() {
-      emit containerSelected(container.get());
-    }); // TODO: Pass the container.
+    connect(button, &QPushButton::clicked, this,
+            [this, container]() { emit containerSelected(container.get()); });
 
     QPushButton *deleteButton = new QPushButton;
     deleteButton->setIcon(deleteIcon);
@@ -133,4 +128,29 @@ void ContainerWindow::confirmDelete(Container *container) {
   if (choice == QMessageBox::Yes) {
     model->removeContainerRequest(container);
   }
+}
+
+void ContainerWindow::dumpParents() {
+  qDebug() << "\n---------Dumping objects and parents of "
+           << this->objectName();
+  QVector<QObject *> objects = {this, layout,     scrollArea,
+                                rows, rowsWidget, newContainerButton};
+  for (auto object : objects) {
+    if (!object) {
+      qDebug() << "An object is null!";
+      return;
+    }
+    qDebug() << "Name:" << object->objectName() << " : Parent:"
+             << (object->parent() ? object->parent()->objectName() : "null");
+  }
+  qDebug() << "\n";
+}
+
+void ContainerWindow::setNames() {
+  layout->setObjectName("Layout");
+  this->setObjectName("ContainerWindow");
+  rowsWidget->setObjectName("RowsWidget");
+  scrollArea->setObjectName("ScrollArea");
+  rows->setObjectName("Rows");
+  newContainerButton->setObjectName("NewContainerButton");
 }

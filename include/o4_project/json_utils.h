@@ -65,7 +65,6 @@ parseInventoryFromJSON(QJsonDocument json) {
     auto containerObj = value.toObject();
     auto container =
         std::make_shared<Container>(containerObj["name"].toString());
-    qDebug() << "\nCreated container " + container->name;
 
     auto items = containerObj["items"].toArray();
     for (const QJsonValue &value : items) {

@@ -81,7 +81,7 @@ private:
   friend class MoveAllCmd;
 
   QVector<std::shared_ptr<Container>> containers;
-  QUndoStack undoStack;
+  QUndoStack undoStack = QUndoStack{this};
   void addContainer(std::shared_ptr<Container>);
   void removeContainer(std::shared_ptr<Container>);
   std::shared_ptr<Container> removeContainer(Container *container);

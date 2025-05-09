@@ -124,7 +124,6 @@ void ItemInfoWindow::initGoToItemButton() {
 }
 
 void ItemInfoWindow::toggleEditing() {
-  qDebug() << "Toggled editing";
   editing = !editing;
   editFields->setVisible(editing);
   viewFields->setVisible(!editing);
@@ -209,7 +208,6 @@ void ItemInfoWindow::refresh() {
   editDescriptionLabel->setText(description);
   updateFavouriteButton();
   showViews();
-  qDebug() << "ItemIndoWindow after refresh, item: " << item->name;
 }
 
 void ItemInfoWindow::initFavouriteButton() {
@@ -226,7 +224,6 @@ void ItemInfoWindow::updateFavouriteButton() {
 }
 
 void ItemInfoWindow::handleFavouriteButtonClicked() {
-  qDebug() << "Clicked favourite button.";
   emit favouriteButtonClicked(item, container);
   updateFavouriteButton();
 }

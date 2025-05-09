@@ -9,9 +9,6 @@ BrowseWindow::BrowseWindow(ContainerModel *model, QWidget *parent)
       infoWindow{new ItemInfoWindow}, leftStack{new QStackedWidget},
       rightStack{new QStackedWidget} {
   setObjectName("BrowseWindow");
-  if (model) {
-    qDebug() << "Browse window has a model.";
-  }
   leftStack->addWidget(containerWindow);
   leftStack->addWidget(itemsWindow);
   rightStack->addWidget(infoWindow);

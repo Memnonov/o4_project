@@ -85,8 +85,6 @@ void MainWindow::initConnections() {
 
 void MainWindow::handleNavigation(NavigationPanel::NavAction action) {
   using NavAction = NavigationPanel::NavAction;
-  qDebug() << "Pressed navigation button: "
-           << NavigationPanel::navActionToString(action);
   switch (action) {
   case NavAction::BrowseItems:
     mainStack->setCurrentWidget(browseWindow);
@@ -132,6 +130,7 @@ void MainWindow::setParents() {
 
 // For debugging.
 void MainWindow::dumpParents() {
+  qDebug() << "Dumping parents of MainWindow objects:\n";
   QVector<QObject *> objects = {
       model,           searchProxyModel, searchModel,    centralWidget,
       containerWindow, itemsWindow,      infoWindow,     searchWindow,
@@ -144,4 +143,5 @@ void MainWindow::dumpParents() {
     qDebug() << "Name:" << object->objectName() << " : Parent:"
              << (object->parent() ? object->parent()->objectName() : "null");
   }
+  qDebug() << "\n";
 }

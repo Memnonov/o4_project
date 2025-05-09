@@ -37,7 +37,6 @@ QStringList ContainerModel::getContainerNames() const {
   for (auto const &container : containers) {
     names << container->name;
   }
-  qDebug() << "Container names size: " << names.size();
   return names;
 }
 

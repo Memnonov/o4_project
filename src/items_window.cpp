@@ -110,7 +110,6 @@ void ItemsWindow::initFilterSortPanel() {
   connect(sortButton, &QPushButton::clicked, this, [this, sortButton]() {
     sortButton->setText(cycleSortMode());
     updateRows();
-    qDebug() << "Changed sort mode!";
   });
   filterSortPanel->addWidget(sortButton);
   connect(filterInput, &QLineEdit::textChanged, this, &ItemsWindow::refresh);
@@ -192,8 +191,6 @@ void ItemsWindow::createRows(QVBoxLayout *rows) {
 
     connect(button, &QPushButton::clicked, this, [this, item, button]() {
       emit itemSelected(item, currentContainer);
-      qDebug() << "Clicked on item: "
-               << button->property("item").value<Item *>()->name;
       bottomDeleteButton->setEnabled(true);
       currentItem = button->property("item").value<Item *>();
     });
@@ -273,7 +270,6 @@ void ItemsWindow::updateRows() {
   newButton->setFlat(true);
   newButton->setMinimumHeight(40);
   itemRows->addWidget(newButton);
-  qDebug() << "NewButton parent: " << newButton->parent();
   connect(newButton, &QPushButton::clicked, this,
           &ItemsWindow::handleAddNewClicked);
 }
@@ -284,7 +280,6 @@ void ItemsWindow::closeButtonPushed() {
   bottomDeleteButton->setEnabled(false);
   auto checked = buttonGroup->checkedButton();
   if (checked) {
-    qDebug() << "Should have unchecked a button?";
     checked->setChecked(false);
   }
   buttonGroup->setExclusive(true);

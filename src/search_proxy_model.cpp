@@ -36,7 +36,6 @@ bool SearchProxyModel::filterAcceptsRow(int sourceRow,
 }
 
 void SearchProxyModel::refresh() {
-  qDebug() << "Refreshed proxy.";
   invalidate();
 }
 

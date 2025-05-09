@@ -32,10 +32,13 @@ class ContainerWindow : public QFrame {
   QVBoxLayout *layout;
   QScrollArea *scrollArea;
   QPushButton *newContainerButton;
+  QWidget *rowsWidget;
 
   void initLabel();
   void initNewContainerButton();
   void clearRows();
+  void dumpParents();
+  void setNames();
   const QVector<std::shared_ptr<Container>> getContainers() const;
 
  public slots:

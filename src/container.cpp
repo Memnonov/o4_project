@@ -68,7 +68,6 @@ std::shared_ptr<Item> Container::removeItem(Item *item) {
     if (it.next().get() == item) {
       auto temp = it.value();
       it.remove();
-      qDebug() << "removeItem (Item *item) found item: " << temp->name;
       return temp;
     }
   }
