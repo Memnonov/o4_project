@@ -69,13 +69,13 @@ void MoveWindow::initConnections() {
                      leftItems->getCurrentContainer());
           });
   // Batch moving
-  connect(leftItems, &ItemsWindow::moveItemsClicked, this,
+  connect(leftItems, &ItemsWindow::moveAllClicked, this,
           [this](const auto &items) {
             model->batchMoveRequest(items, leftItems->getCurrentContainer(),
                                     rightItems->getCurrentContainer());
             moveSelectedButton->setEnabled(false);
           });
-  connect(rightItems, &ItemsWindow::moveItemsClicked, this,
+  connect(rightItems, &ItemsWindow::moveAllClicked, this,
           [this](const auto &items) {
             model->batchMoveRequest(items, rightItems->getCurrentContainer(),
                                     leftItems->getCurrentContainer());
@@ -171,14 +171,13 @@ void MoveWindow::updateMoveButtons() {
     qDebug() << "No 2 containers open";
     return;
   }
+  leftItems->setCanMoveItems(true);
+  rightItems->setCanMoveItems(true);
 
   bool leftCanMove = leftItems->hasItemSelected();
   bool rightCanMove = rightItems->hasItemSelected();
   qDebug() << "rightCanMove: " << rightCanMove << " | "
            << "leftCanMove: " << leftCanMove;
-
-  leftItems->setCanMoveItems(leftCanMove);
-  rightItems->setCanMoveItems(rightCanMove);
   moveSelectedButton->setEnabled(leftCanMove | rightCanMove);
 }
 

@@ -19,7 +19,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       filterSortPanel{new QToolBar}, saveButton{new QPushButton},
       cancelButton{new QPushButton}, buttonGroup{new QButtonGroup{this}},
       editButton{new QPushButton}, sortMode{ItemsWindow::SortMode::AtoZ},
-      itemRows{new QVBoxLayout}, moveItemsButton{new QPushButton},
+      itemRows{new QVBoxLayout}, moveAllButton{new QPushButton},
       editNameLine{new QLineEdit}, rowsCleaner(new QObjectCleanupHandler),
       addNewButton(new QPushButton) {
   // Constructor is a bit messy : D
@@ -50,12 +50,13 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   auto moveWidget = new QWidget;
   auto moveBox = new QHBoxLayout;
   moveWidget->setLayout(moveBox);
-  moveBox->addWidget(moveItemsButton);
-  moveItemsButton->setVisible(false);
-  moveItemsButton->setIcon(QIcon(":/icons/arrow-separate"));
-  moveItemsButton->setText("Move items");
-  connect(moveItemsButton, &QPushButton::clicked, this, [this]() {
-    emit moveItemsClicked(getSelectedItems());
+  moveBox->addWidget(moveAllButton);
+  moveAllButton->setVisible(false);
+  auto icon = QString{":/icons/fast-arrow-%1.svg"}.arg(isRightWindow ? "left" : "right" );
+  moveAllButton->setIcon(QIcon(icon));
+  moveAllButton->setText("Move All");
+  connect(moveAllButton, &QPushButton::clicked, this, [this]() {
+    emit moveAllClicked(currentContainer->getItems());
     deselectItems();
   });
   layout->addWidget(moveWidget);
@@ -336,7 +337,7 @@ bool ItemsWindow::hasItemSelected() const {
 }
 
 void ItemsWindow::setCanMoveItems(bool canMove) {
-  moveItemsButton->setEnabled(canMove);
+  moveAllButton->setEnabled(canMove);
 }
 
 void ItemsWindow::confirmDeleteItem() {
@@ -435,7 +436,7 @@ void ItemsWindow::dumpParents() {
            << this->objectName();
   QVector<QObject *> objects = {title,           addDeleteWidget, scrollArea,
                                 filterSortPanel, buttonGroup,     editButton,
-                                itemRows,        moveItemsButton, editNameLine};
+                                itemRows,        moveAllButton, editNameLine};
   qDebug() << "dumpParents has objects: #" << objects.size();
   for (auto object : objects) {
     if (!object) {

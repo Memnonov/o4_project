@@ -42,13 +42,14 @@ public:
 
   void setMovingItems(bool moving) {
     this->movingItems = moving;
-    moveItemsButton->setVisible(moving);
+    moveAllButton->setVisible(moving);
     addDeleteWidget->setVisible(!moving);
     buttonGroup->setExclusive(!moving);
   }
 
   void setRightWindow(bool isRightWindow) {
     this->isRightWindow = isRightWindow;
+    moveAllButton->setIcon(QIcon(":/icons/fast-arrow-left.svg"));
   }
 
   bool hasContainerSelected() const { return currentContainer != nullptr; }
@@ -64,7 +65,7 @@ signals:
   void deleteItemClicked(Item *item, Container *container);
   void setQuantityClicked(Item *item, unsigned int quantity);
   void moveItemClicked(Item *item);
-  void moveItemsClicked(QVector<Item *>);
+  void moveAllClicked(QVector<Item *>);
   void containerRenamed(Container *container, const QString &name);
 
 private:
@@ -98,7 +99,7 @@ private:
   QPushButton *saveButton;
   QPushButton *cancelButton;
   QPushButton *bottomDeleteButton;
-  QPushButton *moveItemsButton;
+  QPushButton *moveAllButton;
   QPushButton *addNewButton;
   QWidget *addDeleteWidget;
   QLineEdit *editNameLine;
