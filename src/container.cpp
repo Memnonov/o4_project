@@ -63,7 +63,7 @@ std::shared_ptr<Item> Container::removeItem(std::shared_ptr<Item> item) {
 }
 
 std::shared_ptr<Item> Container::removeItem(Item *item) {
-  auto it = QMutableVectorIterator<std::shared_ptr<Item>>(items);
+  QMutableVectorIterator<std::shared_ptr<Item>> it(items);
   while (it.hasNext()) {
     if (it.next().get() == item) {
       auto temp = it.value();
