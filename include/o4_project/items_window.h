@@ -17,7 +17,6 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <functional>
-#include <memory>
 #include <qcontainerfwd.h>
 #include <qscrollarea.h>
 #include <qtoolbar.h>
@@ -100,6 +99,7 @@ private:
 
   void updateRows();
   void createRows(QVBoxLayout *rows);
+  void initTopRow();
   void initEditButton();
   void initFilterSortPanel();
   QString cycleSortMode();

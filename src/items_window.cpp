@@ -15,7 +15,7 @@
 #include <qvector.h>
 
 ItemsWindow::ItemsWindow(QWidget *parent)
-    : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel},
+    : QFrame{parent}, layout{new QVBoxLayout{this}}, title{new QLabel{this}},
       addDeleteWidget{new QWidget}, scrollArea{new QScrollArea{this}},
       selectedItemButton{nullptr}, filterSortPanel{new QToolBar},
       buttonGroup{new QButtonGroup{this}}, editButton{new QPushButton},
@@ -25,37 +25,9 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   setFrameShape(StyledPanel);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-  // Setting up the top row
-  auto topRow = new QWidget;
-  auto topRowLayout = new QHBoxLayout{topRow};
-
-  closeButton = new QPushButton;
-  auto closeIcon = QIcon{":/icons/xmark.svg"};
-  if (closeIcon.isNull()) {
-    qDebug() << "Couldn't load close button icon";
-  }
-  closeButton->setIcon(closeIcon);
-  closeButton->setFlat(true);
-  connect(closeButton, &QPushButton::clicked, this,
-          &ItemsWindow::closeButtonPushed);
-  title->setText("No container selected");
-  title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-  editNameLine->setPlaceholderText("Container Name");
-  initEditButton();
-
-  topRowLayout->addWidget(title);
-  topRowLayout->addWidget(editNameLine);
-  topRowLayout->addWidget(editButton);
-  topRowLayout->addWidget(closeButton);
-  // topRow->setLayout(topRowLayout);
-  layout->addWidget(topRow);
-  editNameLine->setVisible(false);
-  topRow->update();
-
   initFilterSortPanel();
   layout->addWidget(filterSortPanel);
+  initTopRow();
 
   // Set up item rows.
   auto rowsWidget = new QWidget{this};
@@ -98,6 +70,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   layout->addWidget(addDeleteWidget);
   connect(bottomDeleteButton, &QPushButton::clicked, this,
           [this]() { confirmDeleteItem(); });
+
+  dumpParents();
 }
 
 void ItemsWindow::initFilterSortPanel() {
@@ -272,6 +246,8 @@ void ItemsWindow::updateRows() {
   itemRows->addWidget(newButton);
   connect(newButton, &QPushButton::clicked, this,
           &ItemsWindow::handleAddNewClicked);
+  qDebug() << "After update";
+  dumpParents();
 }
 
 // Kinda hacky!?
@@ -379,6 +355,37 @@ const std::unordered_map<ItemsWindow::SortMode,
 
 };
 
+void ItemsWindow::initTopRow() {
+  auto topRow = new QWidget{this};
+  auto topRowLayout = new QHBoxLayout{topRow};
+
+  closeButton = new QPushButton{topRow};
+  static const auto closeIcon = QIcon{":/icons/xmark.svg"};
+  if (closeIcon.isNull()) {
+    qDebug() << "Couldn't load close button icon";
+  }
+  closeButton->setIcon(closeIcon);
+  closeButton->setFlat(true);
+  title->setText("No container selected");
+  title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+  editNameLine->setPlaceholderText("Container Name");
+  initEditButton();
+
+  topRowLayout->addWidget(title);
+  topRowLayout->addWidget(editNameLine);
+  topRowLayout->addWidget(editButton);
+  topRowLayout->addWidget(closeButton);
+  layout->addWidget(topRow);
+  editNameLine->setVisible(false);
+  
+  connect(closeButton, &QPushButton::clicked, this,
+          &ItemsWindow::closeButtonPushed);
+  
+  topRow->update();
+}
+
 void ItemsWindow::handleAddNewClicked() {
   bool ok = false;
   auto name = QInputDialog::getText(
@@ -395,6 +402,7 @@ void ItemsWindow::dumpParents() {
       title,           addDeleteWidget, scrollArea, selectedItemButton,
       filterSortPanel, buttonGroup,     editButton, itemRows,
       moveItemsButton, editNameLine};
+  qDebug() << "dumpParents has objects: #" << objects.size();
   for (auto object : objects) {
     if (!object) {
       qDebug() << "An object is null!";
