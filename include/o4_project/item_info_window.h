@@ -92,6 +92,7 @@ class ItemInfoWindow : public QFrame {
   QScrollArea* makeDescriptionScrollArea();
   bool hasChanges();
   void handleItemUpdated();
+  void descriptionBoxLimiter();
 
 };
 

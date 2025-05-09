@@ -24,6 +24,8 @@ ItemsWindow::ItemsWindow(QWidget *parent)
       sortMode{ItemsWindow::SortMode::AtoZ}, itemRows{new QVBoxLayout},
       moveItemsButton{new QPushButton}, editNameLine{new QLineEdit},
       rowsCleaner(new QObjectCleanupHandler), addNewButton(new QPushButton) {
+  // Constructor is a bit messy : D
+  // Could be chopped up but no time now...
   setObjectName("ItemsWindow");
   itemRows->setObjectName("ItemRows");
   itemRows->setSpacing(0);
@@ -36,7 +38,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   layout->addWidget(filterSortPanel);
   initTopRow();
 
-  // Set up item rows.
+  // Set up rows
   auto rowsWidget = new QWidget{this};
   updateRows();
   rowsWidget->setLayout(itemRows);
@@ -46,6 +48,7 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   scrollArea->setAlignment(Qt::AlignTop);
   layout->addWidget(scrollArea);
 
+  // Moving stuff
   auto moveWidget = new QWidget;
   auto moveBox = new QHBoxLayout;
   moveWidget->setLayout(moveBox);
@@ -57,14 +60,13 @@ ItemsWindow::ItemsWindow(QWidget *parent)
           [this]() { emit moveItemsClicked(getSelectedItems()); });
   layout->addWidget(moveWidget);
 
-  // auto bottomRow = new QWidget;
+  // Bottom row stuff
   auto bottomRowLayout = new QHBoxLayout;
   addDeleteWidget->setLayout(bottomRowLayout);
   auto bottomAddButton = new QPushButton{"Add"};
   bottomAddButton->setIcon(QIcon(":/icons/plus.svg"));
   connect(bottomAddButton, &QPushButton::clicked, this,
           &ItemsWindow::handleAddNewClicked);
-
   bottomRowLayout->addWidget(bottomAddButton);
   bottomDeleteButton = new QPushButton{"Delete"};
   bottomDeleteButton->setEnabled(false);
@@ -351,6 +353,8 @@ const std::unordered_map<ItemsWindow::SortMode,
 };
 
 void ItemsWindow::initTopRow() {
+  constexpr unsigned int nameLimit = 32;
+  
   auto topRow = new QWidget{this};
   auto topRowLayout = new QHBoxLayout{topRow};
 
@@ -366,6 +370,7 @@ void ItemsWindow::initTopRow() {
   title->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
   editNameLine->setPlaceholderText("Container Name");
+  editNameLine->setMaxLength(nameLimit);
   initEditButton();
 
   topRowLayout->addWidget(title);

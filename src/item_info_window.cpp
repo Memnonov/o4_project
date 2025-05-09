@@ -2,11 +2,13 @@
 
 #include "../include/o4_project/item_info_window.h"
 #include <QLineEdit>
+#include <QRegularExpression>
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
 #include <qlogging.h>
 #include <qpushbutton.h>
+#include <qtextcursor.h>
 
 ItemInfoWindow::ItemInfoWindow(QWidget *parent)
     : QFrame(parent), title{new QLabel}, layout{new QVBoxLayout{this}},
@@ -78,11 +80,18 @@ void ItemInfoWindow::initEditFields() {
   auto editBox = new QVBoxLayout{editFields};
   auto editFormLayout = new QFormLayout;
   auto descriptionScrollArea = makeDescriptionScrollArea();
+  constexpr int maxLength = 32;
+
+  // Input limits
+  editNameLabel->setMaxLength(maxLength);
+  editTagsLabel->setMaxLength(maxLength);
+  editQuantityBox->setMaximum(9999);
+  connect(editDescriptionLabel, &QTextEdit::textChanged, this,
+          &ItemInfoWindow::descriptionBoxLimiter);
 
   editNameLabel->setPlaceholderText("Item name");
   editNameLabel->setText(item ? item->name : "");
 
-  editQuantityBox->setMaximum(9999);
   editQuantityBox->setValue(item ? item->quantity : 0);
 
   editTagsLabel->setPlaceholderText("Separate tags with #: #tag1 #tag2 #tag3");
@@ -113,7 +122,6 @@ void ItemInfoWindow::initEditButtons() {
 
   cancelEditButton->setFlat(true);
   cancelEditButton->setIcon(QIcon(":/icons/xmark.svg"));
-  // cancelEditButton->setText("Cancel");
   cancelEditButton->setVisible(false);
   connect(cancelEditButton, &QPushButton::clicked, this,
           [this]() { toggleEditing(false); });
@@ -138,7 +146,6 @@ void ItemInfoWindow::toggleEditing(bool saveChanges) {
   cancelEditButton->setVisible(editing);
   if (editing) {
     editButton->setIcon(QIcon{":/icons/floppy-disk.svg"});
-    // editButton->setText("Save");
     return;
   }
   editButton->setText("");
@@ -265,4 +272,19 @@ void ItemInfoWindow::handleItemUpdated() {
 void ItemInfoWindow::clearSelection() {
   item = nullptr;
   refresh();
+}
+
+void ItemInfoWindow::descriptionBoxLimiter() {
+  constexpr unsigned int limit = 2048;
+  if (editDescriptionLabel->toPlainText().length() > limit) {
+    editDescriptionLabel->blockSignals(true);
+    auto cursor = editDescriptionLabel->textCursor();
+    cursor.deletePreviousChar();
+    int position = cursor.position();
+    auto text = editDescriptionLabel->toPlainText();
+    editDescriptionLabel->setPlainText(text.left(limit));
+    cursor.setPosition(position);
+    editDescriptionLabel->setTextCursor(cursor);
+    editDescriptionLabel->blockSignals(false);
+  }
 }
