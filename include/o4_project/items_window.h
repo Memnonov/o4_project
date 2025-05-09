@@ -32,6 +32,7 @@ public:
   void refresh();
   Container *getCurrentContainer();
   void selectItem(Item *item);
+  void dumpParents();
   Item *currentItem = nullptr;
   void setDeleteEnabled(bool canDelete) {
     bottomDeleteButton->setEnabled(true);

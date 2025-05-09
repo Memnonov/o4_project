@@ -6,7 +6,6 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <algorithm>
-#include <memory>
 #include <qbuttongroup.h>
 #include <qlogging.h>
 #include <qmessagebox.h>
@@ -262,7 +261,8 @@ void ItemsWindow::updateRows() {
 
   // New item button. Also dumb to remake it like this. No time to fix...
   if (newButton) {
-    newButton->disconnect(newButton, &QPushButton::clicked, this, &ItemsWindow::handleAddNewClicked);
+    newButton->disconnect(newButton, &QPushButton::clicked, this,
+                          &ItemsWindow::handleAddNewClicked);
   };
   newButton = new QPushButton{"Add New", this};
   QIcon plusIcon{":/icons/plus.svg"};
@@ -386,4 +386,22 @@ void ItemsWindow::handleAddNewClicked() {
   if (ok) {
     emit addNewClicked(currentContainer, name);
   }
+}
+
+void ItemsWindow::dumpParents() {
+  qDebug() << "\n---------Dumping objects and parents of "
+           << this->objectName();
+  QVector<QObject *> objects = {
+      title,           addDeleteWidget, scrollArea, selectedItemButton,
+      filterSortPanel, buttonGroup,     editButton, itemRows,
+      moveItemsButton, editNameLine};
+  for (auto object : objects) {
+    if (!object) {
+      qDebug() << "An object is null!";
+      return;
+    }
+    qDebug() << "Name:" << object->objectName() << " : Parent:"
+             << (object->parent() ? object->parent()->objectName() : "null");
+  }
+  qDebug() << "\n";
 }

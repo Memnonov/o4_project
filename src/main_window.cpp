@@ -28,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
       tutorialWindow{new TutorialWindow}, moveWindow{new MoveWindow{model}},
       browseWindow{new BrowseWindow{model}}, mainArea{new QWidget},
       navigationPanel{new NavigationPanel},
-      containerWindow{new ContainerWindow{model}},
       searchWindow{new SearchWindow{model, searchModel, searchProxyModel}} {
   qRegisterMetaType<Item *>("Item*");
   setCentralWidget(centralWidget);
@@ -47,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
   searchModel->refresh();
   searchWindow->refresh();
   setNames();
-  dumpParents();
 }
 
 void MainWindow::initMainArea() {

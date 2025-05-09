@@ -41,7 +41,6 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
   scrollArea->setWidget(rowsWidget);
   layout->addWidget(scrollArea);
   updateRows();
-  dumpParents();
 }
 
 void ContainerWindow::initLabel() {
@@ -54,7 +53,7 @@ void ContainerWindow::initLabel() {
 
 void ContainerWindow::initNewContainerButton() {
   newContainerButton->setText("Add new");
-  QIcon plusIcon{":/icons/plus.svg"};
+  static const QIcon plusIcon{":/icons/plus.svg"};
   newContainerButton->setIcon(plusIcon);
   newContainerButton->setFlat(true);
   newContainerButton->setMinimumHeight(40);
@@ -78,9 +77,6 @@ void ContainerWindow::updateRows() {
     rows->addWidget(createRow(container));
   }
   rows->addWidget(newContainerButton);
-  qDebug() << "Parent of a ROWS: " << rows->parentWidget();
-  qDebug() << "Parent of a newContainerButton: "
-           << newContainerButton->parentWidget() << "\n";
 }
 
 QWidget *
@@ -116,10 +112,6 @@ ContainerWindow::createRow(const std::shared_ptr<Container> &container) {
   box->addWidget(button);
   box->addWidget(deleteButton);
 
-  qDebug() << "Parent of a box: " << box->parentWidget();
-  qDebug() << "  Parent of a row: " << row->parentWidget();
-  qDebug() << "  Parent of a button: " << button->parentWidget();
-  qDebug() << "  Parent of a deleteButton: " << deleteButton->parentWidget();
   return row;
 }
 

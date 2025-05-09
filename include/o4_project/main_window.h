@@ -11,7 +11,6 @@
 #include <qstackedwidget.h>
 #include <qwidget.h>
 #include "navigation_panel.h"
-#include "container_window.h"
 #include "search_model.h"
 #include "search_window.h"
 #include "move_window.h"
@@ -44,7 +43,6 @@ class MainWindow : public QMainWindow {
   StatusBar *statusBar;
   
   NavigationPanel *navigationPanel;
-  ContainerWindow *containerWindow;
   QFrame* leftWindowFrame;
   QFrame* rightWindowFrame;
 

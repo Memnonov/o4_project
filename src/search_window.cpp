@@ -8,9 +8,8 @@
 SearchWindow::SearchWindow(ContainerModel *model, SearchModel *searchModel,
                            SearchProxyModel *searchProxyModel, QWidget *parent)
     : ModeFrame{parent}, model{model}, searchModel{searchModel},
-      searchProxyModel{searchProxyModel}, infoWindow{new ItemInfoWindow},
-      placeholder(new QLabel{"Search window here!"}), searchForm{new QFrame},
-      table{new QTableView}, nameFilter{new QLineEdit},
+      searchProxyModel{searchProxyModel}, infoWindow{new ItemInfoWindow{}},
+      searchForm{new QFrame{this}}, table{new QTableView}, nameFilter{new QLineEdit},
       tagsFilter{new QLineEdit}, descriptionFilter{new QLineEdit},
       containersFilter{new QComboBox} {
   setObjectName("name");
