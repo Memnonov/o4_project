@@ -42,7 +42,7 @@ Käytä Qt:n asennuksen mukana tulevaa MinGW-komentoriviä! (MinGW Command Promp
 ```
 cd o4_project
 mkdir build
-`
+```
 
 2. Luo makefilet Cmakella ja käännä MinGW:llä. 
 ```
