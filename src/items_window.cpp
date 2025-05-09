@@ -77,8 +77,6 @@ ItemsWindow::ItemsWindow(QWidget *parent)
   layout->addWidget(addDeleteWidget);
   connect(bottomDeleteButton, &QPushButton::clicked, this,
           [this]() { confirmDeleteItem(); });
-
-  dumpParents();
 }
 
 void ItemsWindow::initAddNewButton() {
@@ -186,8 +184,6 @@ void ItemsWindow::createRows() {
         emit setQuantityClicked(item,
                                 item->quantity == 0 ? 0 : --(item->quantity));
       });
-      qDebug() << "Parent of plus: " << plusButton->parent();
-      qDebug() << "Parent of minus: " << minusButton->parent();
     } else {
       auto icon = isRightWindow ? ":/icons/fast-arrow-left"
                                 : ":/icons/fast-arrow-right";
@@ -195,15 +191,8 @@ void ItemsWindow::createRows() {
       moveButton->setIcon(QIcon(icon));
       box->insertWidget(index, moveButton);
     }
-    qDebug() << "Parent of row: " << row->parent();
-    qDebug() << "Parent of button: " << button->parent();
-    qDebug() << "Parent of itemRows: " << itemRows->parent();
-    qDebug() << "Parent of box: " << box->parent();
-    if (moveButton) {
-      qDebug() << "Parent of moveButton: " << itemRows->parent();
-    }
   }
-  itemRows->insertWidget(itemRows->count(), addNewButton);
+  itemRows->insertWidget(itemRows->count() - 1, addNewButton);
 }
 
 QPushButton *ItemsWindow::createItemButton(Item *item) {
@@ -257,7 +246,6 @@ void ItemsWindow::updateRows() {
 
   // New item button. Also dumb to remake it like this. No time to fix...
   qDebug() << "After update";
-  dumpParents();
 }
 
 // Kinda hacky!?

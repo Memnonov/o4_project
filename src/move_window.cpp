@@ -3,6 +3,7 @@
 #include "container_window.h"
 #include "items_window.h"
 #include <qlabel.h>
+#include <qlogging.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
 #include <qwidget.h>
@@ -152,16 +153,19 @@ QWidget *MoveWindow::getMiddlePanel() {
 }
 
 void MoveWindow::updateMoveButtons() {
+  qDebug() << "@updateMoveButtons()";
   if (!leftItems->hasContainerSelected() ||
       !rightItems->hasContainerSelected()) {
     moveSelectedButton->setEnabled(false);
     leftItems->setCanMoveItems(false);
     rightItems->setCanMoveItems(false);
+    qDebug() << "No 2 containers open";
     return;
   }
 
   bool leftCanMove = leftItems->hasItemSelected();
   bool rightCanMove = rightItems->hasItemSelected();
+  qDebug() << "rightCanMove: " << rightCanMove << " | " << "leftCanMove: " << leftCanMove;
 
   leftItems->setCanMoveItems(leftCanMove);
   rightItems->setCanMoveItems(rightCanMove);
