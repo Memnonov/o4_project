@@ -8,12 +8,12 @@
 #include <qwidget.h>
 
 MoveWindow::MoveWindow(ContainerModel *model, QWidget *parent)
-    : ModeFrame{parent}, model{model}, leftStack{new QStackedWidget},
-      middlePanel{new QWidget}, moveSelectedButton{new QPushButton},
-      rightStack{new QStackedWidget},
-      rightContainer{new ContainerWindow{model}},
-      leftContainer{new ContainerWindow{model}}, leftItems{new ItemsWindow},
-      rightItems{new ItemsWindow} {
+    : ModeFrame{parent}, model{model}, leftStack{new QStackedWidget{this}},
+      middlePanel{new QWidget{this}}, moveSelectedButton{new QPushButton{this}},
+      rightStack{new QStackedWidget{this}}, rightItems{new ItemsWindow{rightStack}},
+      rightContainer{new ContainerWindow{model, rightStack}},
+      leftContainer{new ContainerWindow{model, leftStack}},
+      leftItems{new ItemsWindow{leftStack}} {
   setObjectName("MoveWindow");
   leftStack->addWidget(leftContainer);
   leftStack->addWidget(leftItems);
@@ -134,7 +134,7 @@ void MoveWindow::handleContainerClosed(Stack stack) {
 }
 
 QWidget *MoveWindow::getMiddlePanel() {
-  auto middlePanel = new QWidget;
+  // auto middlePanel = new QWidget;
   auto panelLayout = new QVBoxLayout{middlePanel};
   // moveSelectedButton->setIcon(QIcon(":/icons/arrow-separate.svg"));
   moveSelectedButton->setContentsMargins(0, 0, 0, 0);

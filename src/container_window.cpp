@@ -24,7 +24,7 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
     : QFrame{parent}, model{model}, layout{new QVBoxLayout{this}},
       scrollArea{new QScrollArea{this}}, rows{new QVBoxLayout},
       rowsCleaner{new QObjectCleanupHandler}, rowsWidget{new QWidget{this}},
-      newContainerButton(new QPushButton) {
+      newContainerButton{new QPushButton}, containersLabel{new QLabel} {
   setFrameShape(StyledPanel);
   rowsCleaner->setParent(this);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -45,7 +45,8 @@ ContainerWindow::ContainerWindow(ContainerModel *model, QWidget *parent)
 }
 
 void ContainerWindow::initLabel() {
-  containersLabel = new QLabel{"<b>Containers</b>", this};
+  containersLabel->setParent(this);
+  containersLabel->setText("<b>Containers</b>");
   containersLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   layout->addWidget(containersLabel);
   layout->addSpacing(20);
@@ -71,58 +72,59 @@ void ContainerWindow::initNewContainerButton() {
 
 void ContainerWindow::updateRows() {
   clearRows();
-  const QIcon deleteIcon{":/icons/trash.svg"};
-  static constexpr unsigned int minRowHeight = 40;
-  static constexpr unsigned int maxRowHeight = minRowHeight * 2;
-
-  if (deleteIcon.isNull()) {
-    qDebug() << "Couldn't load icon\n";
-  }
 
   auto containers = model->getContainers();
-  int i = 0;
   for (auto const &container : containers) {
-    QWidget *row = new QWidget;
-    row->setObjectName(QString{"row #%1"}.arg(i++));
-    row->setMinimumHeight(minRowHeight); // TODO: fix magic numbers?
-    row->setMaximumHeight(maxRowHeight);
-    QHBoxLayout *box = new QHBoxLayout;
-    box->setContentsMargins(0, 0, 4, 4);
-    box->setSpacing(0);
-
-    QPushButton *button = new QPushButton{container->name};
-    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    connect(button, &QPushButton::clicked, this,
-            [this, container]() { emit containerSelected(container.get()); });
-
-    QPushButton *deleteButton = new QPushButton;
-    deleteButton->setIcon(deleteIcon);
-    deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(deleteButton, &QPushButton::clicked, this,
-            [this, container]() { confirmDelete(container.get()); });
-
-    row->setLayout(box);
-    box->addWidget(button);
-    box->addWidget(deleteButton);
-    rows->addWidget(row);
-
-    qDebug() << "Parent of a box: " << box->parentWidget();
-    qDebug() << "  Parent of a row: " << row->parentWidget();
-    qDebug() << "  Parent of a button: " << button->parentWidget();
-    qDebug() << "  Parent of a deleteButton: " << deleteButton->parentWidget();
+    rows->addWidget(createRow(container));
   }
   rows->addWidget(newContainerButton);
   qDebug() << "Parent of a ROWS: " << rows->parentWidget();
-  qDebug() << "Parent of a newContainerButton: " << newContainerButton->parentWidget() << "\n";
+  qDebug() << "Parent of a newContainerButton: "
+           << newContainerButton->parentWidget() << "\n";
+}
+
+QWidget *
+ContainerWindow::createRow(const std::shared_ptr<Container> &container) {
+  static const QIcon deleteIcon{":/icons/trash.svg"};
+  if (deleteIcon.isNull()) {
+    qDebug() << "Couldn't load icon\n";
+  }
+  static constexpr unsigned int minRowHeight = 40;
+  static constexpr unsigned int maxRowHeight = minRowHeight * 2;
+  int i = 0;
+  QWidget *row = new QWidget;
+  rowsCleaner->add(row);
+  row->setObjectName(QString{"row #%1"}.arg(i++));
+  row->setMinimumHeight(minRowHeight); // TODO: fix magic numbers?
+  row->setMaximumHeight(maxRowHeight);
+  QHBoxLayout *box = new QHBoxLayout;
+  box->setContentsMargins(0, 0, 4, 4);
+  box->setSpacing(0);
+
+  QPushButton *button = new QPushButton{container->name};
+  button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  connect(button, &QPushButton::clicked, this,
+          [this, container]() { emit containerSelected(container.get()); });
+
+  QPushButton *deleteButton = new QPushButton;
+  deleteButton->setIcon(deleteIcon);
+  deleteButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+  connect(deleteButton, &QPushButton::clicked, this,
+          [this, container]() { confirmDelete(container.get()); });
+
+  row->setLayout(box);
+  box->addWidget(button);
+  box->addWidget(deleteButton);
+
+  qDebug() << "Parent of a box: " << box->parentWidget();
+  qDebug() << "  Parent of a row: " << row->parentWidget();
+  qDebug() << "  Parent of a button: " << button->parentWidget();
+  qDebug() << "  Parent of a deleteButton: " << deleteButton->parentWidget();
+  return row;
 }
 
 void ContainerWindow::clearRows() {
-  QLayoutItem *item;
-  rows->removeWidget(newContainerButton);
-  while ((item = rows->takeAt(0)) != nullptr) {
-    item->widget()->deleteLater();
-  }
-  delete item;
+  rowsCleaner->clear(); // Cleaner helps to handle dynamically createt widgets!
 }
 
 const QVector<std::shared_ptr<Container>>

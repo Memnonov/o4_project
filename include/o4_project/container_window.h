@@ -44,6 +44,7 @@ class ContainerWindow : public QFrame {
   void clearRows();
   void dumpParents();
   void setNames();
+  QWidget* createRow(const std::shared_ptr<Container> &container);
   const QVector<std::shared_ptr<Container>> getContainers() const;
 
  public slots:
