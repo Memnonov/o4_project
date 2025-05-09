@@ -152,6 +152,8 @@ void ItemInfoWindow::toggleEditing(bool saveChanges) {
   editButton->setIcon(QIcon{":/icons/edit-pencil.svg"});
   if (saveChanges) {
     handleItemUpdated();
+  } else {
+    refreshFields();
   }
 }
 
@@ -214,21 +216,7 @@ void ItemInfoWindow::refresh() {
   title->setText(
       QString("<b>%1</b><br><i>%2</i>").arg(item->name).arg(container->name));
 
-  QString name{item->name};
-  viewNameLabel->setText(name);
-  editNameLabel->setText(name);
-
-  unsigned int quantity = item->quantity;
-  viewQuantityLabel->setText(QString::number(quantity));
-  editQuantityBox->setValue(quantity);
-
-  QString tags{QStringList::fromVector(item->tags).join(", ")};
-  viewTagsLabel->setText(tags);
-  editTagsLabel->setText(tags);
-
-  QString description = item->description;
-  viewDescriptionLabel->setText(description);
-  editDescriptionLabel->setText(description);
+  refreshFields();
   updateFavouriteButton();
   showViews();
 }
@@ -287,4 +275,22 @@ void ItemInfoWindow::descriptionBoxLimiter() {
     editDescriptionLabel->setTextCursor(cursor);
     editDescriptionLabel->blockSignals(false);
   }
+}
+
+void ItemInfoWindow::refreshFields() {
+  QString name{item->name};
+  viewNameLabel->setText(name);
+  editNameLabel->setText(name);
+
+  unsigned int quantity = item->quantity;
+  viewQuantityLabel->setText(QString::number(quantity));
+  editQuantityBox->setValue(quantity);
+
+  QString tags{QStringList::fromVector(item->tags).join(", ")};
+  viewTagsLabel->setText(tags);
+  editTagsLabel->setText(tags);
+
+  QString description = item->description;
+  viewDescriptionLabel->setText(description);
+  editDescriptionLabel->setText(description);
 }

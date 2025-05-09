@@ -93,6 +93,7 @@ class ItemInfoWindow : public QFrame {
   bool hasChanges();
   void handleItemUpdated();
   void descriptionBoxLimiter();
+  void refreshFields();
 
 };
 
