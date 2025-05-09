@@ -26,8 +26,7 @@ class ItemInfoWindow : public QFrame {
  public:
   explicit ItemInfoWindow(QWidget *parent = nullptr);
   ~ItemInfoWindow() = default;
-  void setEditable(bool editable) {
-    this->editable = editable;
+  void setEditable(bool editable) { this->editable = editable;
   }
   void setFavouritable(bool favouritable) {
     favouriteButton->setEnabled(favouritable);
@@ -85,7 +84,7 @@ class ItemInfoWindow : public QFrame {
   void initEditButtons();
   void initGoToItemButton();
   void initFavouriteButton();
-  void toggleEditing();
+  void toggleEditing(bool saveChanges);
   void showViews();
   void hideViews();
   void setFieldsNull();

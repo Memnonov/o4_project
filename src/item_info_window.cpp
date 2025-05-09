@@ -35,6 +35,7 @@ ItemInfoWindow::ItemInfoWindow(QWidget *parent)
   title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   topPanelLayout->addWidget(title);
   topPanelLayout->addWidget(editButton, 0, Qt::AlignTop);
+  topPanelLayout->addWidget(cancelEditButton, 0, Qt::AlignTop);
   topPanelLayout->addWidget(goToItemButton, 0, Qt::AlignTop);
 
   layout->addWidget(topPanel);
@@ -108,9 +109,14 @@ void ItemInfoWindow::initEditButtons() {
   editButton->setFlat(true);
   editButton->setIcon(QIcon(":/icons/edit-pencil.svg"));
   connect(editButton, &QPushButton::clicked, this,
-          [this]() { toggleEditing(); });
+          [this]() { toggleEditing(true); });
+
   cancelEditButton->setFlat(true);
-  editButton->setIcon(QIcon(":/icons/x-mark.svg"));
+  cancelEditButton->setIcon(QIcon(":/icons/xmark.svg"));
+  // cancelEditButton->setText("Cancel");
+  cancelEditButton->setVisible(false);
+  connect(cancelEditButton, &QPushButton::clicked, this,
+          [this]() { toggleEditing(false); });
 }
 
 void ItemInfoWindow::initGoToItemButton() {
@@ -125,16 +131,19 @@ void ItemInfoWindow::initGoToItemButton() {
   });
 }
 
-void ItemInfoWindow::toggleEditing() {
+void ItemInfoWindow::toggleEditing(bool saveChanges) {
   editing = !editing;
   editFields->setVisible(editing);
   viewFields->setVisible(!editing);
+  cancelEditButton->setVisible(editing);
   if (editing) {
     editButton->setIcon(QIcon{":/icons/floppy-disk.svg"});
-    editButton->setText("Save");
-  } else {
-    editButton->setText("");
-    editButton->setIcon(QIcon{":/icons/edit-pencil.svg"});
+    // editButton->setText("Save");
+    return;
+  }
+  editButton->setText("");
+  editButton->setIcon(QIcon{":/icons/edit-pencil.svg"});
+  if (saveChanges) {
     handleItemUpdated();
   }
 }

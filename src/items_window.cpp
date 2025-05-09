@@ -240,12 +240,9 @@ bool ItemsWindow::filterItem(Item *item) {
 void ItemsWindow::updateRows() {
   rowsCleaner->clear();
   createRows();
-  if (!movingItems) { // No use keeping selection when moving stuff.
+  if (!movingItems) {
     selectItem(currentItem);
   }
-
-  // New item button. Also dumb to remake it like this. No time to fix...
-  qDebug() << "After update";
 }
 
 // Kinda hacky!?
