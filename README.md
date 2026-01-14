@@ -2,6 +2,8 @@
 
 ##Treasure Hoard!
 
+![Browse items](assets/screenshots/browse_items.png)
+
 Pieni ohjelma pöytäroolipelaamisen monimutkaistamiseksi.
 Näillä ohjeilla saa tämän ehkä rakennettua.
 
