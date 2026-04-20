@@ -1,6 +1,6 @@
-# Ohjelmointi 4 - Auli Jussila & Mikko Memonen
+## Ohjelmointi 4 - Auli Jussila & Mikko Memonen
 
-## Treasure Hoard!
+# Treasure Hoard!
 
 ![Browse items](assets/screenshots/browse_items.png)
 ![Browse items](assets/screenshots/search.png)
